@@ -1,0 +1,12 @@
+.perso_color{
+    background: rgb(36,34,0);
+    background: linear-gradient(90deg, rgba(36,34,0,1) 0%, rgba(246,228,13,0.22452731092436973) 0%, rgba(241,255,0,0.773546918767507) 47%, rgba(255,0,14,0.44021358543417366) 99%);
+}
+
+.perso_color_title{
+
+    /*background: rgb(255,251,182);*/
+    background: rgb(255,251,182);
+    background: linear-gradient(90deg, rgba(255,251,182,0.3561799719887955) 0%, rgba(235,244,44,0.5298494397759104) 100%);
+
+}
