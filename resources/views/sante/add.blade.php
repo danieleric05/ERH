@@ -27,8 +27,8 @@
 
             <div class="card">
 
-                {!!Form::open (['url'=>['post_sante'], 'method'=>'post', 'role'=>'form'])!!}
-
+                <form action="{{ url('post_sante') }}" method="POST" role="form" class="form-auth-small">
+                @csrf
                 <div class="body">
                     <div class="row clearfix">
 					
@@ -126,7 +126,7 @@
                     </div>
                 </div>
 
-                {!!Form::close() !!}
+                </form>     {!!Form::close() !!}
 
             </div>
         </div>

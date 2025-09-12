@@ -44,8 +44,10 @@
 							?>
 							
                         </div>
-                        {!!Form::open (['url'=>['post_travailleur'], 'method'=>'post', 'role'=>'form'])!!}
-                            <div class="body">
+                
+                        <form action="{{ url('post_travailleur') }}" method="POST" role="form" class="form-auth-small">
+                        @csrf    
+                        <div class="body">
                                 <div class="row clearfix">
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <div class="form-group">
@@ -222,7 +224,7 @@
                             </div>
                         </div>
 
-                        {!!Form::close() !!}
+                        {!! html()->form()->close() !!}
                     </div>
                 </div>
             </div>

@@ -29,8 +29,8 @@
 
 
                 <div class="body">
-                    {!!Form::open (['url'=>['post_precarite_ho'], 'method'=>'post', 'role'=>'form',  'files'=>'true', 'enctype'=>'multipart/form-data' ])!!}
-
+                    <form action="{{ url('post_precarite_ho') }}" method="POST" role="form" class="form-auth-small">
+                    @csrf
                         <div class="row clearfix">
 
                             <div class="col-lg-5 col-md-6 col-sm-12">
@@ -59,7 +59,7 @@
 
                         </div>
 
-                    {!!Form::close() !!}
+                    </form>     {!!Form::close() !!}
 
                     <div class="table-responsive">
                         <table class="table table-hover js-basic-example dataTable table-custom">
