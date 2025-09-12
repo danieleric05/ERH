@@ -109,7 +109,7 @@
 
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <div class="form-group">
-                                            <label for="phone-ex" class="control-label">Departement</label>
+                                            <label for="phone-ex" class="control-label">Département</label>
                                             <select required name="departementid" class="form-control show-tick ms select2" data-placeholder="Select">
                                                 <option value="">-DEROULER-</option>
                                                 @foreach($data_departements as $depart)
