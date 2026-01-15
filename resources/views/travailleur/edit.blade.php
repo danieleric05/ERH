@@ -20,9 +20,10 @@
                         <div class="header">
                             <h2>Etape 2 : Enregistrement</h2>
                         </div>
-                        <form action="{{ url('post_edit_travailleur') }}" method="POST" role="form" class="form-auth-small">
+                        <form action="{{ url('post_edit_travailleur/' . $edit->id) }}" method="POST" role="form" class="form-auth-small">
                         @csrf
-                        <div class="body">
+
+
                             <div class="row clearfix">
 
                                 <div class="col-lg-4 col-md-6 col-sm-12">
@@ -297,7 +298,7 @@
                                         </select>
                                     </div>
                                 </div>
-								
+
                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                     <div class="form-group">
                                         <label for="file_cni" class="control-label">CNI (facultatif)</label>
@@ -354,7 +355,7 @@
                         </div>
 
                         </form>
-                        
+
                     </div>
                 </div>
             </div>

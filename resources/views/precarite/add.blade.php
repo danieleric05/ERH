@@ -59,7 +59,8 @@
 
                         </div>
 
-                    </form>     {!!Form::close() !!}
+                    </form>     
+                    
 
                     <div class="table-responsive">
                         <table class="table table-hover js-basic-example dataTable table-custom">
@@ -103,11 +104,14 @@
 
                                 @if($verif_traitement_ha01 > 0)
 
-                                    {!!Form::open (['url'=>['post_precarite_finalite'], 'method'=>'post', 'role'=>'form' ])!!}
+                                    
+                                    <form action="{{ url('post_precarite_finalite') }}" method="POST" role="form" class="form-auth-small">
+                                        @csrf
                                     <button title="FINALISER HA01" style="padding-left: 20px; padding-right: 20px" type="submit" class="btn btn-danger">
                                         <i class="icon-calculator" aria-hidden="true"></i> FINALISER &nbsp;
                                     </button>
-                                    {!!Form::close() !!}
+                                    </form> 
+                                    
 
                                 @endif
 

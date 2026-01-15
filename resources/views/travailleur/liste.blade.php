@@ -6,12 +6,12 @@
             <div class="col-lg-6 col-md-8 col-sm-12">
                 <h2>
                     <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Liste des travailleurs a etapes deux
+                        <i class="fa fa-arrow-left"></i></a> Liste des travailleurs à étape deux
                 </h2>
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
                     <li class="breadcrumb-item">Recrutement</li>
-                    <li class="breadcrumb-item active">Liste des travailleurs a etapes deux</li>
+                    <li class="breadcrumb-item active">Liste des travailleurs à étape deux</li>
                 </ul>
             </div>
             <div class="col-lg-6 col-md-4 col-sm-12 text-right">
@@ -65,7 +65,7 @@
                                     <td>{{ $listedata->nom }}</td>
                                     <td>{{ $listedata->prenom }}</td>
                                     <td style="color: black; font-weight: bold">
-                                        {{ $equipe = \App\Equipes::where('id', $listedata->equipeid)->first()->label }}
+                                        {{ $equipe = \App\Equipes::where('id', $listedata->equipeid)->first()?->label }}
                                     </td>
                                     <td>{{ $listedata->date_debut_contrat }}</td>
                                     <td style="color: red; font-weight: bold">{{ $listedata->date_fin_contrat }}</td>

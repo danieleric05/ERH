@@ -190,11 +190,13 @@ class SanteController extends Controller
 
     public function listesconsultation(){
         $listeSante = Santes::where('id', Auth::user()->id)->orderBy('id', 'DESC')->get();
+        $equipes = Equipes::orderBy('id', 'DESC')->get();
         return view("sante.liste", compact('listeSante', 'equipes'));
     }
 
     public function listesaccident(){
         $listeAT = AccidentTravail::orderBy('id', 'DESC')->get();
+        $equipes = Equipes::orderBy('id', 'DESC')->get();
         return view("sante.accident_travail.liste", compact('listeAT', 'equipes'));
     }
 

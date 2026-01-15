@@ -27,9 +27,22 @@
                             <a href="{{ route('liste_tous_travailleurs') }}">
                                 <button type="button" class="btn btn-outline-danger">Retour</button>
                             </a>
-                            <a target="_blank" title="CONTRAT" href="{{ route('telechargerContratJournalier',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}">
-                                <button type="button" class="btn btn-outline-primary">TELECHARGER CONTRAT</button>
-                            </a>
+                            @if($edit_travailleur->idtype_contrat == 2)
+                                {{-- CDD --}}
+                                <a target="_blank" title="CONTRAT CDD" href="{{ route('telechargerContratCDD',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}">
+                                    <button type="button" class="btn btn-outline-primary">TELECHARGER CONTRAT CDD</button>
+                                </a>
+                            @elseif($edit_travailleur->idtype_contrat == 3)
+                                {{-- CDI --}}
+                                <a target="_blank" title="CONTRAT CDI" href="{{ route('telechargerContratCDI',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}">
+                                    <button type="button" class="btn btn-outline-primary">TELECHARGER CONTRAT CDI</button>
+                                </a>
+                            @else
+                                {{-- Journalier (default) --}}
+                                <a target="_blank" title="CONTRAT JOURNALIER" href="{{ route('telechargerContratJournalier',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}">
+                                    <button type="button" class="btn btn-outline-primary">TELECHARGER CONTRAT JOURNALIER</button>
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>

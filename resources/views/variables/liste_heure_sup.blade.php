@@ -35,10 +35,10 @@
                         <table class="table table-hover js-basic-example dataTable table-custom">
                             <thead class="thead-dark">
                             <tr>
-                                <th>Employes</th>
+                                <th>Employés</th>
                                 <th class="text-center">Nombre d'heure</th>
                                 <th>Date</th>
-                                <th class="text-center">Etat</th>
+                                <th class="text-center">État</th>
                                 <th class="text-center">Options</th>
                             </tr>
                             </thead>

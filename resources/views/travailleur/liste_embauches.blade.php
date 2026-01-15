@@ -97,26 +97,26 @@
                                             </a>
                                         @endif
 
-                                        @if($listedata->etapeid == 2)
-                                            <a target="_blank" title="TELECHARGER LE CONTRAT DE JOURNALIER" href="{{ route('telechargerContratJournalier',['id'=>$listedata->id, 'download'=>'pdf']) }}" style="background-color: #9ad717" class="btn btn-sm btn-icon btn-pure on-default button-remove">
-                                                <i class="icon-doc" aria-hidden="true"></i>
-                                            </a>
-                                        @endif
+                                        @if(in_array($listedata->etapeid, [2, 5, 6]))
+                                            @if($listedata->etapeid == 5)
+                                                <a target="_blank" title="TELECHARGER LA FICHE DE DECLARATION CNPS" href="{{ route('telechargerContratDeclarationCnps',['id'=>$listedata->id, 'download'=>'pdf']) }}" style="background-color: #fb551c" class="btn btn-sm btn-icon btn-pure on-default button-remove">
+                                                    <i class="icon-doc" aria-hidden="true"></i>
+                                                </a>
+                                            @endif
 
-                                        @if($listedata->etapeid == 6)
-                                            <a target="_blank" title="TELECHARGER LE CONTRAT DE JOURNALIER" href="{{ route('telechargerContratJournalier',['id'=>$listedata->id, 'download'=>'pdf']) }}" style="background-color: #9ad717" class="btn btn-sm btn-icon btn-pure on-default button-remove">
-                                                <i class="icon-doc" aria-hidden="true"></i>
-                                            </a>
-                                        @endif
-
-                                        @if($listedata->etapeid == 5)
-                                            <a target="_blank" title="TELECHARGER LA FICHE DE DECLARATION CNPS" href="{{ route('telechargerContratDeclarationCnps',['id'=>$listedata->id, 'download'=>'pdf']) }}" style="background-color: #fb551c" class="btn btn-sm btn-icon btn-pure on-default button-remove">
-                                                <i class="icon-doc" aria-hidden="true"></i>
-                                            </a>
-
-                                            <a target="_blank" title="TELECHARGER LE CONTRAT DE JOURNALIER" href="{{ route('telechargerContratJournalier',['id'=>$listedata->id, 'download'=>'pdf']) }}" style="background-color: #9ad717" class="btn btn-sm btn-icon btn-pure on-default button-remove">
-                                                <i class="icon-doc" aria-hidden="true"></i>
-                                            </a>
+                                            @if($listedata->idtype_contrat == 2)
+                                                <a target="_blank" title="TELECHARGER LE CONTRAT CDD" href="{{ route('telechargerContratCDD',['id'=>$listedata->id, 'download'=>'pdf']) }}" style="background-color: #17a2b8" class="btn btn-sm btn-icon btn-pure on-default button-remove">
+                                                    <i class="icon-doc" aria-hidden="true"></i>
+                                                </a>
+                                            @elseif($listedata->idtype_contrat == 3)
+                                                <a target="_blank" title="TELECHARGER LE CONTRAT CDI" href="{{ route('telechargerContratCDI',['id'=>$listedata->id, 'download'=>'pdf']) }}" style="background-color: #28a745" class="btn btn-sm btn-icon btn-pure on-default button-remove">
+                                                    <i class="icon-doc" aria-hidden="true"></i>
+                                                </a>
+                                            @else
+                                                <a target="_blank" title="TELECHARGER LE CONTRAT JOURNALIER" href="{{ route('telechargerContratJournalier',['id'=>$listedata->id, 'download'=>'pdf']) }}" style="background-color: #9ad717" class="btn btn-sm btn-icon btn-pure on-default button-remove">
+                                                    <i class="icon-doc" aria-hidden="true"></i>
+                                                </a>
+                                            @endif
                                         @endif
 
                                         <a title="DESACTIVE/RETIRER" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?')"  href="#"  data-id="{{ $listedata->id }}" class="btn btn-sm btn-icon btn-pure btn-danger on-default button-remove" data-toggle="tooltip" data-original-title="Remove">

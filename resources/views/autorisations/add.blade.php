@@ -266,7 +266,6 @@
                 </div>
 
                 </form>
-                {!! html()->form()->close() !!}
             </div>
         </div>
 

@@ -109,7 +109,7 @@
 
                                     <tr>
                                         <td style="font-weight: bold; color: red">
-                                            {{ $art->label }}
+                                            {{ $art?->label }}
                                         </td>
                                         <td style="font-weight: bold; color: red">
                                             {{ $art->quantite_en_stock }}
@@ -500,7 +500,7 @@
 
                                     <tr>
                                         <td style="font-weight: bold; color: red">
-                                            {{ $art->label }}
+                                            {{ $art?->label }}
                                         </td>
                                         <td style="font-weight: bold; color: red">
                                             {{ $art->quantite_en_stock }}

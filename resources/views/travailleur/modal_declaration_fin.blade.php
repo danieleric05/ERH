@@ -39,7 +39,7 @@
 
                         <div class="col-sm-12" style="display: none" id="numcnps">
                             <div class="form-group">
-                                <label>Numero CNPS</label>
+                                <label>Numéro CNPS</label>
                                 <input type="text" maxlength="12" height="80px" name="numcnps" class="form-control">
                             </div>
                         </div>

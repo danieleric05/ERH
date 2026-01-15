@@ -2,29 +2,28 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Http\Middleware\TrustProxies as Middleware;
 use Illuminate\Http\Request;
-use Fideloper\Proxy\TrustProxies as Middleware;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class TrustProxies extends Middleware
 {
     /**
-     * The trusted proxies for this application.
+     * Les proxies de confiance pour cette application.
      *
-     * @var array
+     * @var array|string|null
      */
-    protected $proxies;
+    protected $proxies = '*'; // Ou spécifiez des IPs: ['192.168.1.1', '10.0.0.1']
 
     /**
-     * The headers that should be used to detect proxies.
+     * Les en-têtes à utiliser pour détecter les proxies.
      *
      * @var int
      */
-    protected $headers = [
-        Request::HEADER_FORWARDED,
-        Request::HEADER_X_FORWARDED_FOR,
-        Request::HEADER_X_FORWARDED_HOST,
-        Request::HEADER_X_FORWARDED_PORT,
-        Request::HEADER_X_FORWARDED_PROTO,
-    ];
-
+    protected $headers =
+        SymfonyRequest::HEADER_X_FORWARDED_FOR |
+        SymfonyRequest::HEADER_X_FORWARDED_HOST |
+        SymfonyRequest::HEADER_X_FORWARDED_PORT |
+        SymfonyRequest::HEADER_X_FORWARDED_PROTO |
+        SymfonyRequest::HEADER_X_FORWARDED_AWS_ELB;
 }

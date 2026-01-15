@@ -117,8 +117,9 @@ class VariablesController extends Controller
     }
 
     public function listevariables_automatique(){
-        $variableHS = Variables::Where('cause', 2)->orderBy('id', 'DESC')->get();
-        return view("variables.listevariables_automatique", compact('variableHS', 'tenues'));
+                $variableHS = Variables::Where('cause', 2)->orderBy('id', 'DESC')->get();
+                $tenues = \App\Tenues::orderBy('id', 'DESC')->get();
+                return view("variables.listevariables_automatique", compact('variableHS', 'tenues'));
     }
 
 

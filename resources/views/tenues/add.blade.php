@@ -130,7 +130,7 @@
                     </div>
                 </div>
 
-                </form>     {!!Form::close() !!}
+                </form>    
 
             </div>
         </div>

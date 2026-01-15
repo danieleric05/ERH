@@ -33,7 +33,7 @@
             background: url("{{ asset('rhassets/images/details_close.png') }}") no-repeat center center;
         }
     </style>
-
+    @stack('styles')
 </head>
 
 <body class="theme-orange">
@@ -122,7 +122,7 @@ Overlay For Sidebars -->
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-
+    @stack('scripts')
 </body>
 
 </html>
