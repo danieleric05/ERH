@@ -40,13 +40,35 @@ class RecruController extends Controller
         return view('travailleur.listetravailleur', compact('data_travailleurdeux'));
     }
 
-    public function liste_cessations(){
-        $data_cessations = Travailleur::where('etapeid',3)->orderBy('id', 'DESC')->get();
+    public function liste_cessations(Request $request){
+        $query = Travailleur::where('etapeid',3);
+
+        if (!empty($request->input('search'))) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('nom', 'like', "%{$search}%")
+                  ->orWhere('prenom', 'like', "%{$search}%")
+                  ->orWhere('matricule', 'like', "%{$search}%");
+            });
+        }
+
+        $data_cessations = $query->orderBy('id', 'DESC')->get();
         return view('travailleur.listecessations', compact('data_cessations'));
     }
 
-    public function liste_declarations(){
-        $data_declarations = Travailleur::where('numero_securite', NULL)->orderBy('id', 'DESC')->get();
+    public function liste_declarations(Request $request){
+        $query = Travailleur::where('numero_securite', NULL);
+
+        if (!empty($request->input('search'))) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('nom', 'like', "%{$search}%")
+                  ->orWhere('prenom', 'like', "%{$search}%")
+                  ->orWhere('matricule', 'like', "%{$search}%");
+            });
+        }
+        
+        $data_declarations = $query->orderBy('id', 'DESC')->get();
         return view('travailleur.liste_declarations', compact('data_declarations'));
     }
 
@@ -59,8 +81,20 @@ class RecruController extends Controller
         return view('contrat.detail_contrat', compact('infoContrat', 'id', 'data_equipes', 'data_unites', 'infoTenues', 'infoHistUnite'));
     }
 
-    public function liste_travailleurs(){
-        $data_Travailleur = Travailleur::where('matricule', '!=' ,NULL)->orderBy('id', 'DESC')->get();
+    public function liste_travailleurs(Request $request){
+        $query = Travailleur::where('matricule', '!=' ,NULL);
+
+        if (!empty($request->input('search'))) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('nom', 'like', "%{$search}%")
+                  ->orWhere('prenom', 'like', "%{$search}%")
+                  ->orWhere('matricule', 'like', "%{$search}%");
+            });
+        }
+
+        $data_Travailleur = $query->orderBy('id', 'DESC')->get();
+
         return view('travailleur.liste_tous_travailleur', compact('data_Travailleur'));
     }
 
@@ -805,19 +839,71 @@ class RecruController extends Controller
 
             $termE = 'E';
             $termJ = 'J';
-            if( ($request->type_id == 1) AND ($request->recherche == null) AND ($request->uniteid == null) ){
+
+            // ====== RECHERCHES POUR TYPE EMBAUCHÉ (type_id == 1) ======
+
+            // Embauché + Recherche par Unité
+            if( ($request->type_id == 1) AND ($request->recherche == 1) ){
 
                 $unite = $request->uniteid; $debut = $request->beginn; $fin = $request->endd; $type = $request->type_id; $rech = $request->recherche;
                 $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
+
                 $data_unites = Unites::get();
                 $recherches = Travailleur::where('etapeid', '!=', 3)
-                    //->where('uniteid', '<=', $request->uniteid)
+                    ->where('uniteid', '=', $request->uniteid)
                     ->where('matricule', 'like', '%' . $termE . '%')->get();
-                //$recherches = Travailleur::where('etapeid', '!=', 3)->where('datepub', '>=', $request->beginn)->where('matricule', 'like', '%' . $termE . '%') ->where('datepub', '<=', $request->endd)->get();
                 return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
 
+            }
+            // Embauché + Toutes les Unités
+            elseif ( ($request->type_id == 1) AND ($request->recherche == 2) ){
 
-            }elseif ( ($request->type_id == 2) AND ($request->recherche == 1) ){
+                $unite = $request->uniteid; $debut = $request->beginn; $fin = $request->endd; $type = $request->type_id; $rech = $request->recherche;
+                $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
+
+                $data_unites = Unites::get();
+                $recherches = Travailleur::where('etapeid', '!=', 3)
+                    ->where('matricule', 'like', '%' . $termE . '%')->get();
+                return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
+
+            }
+            // Embauché + Période (date début de contrat)
+            elseif ( ($request->type_id == 1) AND ($request->recherche == 3) ){
+
+                $unite = $request->uniteid; $debut = $request->beginn; $fin = $request->endd; $type = $request->type_id; $rech = $request->recherche;
+                $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
+
+                $data_unites = Unites::get();
+                $recherches = Travailleur::where('etapeid', '!=', 3)
+                    ->where('matricule', 'like', '%' . $termE . '%')
+					->where('date_debut_contrat', '>=', $request->beginn)
+                    ->where('date_debut_contrat', '<=', $request->endd)
+					->get();
+
+                return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
+
+            }
+            // Embauché + Fin de contrat
+            elseif ( ($request->type_id == 1) AND ($request->recherche == 4) ){
+
+                $unite = $request->uniteid; $debut = $request->beginn; $fin = $request->endd; $type = $request->type_id; $rech = $request->recherche;
+                $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
+
+                $data_unites = Unites::get();
+                $recherches = Travailleur::where('etapeid', '!=', 3)
+                    ->where('matricule', 'like', '%' . $termE . '%')
+					->where('date_fin_contrat', '>=', $request->beginn)
+                    ->where('date_fin_contrat', '<=', $request->endd)
+					->get();
+
+                return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
+
+            }
+
+            // ====== RECHERCHES POUR TYPE JOURNALIER (type_id == 2) ======
+
+            // Journalier + Recherche par Unité
+            elseif ( ($request->type_id == 2) AND ($request->recherche == 1) ){
 
                 $unite = $request->uniteid; $debut = $request->beginn; $fin = $request->endd; $type = $request->type_id; $rech = $request->recherche;
                 $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
@@ -826,55 +912,50 @@ class RecruController extends Controller
                 $recherches = Travailleur::where('etapeid', '!=', 3)
                     ->where('uniteid', '=', $request->uniteid)
                     ->where('matricule', 'like', '%' . $termJ . '%')->get();
-                /*$recherches = Travailleur::where('etapeid', '!=', 3)->where('date_debut_contrat', '>=', $request->beginn)
-                                                                    ->where('date_debut_contrat', '<=', $request->endd)
-                                                                    ->where('matricule', 'like', '%' . $termJ . '%')->get();*/
-                //dd($recherches);
                 return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
 
-            }elseif ( ($request->recherche == 3) AND ($request->type_id == 2) ){
-				
+            }
+            // Journalier + Toutes les Unités
+            elseif ( ($request->type_id == 2) AND ($request->recherche == 2) ){
+
                 $unite = $request->uniteid; $debut = $request->beginn; $fin = $request->endd; $type = $request->type_id; $rech = $request->recherche;
                 $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
-				
+
+                $data_unites = Unites::get();
+                $recherches = Travailleur::where('etapeid', '!=', 3)
+                    ->where('matricule', 'like', '%' . $termJ . '%')->get();
+                return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
+
+            }
+            // Journalier + Période (date début de contrat)
+            elseif ( ($request->type_id == 2) AND ($request->recherche == 3) ){
+
+                $unite = $request->uniteid; $debut = $request->beginn; $fin = $request->endd; $type = $request->type_id; $rech = $request->recherche;
+                $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
+
                 $data_unites = Unites::get();
                 $recherches = Travailleur::where('etapeid', '!=', 3)
                     ->where('matricule', 'like', '%' . $termJ . '%')
 					->where('date_debut_contrat', '>=', $request->beginn)
                     ->where('date_debut_contrat', '<=', $request->endd)
 					->get();
-					
-				//dd($recherches);
+
                 return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
 
-            }elseif ( ($request->type_id == 2) AND ($request->recherche == 2) AND ($request->uniteid == null) ){
-				//dd('okkkkkkkkk');
+            }
+            // Journalier + Fin de contrat
+            elseif ( ($request->type_id == 2) AND ($request->recherche == 4) ){
+
                 $unite = $request->uniteid; $debut = $request->beginn; $fin = $request->endd; $type = $request->type_id; $rech = $request->recherche;
                 $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
 
-                $data_unites = Unites::get();
-                $recherches = Travailleur::where('etapeid', '!=', 3)
-                    //->where('uniteid', '<=', $request->uniteid)
-                    ->where('matricule', 'like', '%' . $termJ . '%')->get();
-                /*$recherches = Travailleur::where('etapeid', '!=', 3)->where('date_debut_contrat', '>=', $request->beginn)
-                                                                    ->where('date_debut_contrat', '<=', $request->endd)
-                                                                    ->where('matricule', 'like', '%' . $termJ . '%')->get();*/
-                //dd($recherches);
-                return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
-
-            }elseif ( ($request->type_id == 2) AND ($request->recherche == 4) AND ($request->uniteid == null) ){
-				
-				
-                $unite = $request->uniteid; $debut = $request->beginn; $fin = $request->endd; $type = $request->type_id; $rech = $request->recherche;
-                $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
-				
                 $data_unites = Unites::get();
                 $recherches = Travailleur::where('etapeid', '!=', 3)
                     ->where('matricule', 'like', '%' . $termJ . '%')
 					->where('date_fin_contrat', '>=', $request->beginn)
                     ->where('date_fin_contrat', '<=', $request->endd)
 					->get();
-					
+
                 return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
 
             }

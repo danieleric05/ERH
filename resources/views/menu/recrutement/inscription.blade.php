@@ -1,4 +1,4 @@
-@extends('erh')
+@extends('layouts.erh')
 @section('content')
 
     <section class="admin-content" data-select2-id="12">

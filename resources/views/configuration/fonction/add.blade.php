@@ -1,4 +1,4 @@
-@extends('erh')
+@extends('layouts.erh')
 @section('content')
 
     <div class="block-header">

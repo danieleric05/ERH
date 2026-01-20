@@ -1,5 +1,7 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\RecruController;
@@ -19,19 +21,47 @@ use App\Http\Controllers\ConfigController;
 |
 */
 
+// Routes publiques (avant authentification)
 Route::get("/", function () {
     return view("login");
 });
 Route::get("/se-connecter", [HomeController::class, 'logining'])->name("login");
 Route::post("post_login", [HomeController::class, 'post_login']);
 
-Route::group(["before" => "Auth", "middleware" => "auth"], function () {
-    Route::get("/se-deconnecter/{id}", [HomeController::class, 'logoutUser'])->name("logoutUser");
+// Routes nécessitant une authentification
+Route::middleware(['auth'])->group(function () {
+    // Corrected logout route
+    Route::post('/logout', [HomeController::class, 'logoutUser'])->name('logout');
 
+    // Dashboard (redirige vers /bienvenue)
+    Route::get('/dashboard', function () {
+        return redirect()->route('bienvenue');
+    })->name('dashboard');
+
+    // Employees (redirige vers liste des travailleurs)
+    Route::get('/employees', function () {
+        return redirect('/liste-travailleurs');
+    })->name('employees');
+
+    // Mon profil route
+    Route::get('/mon-profil', function () {
+        $id = Auth::id();
+        return redirect("/monprofil/{$id}");
+    })->name('mon-profil');
+
+    // Settings (Admin seulement - Rôle 1 et 2)
+    Route::get('/settings', function () {
+        if (!in_array(Auth::user()->idrole, [1, 2])) {
+            abort(403, 'Accès non autorisé');
+        }
+        return view('configuration.index'); // À créer ou rediriger
+    })->name('settings');
+
+    // Page de bienvenue
     Route::get("/bienvenue", function () {
         $datejour = date("Y-m-d");
         $datefincontrat = date("Y-m-d", strtotime("$datejour +20 day"));
-        //dd($datefincontrat);
+        
         $count_fin_contrat = \App\Travailleur::where("etapeid", "!=", 3)
             ->where("etapeid", "!=", 4)
             ->where("date_fin_contrat", "<=", $datefincontrat)
@@ -47,7 +77,7 @@ Route::group(["before" => "Auth", "middleware" => "auth"], function () {
             ->where("date_fin_contrat", "<=", $datefincontrat)
             ->where("date_fin_contrat", ">", $datejour)
             ->get();
-        //dd($count_fin_contrat);
+        
         $termJ = "J";
         $termE = "E";
         $listeAT = \App\AccidentTravail::where("statutid", "=", 1)
@@ -125,21 +155,31 @@ Route::group(["before" => "Auth", "middleware" => "auth"], function () {
         return view("menu.recrutement.listecomplete");
     });
 
-    /******************** LOGIN  *********************/
-
     /******************************* TRAVAILLEUR  *******************************/
-
-    Route::get("/liste-embauches", function () {
+    Route::get("/liste-embauches", function (\Illuminate\Http\Request $request) {
         $termJ = "E";
         $data_unites = \App\Unites::get();
         $data_equipes = \App\Equipes::get();
         $data_departements = \App\Departement::get();
         $data_pays = \App\Pays::get();
-        $data_journalier = \App\Travailleur::where(
+        
+        $query = \App\Travailleur::where(
             "matricule",
             "like",
             "%" . $termJ . "%",
-        )->get();
+        );
+
+        if (!empty($request->input('search'))) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('nom', 'like', "%{$search}%")
+                  ->orWhere('prenom', 'like', "%{$search}%")
+                  ->orWhere('matricule', 'like', "%{$search}%");
+            });
+        }
+
+        $data_journalier = $query->get();
+
         return view(
             "travailleur.liste_embauches",
             compact(
@@ -158,25 +198,29 @@ Route::group(["before" => "Auth", "middleware" => "auth"], function () {
         $data_fonctions = \App\Fonction::get();
         $data_departements = \App\Departement::get();
         $data_pays = \App\Pays::get();
-        $mat_journalier = \App\Travailleur::where(
+
+        $data_journalier = \App\Travailleur::where(
             "matricule",
             "like",
-            "%" . $termJ . "%",
+            "%" . $termJ . "%"
         )
-            ->get()
-            ->limit(10);
-        dd($data_journalier);
-        $chiffre = substr($data_journalier->matricule, 4);
+            ->limit(10)
+            ->get();
+        
+        $chiffre = $data_journalier->first()->matricule ?? '';
+        $chiffre = substr($chiffre, 4);
+
         return view(
             "travailleur.addautres",
             compact(
                 "data_journalier",
+                "chiffre", 
                 "data_fonctions",
                 "data_pays",
                 "data_unites",
                 "data_equipes",
-                "data_departements",
-            ),
+                "data_departements"
+            )
         );
     });
     Route::get("/ajouter-travailleur-etape-un", function () {
@@ -203,11 +247,14 @@ Route::group(["before" => "Auth", "middleware" => "auth"], function () {
             ->limit(10)
             ->get();
 
-        foreach ($mat_journalier as $jour) {
-            if ($data_journalier->matricule < $jour->matricule) {
-                $maj_big = substr($jour->matricule, 4);
-            } else {
-                $maj_big = substr($data_journalier->matricule, 4);
+        $maj_big = ''; 
+        if ($data_journalier) { 
+            foreach ($mat_journalier as $jour) {
+                if ($data_journalier->matricule < $jour->matricule) {
+                    $maj_big = substr($jour->matricule, 4);
+                } else {
+                    $maj_big = substr($data_journalier->matricule, 4);
+                }
             }
         }
 
@@ -224,16 +271,12 @@ Route::group(["before" => "Auth", "middleware" => "auth"], function () {
             ),
         );
     });
-    //Route::get('/ajouter-travailleur-etape-deux/{slug}', function () {
-    //	return view('travailleur.edit');
-    //	});
-
-Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeuxtravailleur'])->name("etapedeuxtravailleur");
+    
+    Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeuxtravailleur'])->name("etapedeuxtravailleur");
     Route::get("/telecharger-contrat/{slug}", function () {
         return view("travailleur.contrat");
     });
 
-    //Route::get('/declaration-travailleurs',['as'=>'declaration', 'uses'=>'RecruController@declaration']);
     Route::get(
         "action/declaration/travailleurs",
         [RecruController::class, 'declaration'],
@@ -256,6 +299,7 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
         [RecruController::class, 'updatedeclaration'],
     );
     Route::post(
+
         "update/reconduire/uptravailleur",
         [RecruController::class, 'updatereconduire'],
     );
@@ -264,7 +308,7 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
     Route::get("/tous-les-travailleurs", [RecruController::class, 'liste_travailleurs'])->name("liste_travailleurs");
     Route::get("/liste-certificat-de-travails", [RecruController::class, 'liste_certificat_travail'])->name("liste_certificat_travail");
     Route::get("/historiques-travailleurs", [RecruController::class, 'historique'])->name("historiques");
-    Route::get("/patient-reÃ§u/{id}", [RecruController::class, 'patientrexu'])->name("patientrexu");
+    Route::get("/patient-recu/{id}", [RecruController::class, 'patientrexu'])->name("patientrexu");
     Route::get("/variables-santes/{id}", [SanctionController::class, 'variables_sante'])->name("variables_sante");
     Route::get("/historiques-contrat/{id}", [RecruController::class, 'historiques_contrat'])->name("historiques_contrat");
 
@@ -301,8 +345,11 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
     });
     Route::get("/liste-conges", [RecruController::class, 'listeconges'])->name("listeconges");
 
-    /** Â¨PRECARITE */
-    Route::get("/ajouter-ha01", function () {
+    /** ========================================
+     *  ARCHIVÉ - PRECARITE
+     *  Plus d'actualité - Pour réactiver : décommenter cette section
+     *  ======================================== */
+    /* Route::get("/ajouter-ha01", function () {
         $code = "";
         $data_hao1 = \App\HAO1::orderBy("id", "DESC")->get();
         $verif_traitement_ha01 = \App\HAO1::where("statutid", 2)->count();
@@ -323,7 +370,7 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
     Route::post(
         "post_search_histo_precarite",
         [EmployerController::class, 'post_search_histo_precarite'],
-    );
+    ); */
 
     /** VARIABLES */
     Route::get("/variables", function () {
@@ -373,13 +420,13 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
         "post_variables_heure_sup",
         [VariablesController::class, 'post_variables_heure_sup'],
     );
-    Route::get("/precarite-calcules", [EmployerController::class, 'precarite_calc'])->name("precarite_calc");
+    // ARCHIVÉ - Précarité : Route::get("/precarite-calcules", [EmployerController::class, 'precarite_calc'])->name("precarite_calc");
     Route::get("/liste-variables-automatique", [VariablesController::class, 'listevariables_automatique'])->name("listevariables_automatique");
     Route::get("/liste-variables-manuelles", [VariablesController::class, 'listevariables_manuelle'])->name("listevariables_manuelle");
     Route::get("/liste-variables-heure-supplementaire", [VariablesController::class, 'listevariables_heure_supp'])->name("listevariables_heure_supp");
     Route::get("/liste-variables-autres-variables", [VariablesController::class, 'listevariables_autres_variables'])->name("listevariables_autres_variables");
     Route::get("/historiques-variables", [EmployerController::class, 'historiques_variables'])->name("historiques_variables");
-    Route::get("/liste-precarites", [EmployerController::class, 'listeprecarites'])->name("listeprecarites");
+    // ARCHIVÉ - Précarité : Route::get("/liste-precarites", [EmployerController::class, 'listeprecarites'])->name("listeprecarites");
 
     /** SANCTION */
     Route::get("/ajouter-sanction", function () {
@@ -459,8 +506,11 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
 
     Route::get("/detecter-matricule", [EmployerController::class, 'detect_matricul'])->name("detect_matricul");
 
-    /** TENUE */
-    Route::get("/ajouter-tenue", function () {
+    /** ========================================
+     *  ARCHIVÉ - TENUE
+     *  Plus d'actualité - Pour réactiver : décommenter cette section
+     *  ======================================== */
+    /* Route::get("/ajouter-tenue", function () {
         $termJ = "J";
         $data_travailleur = \App\Travailleur::where(
             "matricule",
@@ -482,7 +532,7 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
     Route::post("post_appro_stock", [EmployerController::class, 'post_appro_stock']);
     Route::get("/liste-tenues", [EmployerController::class, 'listetenues'])->name("listetenues");
     Route::get("/stock-tenues", [EmployerController::class, 'stock_tenues'])->name("stock_tenues");
-    Route::get("/approvisionner-stock-tenues", [EmployerController::class, 'appro_stock'])->name("appro_stock");
+    Route::get("/approvisionner-stock-tenues", [EmployerController::class, 'appro_stock'])->name("appro_stock"); */
 
     Route::get("unites", [ConfigController::class, 'index_unite'])->name("unites");
     Route::get("unites/{id}", [ConfigController::class, 'show_unite'])->name(
@@ -510,7 +560,7 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
         "departements.show",
     );
 
-    /*******************************  EQUIPE *******************************************/
+    /******************************* EQUIPE *******************************************/
     Route::get("equipes", [ConfigController::class, 'index_equipes'])->name("equipes");
     Route::get("equipes/{id}", [ConfigController::class, 'show_equipes'])->name(
         "equipes.show",
@@ -523,7 +573,7 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
     Route::get("edit/equipes/data", [ConfigController::class, 'editequipesurl']);
     Route::get("delete/equipes/data", [ConfigController::class, 'deleteequipes']);
 
-    /*******************************  UNITES *******************************************/
+    /******************************* UNITES *******************************************/
 
     Route::get("unites", [ConfigController::class, 'index_unites'])->name("unites");
     Route::get("unites/{id}", [ConfigController::class, 'show_unites'])->name(
@@ -534,7 +584,7 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
     Route::get("edit/unites/data", [ConfigController::class, 'editunitessurl']);
     Route::get("delete/unites/data", [ConfigController::class, 'deleteunites']);
 
-    /*******************************  FONCTION *******************************************/
+    /******************************* FONCTION *******************************************/
 
     Route::get("fonctions", [ConfigController::class, 'index_fonction'])->name(
         "fonctions",
@@ -550,7 +600,7 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
     Route::get("edit/fonctions/data", [ConfigController::class, 'editfonctionsurl']);
     Route::get("delete/fonctions/data", [ConfigController::class, 'deletefonctions']);
 
-    /*******************************  NIVEAU ETUDE *******************************************/
+    /******************************* NIVEAU ETUDE *******************************************/
     Route::get("categories", [ConfigController::class, 'index_categories'])->name(
         "categories",
     );
@@ -587,7 +637,7 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
     Route::get("edit/niveauEtude/data", [ConfigController::class, 'editniveauEtudeurl']);
     Route::get("delete/niveauEtude/data", [ConfigController::class, 'deleteniveauEtude']);
 
-    /*******************************  EQUIPE *******************************************/
+    /******************************* PAYS *******************************************/
 
     Route::get("pays", [ConfigController::class, 'index_pays'])->name("pays");
     Route::get("pays/{id}", [ConfigController::class, 'show_pays'])->name("pays.show");
@@ -596,7 +646,7 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
     Route::get("edit/pays/data", [ConfigController::class, 'editpaysurl']);
     Route::get("delete/pays/data", [ConfigController::class, 'deletepays']);
 
-    /**  TRAVAILLEUR  **/
+    /** TRAVAILLEUR **/
     Route::post("post_travailleur", [EmployerController::class, 'post_travailleur']);
     Route::post(
         "post_travailleur_autres",
@@ -617,7 +667,7 @@ Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeu
     Route::get("/telecharger-certificat-contrat-travail/{id}", [EmployerController::class, 'telechargerContratCertificatTravail'])->name("telechargerContratCertificatTravail");
     Route::get("/telecharger-sanctions/{mat}/{idsanct}", [EmployerController::class, 'telechargerSanctions'])->name("telechargerSanctions");
     Route::get("/telecharger-contrat-declaration-cnps/{id}", [EmployerController::class, 'telechargerContratDeclarationCnps'])->name("telechargerContratDeclarationCnps");
-    Route::get("/telecharger-fiche-precarite/{id}", [EmployerController::class, 'telechargerFichePrecarite'])->name("telechargerFichePrecarite");
+    // ARCHIVÉ - Précarité : Route::get("/telecharger-fiche-precarite/{id}", [EmployerController::class, 'telechargerFichePrecarite'])->name("telechargerFichePrecarite");
 
     Route::get('/api/calendrier/evenements', [EmployerController::class, 'getEvenementsCalendrier'])->name('calendrier.evenements');
 });

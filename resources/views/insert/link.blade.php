@@ -8,7 +8,14 @@
                 <ul class="dropdown-menu dropdown-menu-right account animated flipInY">
                     <li><a href="{{ url('monprofil', Auth::user()?->id) }}"><i class="icon-user"></i>Mon Profil</a></li>
                     <li class="divider"></li>
-                    <li><a href="{{ route('logoutUser', Auth::user()?->id) }}"><i class="icon-power"></i>Déconnexion</a></li>
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                            @csrf
+                            <button type="submit" class="w-full text-left py-2 px-4 block text-sm text-gray-700 hover:bg-slate-100">
+                                <i class="icon-power"></i>Déconnexion
+                            </button>
+                        </form>
+                    </li>
                 </ul>
             </div>
             <hr>

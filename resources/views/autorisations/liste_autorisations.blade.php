@@ -1,115 +1,126 @@
-@extends('erh')
+@extends('layouts.erh')
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2>
-                    <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Gestions des autorisations
-                </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Autorisations</li>
-                    <li class="breadcrumb-item active">Liste des autorisations</li>
-                </ul>
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-text-primary mb-4">Gestion des autorisations</h1>
+                <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+                    <a href="{{ url('bienvenue') }}" class="hover:text-text-primary">
+                        <i class="fa fa-home"></i> Accueil
+                    </a>
+                    <span class="text-text-secondary">/</span>
+                    <span>Autorisations</span>
+                    <span class="text-text-secondary">/</span>
+                    <span class="text-text-primary font-semibold">Liste</span>
+                </nav>
             </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
+            <div class="flex gap-2">
+                <a href="{{ url('ajouter-autorisation') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    <i class="fa fa-plus"></i> Ajouter
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="row clearfix">
+    <!-- Messages Section -->
+    @include('success')
+    @include('errors')
 
-        <div class="col-lg-12">
+    <!-- Main Content -->
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-slate-900 text-white border-b">
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Demandeur</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Début</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Fin</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Motif</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Etat</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @forelse($liste_auto ?? [] as $auto)
+                    @php
+                        $trava = \App\Travailleur::where('id', $auto->demandeurid)->first();
+                        $motif_labels = [
+                            1 => 'Maladie',
+                            2 => 'Convenance personnelle',
+                            3 => 'Permissions exceptionnelles',
+                            4 => 'Congés payés',
+                            5 => 'Congés sans solde',
+                            7 => 'Autres cas'
+                        ];
+                    @endphp
+                    <tr class="border-b hover:bg-slate-50 transition">
+                        <td class="px-6 py-4">
+                            <span class="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-800 font-bold text-sm"
+                                  :title="($trava?->nom ?? '') . ' ' . ($trava?->prenom ?? '')">
+                                {{ $trava?->matricule ?? '-' }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-text-secondary text-sm">
+                            {{ $auto->debut ?? '-' }}
+                        </td>
+                        <td class="px-6 py-4 text-text-secondary text-sm">
+                            {{ $auto->fin ?? '-' }}
+                        </td>
+                        <td class="px-6 py-4 text-text-primary text-sm"
+                            :title="$auto->commentaire">
+                            {{ $motif_labels[$auto->motif_absence] ?? 'Non spécifié' }}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            @if($auto->statutid == 1)
+                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Actif</span>
+                            @elseif($auto->statutid == 2)
+                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Inactif</span>
+                            @elseif($auto->statutid == 3)
+                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Appliqué</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex justify-center gap-2">
+                                <a href="#"
+                                   title="MODIFIER"
+                                   class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
 
-            @include('success')
-            @include('errors')
+                                <a href="#"
+                                   title="ANNULER"
+                                   class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+                                    <i class="fa fa-trash"></i>
+                                </a>
 
-            <div class="card">
-
-                <a href="{{ url('ajouter-autorisation') }}" style="float: right" class="btn btn-info m-b-15 m-t-10 m-r-20">
-                    <i class="icon-plus" aria-hidden="true"></i> Ajouter
-                </a>
-
-                <div class="body">
-                    <div class="table-responsive">
-
-                        <table class="table table-hover js-basic-example dataTable table-custom">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>Demandeur</th>
-                                <th>Debut</th>
-                                <th>Fin</th>
-                                <th>Motif</th>
-                                <th class="text-center">Etat</th>
-                                <th class="text-center">Options</th>
-                            </tr>
-                            </thead>
-                        @foreach($liste_auto as $auto)
-                            <tr>
-                                <td title="{{ $auto->commentaire }}">
-                                     <span title="{{ $trava = \App\Travailleur::where('id', $auto->demandeurid )->first()->nom }} {{ $trava = \App\Travailleur::where('id', $auto->demandeurid )->first()->prenom }}" class="badge badge-dark" style="font-weight: bold">
-                                            {{ $trava = \App\Travailleur::where('id', $auto->demandeurid )->first()->matricule }}
-                                      </span>
-                                </td>
-                                <td>{{ $auto->debut }}</td>
-                                <td>{{ $auto->fin }}</td>
-                                <td title="ville1 ville2">
-                                    @if($auto->motif_absence == 1)
-                                        MALADIE
-                                    @endif
-                                    @if($auto->motif_absence == 2)
-                                        CONVENANCE PERSONNELLE
-                                    @endif
-                                    @if($auto->motif_absence == 3)
-                                        PERMISSIONS EXCEPTIONNELLES
-                                    @endif
-                                    @if($auto->motif_absence == 4)
-                                        CONGES PAYES
-                                    @endif
-                                    @if($auto->motif_absence == 5)
-                                        CONGES SANS SOLDE
-                                    @endif
-                                    @if($auto->motif_absence == 7)
-                                        AUTRES CAS
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($auto->statutid == 1)
-                                        <span class="badge badge-primary">Actif</span>
-                                    @endif
-                                    @if($auto->statutid == 2)
-                                        <span class="badge badge-danger">Inactif</span>
-                                    @endif
-                                </td>
-
-                                <td class="text-center">
-
-                                    <a title="MODIFIER" class="btn btn-sm btn-icon btn-pure btn-dark on-default button-remove" href="#" data-toggle="tooltip" data-original-title="Remove">
-                                        <i class="icon-pencil" aria-hidden="true"></i>
+                                @if($auto->statutid == 1)
+                                    <a href="{{ route('autorisationvariable', $auto->id) }}"
+                                       title="AJOUTER AUX VARIABLES"
+                                       class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition">
+                                        <i class="fa fa-plus-circle"></i>
                                     </a>
-
-                                    <a title="ANUULER" class="btn btn-sm btn-icon btn-pure btn-danger on-default button-remove" href="#" data-toggle="tooltip" data-original-title="Remove">
-                                        <i class="icon-trash" aria-hidden="true"></i>
-                                    </a>
-
-                                    <a @if($auto->statutid == 1) title="AJOUTER AUX VARIABLES" @endif @if($auto->statutid == 3) title="AUTORISATION DEJA AJOUTEE AUX VARIABLES" @endif class="btn btn-sm btn-icon btn-pure btn-primary on-default button-remove" @if($auto->statutid == 1) href="{{ route('autorisationvariable', $auto->id) }}" @endif >
-                                        <i class="icon-bag" aria-hidden="true"></i>
-                                    </a>
-
-                                </td>
-                            </tr>
-                        @endforeach
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                                @elseif($auto->statutid == 3)
+                                    <span class="p-2 text-slate-400 cursor-not-allowed"
+                                          title="AUTORISATION DÉJÀ APPLIQUÉE">
+                                        <i class="fa fa-check-circle"></i>
+                                    </span>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-text-secondary">
+                            Aucune autorisation disponible
+                        </td>
+                    </tr>
+                @endforelse
+                </tbody>
+            </table>
         </div>
-
     </div>
 
     @include('tenues.modal_edit')

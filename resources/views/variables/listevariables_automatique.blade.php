@@ -1,70 +1,90 @@
-@extends('erh')
+@extends('layouts.erh')
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2>
-                    <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Gestions des variables
-                </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Missions</li>
-                    <li class="breadcrumb-item active">Liste des variables(automatique)</li>
-                </ul>
-            </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-text-primary mb-4">Gestion des variables automatiques</h1>
+                <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+                    <a href="{{ url('bienvenue') }}" class="hover:text-text-primary">
+                        <i class="fa fa-home"></i> Accueil
+                    </a>
+                    <span class="text-text-secondary">/</span>
+                    <span>Variables</span>
+                    <span class="text-text-secondary">/</span>
+                    <span class="text-text-primary font-semibold">Automatiques</span>
+                </nav>
             </div>
         </div>
     </div>
 
-    <div class="row clearfix">
+    <!-- Messages Section -->
+    @include('success')
+    @include('errors')
 
-        <div class="col-lg-12">
-            <div class="card">
-
-                <div class="body">
-                    <div class="table-responsive">
-
-                        <table class="table table-hover js-basic-example dataTable table-custom">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>Employés</th>
-                                <th>Variables</th>
-                                <th>Nombre de jour</th>
-                                <th class="text-center">Etat</th>
-                                <th class="text-center">Options</th>
-                            </tr>
-                            </thead>
-
-                            <tr>
-                                <td>KKKK</td>
-                                <td>KKKKKKKKK</td>
-                                <td>KKKK</td>
-                                <td class="text-center">
-                                    <span class="badge badge-primary">Actif</span>
-                                    <span class="badge badge-danger">Inactif</span>
+    <!-- Main Content -->
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-slate-900 text-white border-b">
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Employés</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Variables</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Nombre de jours</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">État</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @forelse($variableA ?? [] as $vari)
+                    <tr class="border-b hover:bg-slate-50 transition">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary">
+                                    {{ $vari->employe ?? '-' }}
                                 </td>
-                                <td class="text-center">
-                                    <a title="MODIFIER" class="btn btn-sm btn-icon btn-pure btn-dark on-default button-remove" href="#" data-toggle="tooltip" data-original-title="Remove">
-                                        <i class="icon-pencil" aria-hidden="true"></i>
-                                    </a>
-                                    <a title="ANUULER" class="btn btn-sm btn-icon btn-pure btn-danger on-default button-remove" href="#" data-toggle="tooltip" data-original-title="Remove">
-                                        <i class="icon-trash" aria-hidden="true"></i>
-                                    </a>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
+                                    {{ $vari->variable ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
+                                    {{ $vari->nombre_jour ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    @if($vari->statutid == 1)
+                                        <span class="px-2 py-1 text-xs font-semibold text-blue-800 bg-blue-100 rounded-full">Actif</span>
+                                    @else
+                                        <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">Inactif</span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <div class="flex justify-center gap-2">
+                                        {{-- Edit Button --}}
+                                        <a title="Modifier"
+                                           href="#"
+                                           class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+
+                                        {{-- Delete Button --}}
+                                        <a title="Annuler"
+                                           href="#"
+                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?')"
+                                           class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
-
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-8 text-center text-slate-500">
+                                    <p class="text-lg">Aucune variable automatique trouvée</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
-
     </div>
 
     @include('tenues.modal_edit')

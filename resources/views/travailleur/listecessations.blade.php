@@ -1,127 +1,249 @@
-@extends('erh')
+@extends('layouts.erh')
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2>
-                    <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Liste des cessations
-                </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Recrutement</li>
-                    <li class="breadcrumb-item active">Liste des cessations</li>
-                </ul>
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-text-primary mb-4">Liste des cessations</h1>
+                <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+                    <a href="{{ url('bienvenue') }}" class="hover:text-text-primary">
+                        <i class="fa fa-home"></i> Accueil
+                    </a>
+                    <span class="text-text-secondary">/</span>
+                    <span>Recrutement</span>
+                    <span class="text-text-secondary">/</span>
+                    <span class="text-text-primary font-semibold">Liste des cessations</span>
+                </nav>
             </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
+            <div class="flex gap-2">
+                <a href="{{ url('ajouter-travailleur-etape-un') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                    <i class="fa fa-plus"></i> Ajouter un travailleur
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="row clearfix">
+    <!-- Messages Section -->
+    @include('success')
+    @include('errors')
 
-        <div class="col-lg-12">
+    <!-- Search Form -->
+    <div class="mb-6">
+        <form id="searchForm" class="flex items-center max-w-lg">
+            <input type="text" name="search" id="searchInput" value="{{ request('search') }}" placeholder="Rechercher par nom, prénom, matricule..." class="w-full px-4 py-2 border border-slate-300 rounded-l-lg focus:ring-primary-accent focus:border-primary-accent transition-shadow" autocomplete="off">
+            <button type="submit" class="px-4 py-2 bg-primary-accent text-white font-semibold rounded-r-lg hover:bg-plastica-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-accent transition-colors">
+                <i class="fa fa-search"></i>
+            </button>
+        </form>
+    </div>
 
-            @include('success')
-            @include('errors')
+    <!-- Main Content -->
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-slate-900 text-white border-b">
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Image</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Matricule</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Nom & Prénoms</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Équipe</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Date d'embauche</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Date fin de contrat</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">État</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="travailleursTableBody">
+                @forelse($data_cessations ?? [] as $listedata)
+                    <tr class="border-b hover:bg-slate-50 transition">
+                        <td class="px-6 py-4">
+                            <img src="{{ asset('rhassets/images/images.png') }}"
+                                 height="50" width="50"
+                                 class="rounded-full object-cover w-12 h-12">
+                        </td>
+                        <td class="px-6 py-4">
+                            <a href="{{ route('etapedeuxtravailleur', $listedata->id) }}"
+                               title="MODIFIER"
+                               class="text-red-600 font-bold hover:underline">
+                                {{ $listedata->matricule }}
+                            </a>
+                        </td>
+                        <td class="px-6 py-4 text-text-primary">
+                            {{ $listedata->nom ?? '' }} {{ $listedata->prenom ?? '' }}
+                        </td>
+                        <td class="px-6 py-4 text-text-secondary text-sm">
+                            @php
+                                $equipe = \App\Equipes::where('id', $listedata->equipeid)->first();
+                            @endphp
+                            {{ $equipe?->label ?? '-' }}
+                        </td>
+                        <td class="px-6 py-4 text-text-secondary text-sm">
+                            {{ $listedata->date_debut_contrat ?? '-' }}
+                        </td>
+                        <td class="px-6 py-4 text-red-600 font-bold text-sm">
+                            {{ $listedata->date_fin_contrat ?? '-' }}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            @if($listedata->etapeid == 3)
+                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">CESSATION</span>
+                            @elseif($listedata->etapeid == 4)
+                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">CERTIFICAT</span>
+                            @elseif($listedata->etapeid == 5)
+                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">DÉCLARATION</span>
+                            @elseif($listedata->etapeid == 6)
+                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">RECONDUIRE</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex justify-center gap-2">
+                                {{-- Modifier --}}
+                                <a href="{{ route('etapedeuxtravailleur', $listedata->id) }}"
+                                   title="MODIFIER"
+                                   class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                                    <i class="fa fa-edit"></i>
+                                </a>
 
-            <div class="card">
+                                {{-- Préccarité --}}
+                                <a href="#" title="PRÉCARITÉ"
+                                   class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition">
+                                    <i class="fa fa-briefcase"></i>
+                                </a>
 
-                <a href="{{ url('ajouter-travailleur-etape-un') }}" style="float: right" class="btn btn-danger m-b-15 m-t-10 m-r-20">
-                    <i class="icon wb-plus" aria-hidden="true"></i> Ajouter un travailleur
-                </a>
+                                {{-- Cessation/Certificat/Déclaration --}}
+                                @if($listedata->etapeid != 3)
+                                    <a href="{{ url('action/declaration/travailleurs') }}"
+                                       title="CESSATION/CERTIFICAT/DÉCLARATION"
+                                       data-id="{{ $listedata->id }}"
+                                       class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition">
+                                        <i class="fa fa-map-marker"></i>
+                                    </a>
+                                @endif
 
-                <div class="body">
-                    <div class="table-responsive">
+                                {{-- Reconduire --}}
+                                @if($listedata->etapeid == 3)
+                                    <a href="javascript:void(0)"
+                                       onclick="openReconduite({{ $listedata->id }})"
+                                       title="RECONDUIRE LE TRAVAILLEUR"
+                                       class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                                        <i class="fa fa-refresh"></i>
+                                    </a>
+                                @endif
 
-                        <table class="table table-hover js-basic-example dataTable table-custom">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>Image</th>
-                                <th>Matricule</th>
-                                <th>Nom & Prénoms</th>
-                                <th>Date d'embauche</th>
-                                <th>Date fin de contrat</th>
-                                <th class="text-center">Etat</th>
-                                <th class="text-center">Options</th>
-                            </tr>
-                            </thead>
+                                {{-- Historiques --}}
+                                <a href="{{ route('historiques_contrat', $listedata->id) }}"
+                                   title="HISTORIQUES"
+                                   class="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition">
+                                    <i class="fa fa-history"></i>
+                                </a>
 
-                            <tbody>
-                            @foreach($data_cessations as $listedata)
-                                <tr>
-                                    <td>
-                                        @if(!$listedata->avatar)
-                                            <img src="{{ asset('rhassets/images/images.png') }}" height="50" width="50" class="rounded-circle user-photo">
-                                        @endif
-                                        @if($listedata->avatar)
-                                            <img src="{{ asset('rhassets/images/images.png') }}" height="50" width="50" class="rounded-circle user-photo">
-                                        @endif
-                                    </td>
-                                    <td style="color: black; font-weight: bold">
-                                        <a title="MODIFIER" style="color: red" href="{{ route('etapedeuxtravailleur', $listedata->id) }}">
-                                        {{ $listedata->matricule }}
-                                        </a>
-                                    </td>
-                                    <td title="#">{{ $listedata->nom.' '.$listedata->prenom }}</td>
+                                {{-- Télécharger contrat --}}
+                                <a href="{{ route('telechargerContratCessassion', ['id' => $listedata->id, 'download' => 'pdf']) }}"
+                                   target="_blank"
+                                   title="TÉLÉCHARGER LE CONTRAT"
+                                   class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition">
+                                    <i class="fa fa-file-pdf-o"></i>
+                                </a>
 
-                                    <td>{{ $listedata->date_debut_contrat }}</td>
-                                    <td style="color: red; font-weight: bold">{{ $listedata->date_fin_contrat }}</td>
-                                    <td class="text-center" style="color: red; font-weight: bold">
-                                        @if($listedata->etapeid == 3)
-                                            <span class="badge badge-success">CESSASSION</span>
-                                        @endif
-                                        @if($listedata->etapeid == 4)
-                                            <span class="badge badge-danger">CERTIFICAT DE TRAVAIL</span>
-                                        @endif
-                                        @if($listedata->etapeid == 5)
-                                            <span class="badge badge-default">DECLARATION CNPS</span>
-                                        @endif
-                                        @if($listedata->etapeid == 6)
-                                            <span class="badge badge-primary">RECONDUIRE</span>
-                                        @endif
-                                    </td>
-                                    <td class="actions text-center">
-
-                                        <a title="PRECARITE" href="#" class="btn btn-sm btn-info btn-icon btn-pure on-default button-remove">
-                                            <i class="icon-briefcase" aria-hidden="true"></i>
-                                        </a>
-
-                                        @if($listedata->etapeid != 3)
-                                            <a title="CESSASSION/CERTIFICAT DE TRAVAIL/DECLARATION"  data-toggle="tooltip" data-original-title="Remove" aria-describedby="tooltip270584" id="declaration_new" data-id="{{ $listedata->id }}" href="{{ url('action/declaration/travailleurs') }}" class="btn btn-sm btn-icon btn-pure btn-primary on-default button-remove">
-                                                <i class="icon-map" aria-hidden="true"></i>
-                                            </a>
-                                        @endif
-
-                                        @if($listedata->etapeid == 3)
-                                            <a title="RECONDUIRE LE TRAVAILLEUR"  data-toggle="tooltip" data-original-title="Remove" aria-describedby="tooltip270584" id="reconduire_journalier" data-id="{{ $listedata->id }}" href="{{ url('reconduire/journalier') }}" class="btn btn-sm btn-icon btn-pure btn-dark on-default button-remove">
-                                                <i class="icon-reload" aria-hidden="true"></i>
-                                            </a>
-                                        @endif
-										
-										<a title="HISTORIQUES" href="{{ route('historiques_contrat', $listedata->id ) }}" class="btn btn-sm btn-icon btn-pure btn-danger on-default button-remove" data-placement="top" data-toggle="tooltip">
-                                            <i class="icon-list" aria-hidden="true"></i>
-                                        </a>
-
-                                        <a title="TELECHARGER LE CONTRAT" target="_blank" href="{{ route('telechargerContratCessassion',['id'=>$listedata->id, 'download'=>'pdf']) }}" class="btn btn-sm btn-danger btn-icon btn-pure on-default button-remove">
-                                            <i class="icon-doc" aria-hidden="true"></i>
-                                        </a>
-
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                                {{-- Supprimer --}}
+                                <a href="javascript:void(0)"
+                                   onclick="if(confirm('Êtes-vous sûr de vouloir supprimer ce travailleur?')) { window.location.href='{{ url('delete/travailleur') }}?id={{ $listedata->id }}'; }"
+                                   title="SUPPRIMER"
+                                   class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" class="px-6 py-8 text-center text-text-secondary">
+                            Aucune donnée de cessation disponible
+                        </td>
+                    </tr>
+                @endforelse
+                </tbody>
+            </table>
         </div>
-
     </div>
 
     @include('travailleur.modal_declaration')
     @include('travailleur.modal_reconduire')
+
+    {{-- Script de recherche en temps réel --}}
+    <script>
+        (function() {
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.getElementById('travailleursTableBody');
+            const searchForm = document.getElementById('searchForm');
+            const allRows = Array.from(tableBody.querySelectorAll('tr'));
+
+            // Fonction de recherche côté client
+            function filterTable() {
+                const searchValue = searchInput.value.toLowerCase().trim();
+                let visibleCount = 0;
+
+                allRows.forEach(function(row) {
+                    // Ignorer la ligne "Aucun travailleur trouvé"
+                    if (row.cells.length === 1 && row.cells[0].colSpan === 8) {
+                        row.style.display = 'none';
+                        return;
+                    }
+
+                    // Récupérer le texte des cellules importantes
+                    const matricule = row.cells[1] ? row.cells[1].textContent.toLowerCase() : '';
+                    const nomPrenom = row.cells[2] ? row.cells[2].textContent.toLowerCase() : '';
+                    const equipe = row.cells[3] ? row.cells[3].textContent.toLowerCase() : '';
+
+                    // Vérifier si le terme de recherche est présent
+                    if (searchValue === '' ||
+                        matricule.includes(searchValue) ||
+                        nomPrenom.includes(searchValue) ||
+                        equipe.includes(searchValue)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Afficher un message si aucun résultat
+                if (visibleCount === 0 && searchValue !== '') {
+                    const noResultRow = tableBody.querySelector('.no-result-row');
+                    if (!noResultRow) {
+                        const tr = document.createElement('tr');
+                        tr.className = 'no-result-row';
+                        tr.innerHTML = `
+                            <td colspan="8" class="px-6 py-8 text-center text-slate-500">
+                                <p class="text-lg">Aucun travailleur trouvé pour "${searchValue}"</p>
+                            </td>
+                        `;
+                        tableBody.appendChild(tr);
+                    }
+                } else {
+                    // Supprimer le message "aucun résultat" s'il existe
+                    const noResultRow = tableBody.querySelector('.no-result-row');
+                    if (noResultRow) {
+                        noResultRow.remove();
+                    }
+                }
+            }
+
+            // Écouter l'événement input pour la recherche instantanée
+            searchInput.addEventListener('input', filterTable);
+
+            // Empêcher la soumission normale du formulaire
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                filterTable();
+            });
+
+            // Filtrer au chargement si une valeur est présente
+            if (searchInput.value.trim() !== '') {
+                filterTable();
+            }
+        })();
+    </script>
 
 @endsection

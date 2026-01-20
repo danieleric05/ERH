@@ -1,136 +1,156 @@
-@extends('erhselect')
+@extends('layouts.erh')
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2><a href="{{ route('listesconsultation') }}" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Liste des consultations </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Configuration</li>
-                    <li class="breadcrumb-item active">Ajouter une consultation</li>
-                </ul>
-            </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
-            </div>
+<div class="p-6">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-3xl font-bold text-text-primary">Ajouter une Consultation</h1>
+            <a href="{{ route('listesconsultation') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-200 hover:bg-slate-300 text-text-primary rounded-lg transition">
+                <i class="fa fa-arrow-left"></i> Retour
+            </a>
         </div>
+
+        <!-- Breadcrumb -->
+        <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+            <a href="{{ url('bienvenue') }}" class="hover:text-primary-accent">
+                <i class="fa fa-home"></i> Accueil
+            </a>
+            <span>/</span>
+            <span>Santé</span>
+            <span>/</span>
+            <span class="text-text-primary font-medium">Ajouter une consultation</span>
+        </nav>
     </div>
 
-    <div class="row clearfix">
+    <!-- Messages -->
+    @include('success')
+    @include('errors')
 
-        <div class="col-lg-12">
+    <!-- Form Container -->
+    <div class="bg-white rounded-lg shadow-lg-soft p-8">
+        <h2 class="text-xl font-bold text-text-primary mb-6">Informations de Consultation</h2>
 
-            @include('success')
-            @include('errors')
+        <form action="{{ url('post_sante') }}" method="POST" x-data="initializeConsultationForm()">
+            @csrf
 
-            <div class="card">
+            <!-- Main Fields Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Travailleur -->
+                <div>
+                    <label for="travailleurid" class="block text-sm font-medium text-text-primary mb-2">Travailleur</label>
+                    <select required name="travailleurid" id="travailleurid"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                        <option value="">-SÉLECTIONNER-</option>
+                        @foreach($data_travailleur as $trav)
+                            <option value="{{ $trav->id }}">{{ $trav->nom }} {{ $trav->prenom }} ({{ $trav->matricule }})</option>
+                        @endforeach
+                    </select>
+                </div>
 
-                <form action="{{ url('post_sante') }}" method="POST" role="form" class="form-auth-small">
-                @csrf
-                <div class="body">
-                    <div class="row clearfix">
-					
-                        <div class="col-lg-5 col-md-6 col-sm-12">
-                            <div class="form-group" style="font-size: 18px; font-weight: bold; color: #000">
-                                <label for="travailleurid" class="control-label">Travailleur</label>
-                                <select style="font-size: 18px; font-weight: bold; color: #000" name="travailleurid" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($data_travailleur as $trav)
-                                     <option value="{{ $trav->id }}">{{ $trav->nom.' '.$trav->prenom.' '.$trav->matricule }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+                <!-- Date de Consultation -->
+                <div>
+                    <label for="dateconsul" class="block text-sm font-medium text-text-primary mb-2">Date de Consultation</label>
+                    <input required type="date" name="dateconsul" id="dateconsul"
+                        value="{{ date('Y-m-d') }}"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
+                </div>
+            </div>
 
-                        <div class="col-lg-3 col-md-6 col-sm-12" style="font-size: 18px; font-weight: bold; color: #000">
-                            <label>Date</label style="font-size: 18px; font-weight: bold; color: #000">
-                            <div class="input-group mb-3" style="font-size: 18px; font-weight: bold; color: #000">
-                                <input name="dateconsul" style="height: 40px; color: black; font-weight: bold; color: #000" value="{{ date('Y-m-d') }}" type="date" class="form-control">
-                            </div>
-                        </div>
+            <!-- Textareas Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Consultation Details -->
+                <div>
+                    <label for="consultation" class="block text-sm font-medium text-text-primary mb-2">Consultation</label>
+                    <textarea name="consultation" id="consultation" rows="5"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"
+                        placeholder="Détails de la consultation..."></textarea>
+                </div>
 
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <div class="form-group" style="font-size: 18px; font-weight: bold; color: #000">
-                                <label for="consultation" class="control-label">Consultation</label>
-                                <textarea style="font-size: 18px; font-weight: bold; color: #000" name="consultation" class="form-control" rows="5"></textarea>
-                            </div>
-                        </div>
+                <!-- Prescription -->
+                <div>
+                    <label for="prescription" class="block text-sm font-medium text-text-primary mb-2">Prescription</label>
+                    <textarea name="prescription" id="prescription" rows="5"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"
+                        placeholder="Prescriptions médicales..."></textarea>
+                </div>
+            </div>
 
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <div class="form-group" style="font-size: 18px; font-weight: bold; color: #000">
-                                <label for="prescription" class="control-label">Prescription</label>
-                                <textarea style="font-size: 18px; font-weight: bold; color: #000" name="prescription" class="form-control" rows="5"></textarea>
-                            </div>
-                        </div>
+            <!-- Work Stoppage Section -->
+            <div class="border-t border-slate-200 pt-6 mb-6">
+                <h3 class="text-lg font-semibold text-text-primary mb-4">Arrêt de Travail</h3>
 
-                        <div class="col-lg-3 col-md-6 col-sm-12">
-                            <div class="form-group" style="font-size: 18px; font-weight: bold; color: #000">
-                                <label for="arret_travail" class="control-label">Arret de travail</label>
-                                <select style="font-size: 18px; font-weight: bold; color: #000" id="arret_travail" name="arret_travail" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    <option value="1">Oui</option>
-                                    <option value="0">Non</option>
-                                </select>
-                            </div>
-                        </div>
+                <!-- Arrêt Travail Selection -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div>
+                        <label for="arret_travail" class="block text-sm font-medium text-text-primary mb-2">Arrêt de Travail</label>
+                        <select name="arret_travail" id="arret_travail" @change="updateArretFields()"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                            <option value="">-SÉLECTIONNER-</option>
+                            <option value="1">Oui</option>
+                            <option value="0">Non</option>
+                        </select>
+                    </div>
 
-                        <div class="col-lg-3 col-md-6 col-sm-12" style="display: none; font-size: 18px; font-weight: bold; color: #000" id="cause_arret">
-                            <div class="form-group" style="font-size: 18px; font-weight: bold; color: #000">
-                                <label for="cause_arret_travail" class="control-label">Cause arret de travail</label>
-                                <select style="font-size: 18px; font-weight: bold; color: #000" name="cause_arret_travail" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    <option value="Maladie Professionnelle">Maladie Professionnelle</option>
-                                    <option value="Maladie">Maladie</option>
-                                    <option value="Autres">Autres</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 col-md-12"  style="display: none; font-size: 18px; font-weight: bold; color: #000" id="debut_fin">
-                            <label>Début et fin</label>
-                            <div class="input-daterange input-group" style="font-size: 18px; font-weight: bold; color: #000">
-                                <span class="input-group-addon text-center" style="width: 40px;">Du</span>
-                                <input style="height: 40px; color: black; font-weight: bold" value="{{ date('Y-m-d') }}" type="date"   class="input-sm form-control" name="debut_arret">
-                                <span class="input-group-addon text-center" style="width: 40px;">Au</span>
-                                <input style="height: 40px; color: black; font-weight: bold" value="{{ date('Y-m-d') }}" type="date"  class="input-sm form-control" name="fin_arret">
-                            </div>
-                        </div>
-
-
-                        <div class="col-lg-12 col-sm-10 text-center" style="border: red 2px double; padding-top: 18px; padding-bottom:18px; padding-left: 15px; padding-right: 15px; margin-top: 40px">
-                            <button type="submit" class="btn btn-primary">Enregistrer</button>
-                            <a href="{{ route('listesconsultation') }}">
-                                <button style="padding-left: 35px; padding-right: 35px" type="button" class="btn btn-danger">
-                                    Liste
-                                </button>
-                            </a>
-                        </div>
-
+                    <!-- Cause Arrêt (Conditional) -->
+                    <div x-show="showCauseArret" class="hidden">
+                        <label for="cause_arret_travail" class="block text-sm font-medium text-text-primary mb-2">Cause de l'Arrêt</label>
+                        <select name="cause_arret_travail" id="cause_arret_travail"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                            <option value="">-SÉLECTIONNER-</option>
+                            <option value="Maladie Professionnelle">Maladie Professionnelle</option>
+                            <option value="Maladie">Maladie</option>
+                            <option value="Autres">Autres</option>
+                        </select>
                     </div>
                 </div>
 
-                <div class="body" style="display: none">
-                    <div class="row clearfix">
-                        <div class="col-lg-6 col-md-12">
-                            <p><b>Basic Example</b></p>
-                            <div id="nouislider_basic_example"></div>
-                            <div class="m-t-20 font-12"><b>Value: </b><span class="js-nouislider-value"></span></div>
+                <!-- Date Range (Conditional) -->
+                <div x-show="showDateRange" class="hidden">
+                    <label class="block text-sm font-medium text-text-primary mb-2">Période d'Arrêt</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="debut_arret" class="block text-xs text-text-secondary mb-2">Début</label>
+                            <input type="date" name="debut_arret" id="debut_arret"
+                                value="{{ date('Y-m-d') }}"
+                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
                         </div>
-                        <div class="col-lg-6 col-md-12">
-                            <p><b>Range Example</b></p>
-                            <div id="nouislider_range_example"></div>
-                            <div class="m-t-20 font-12"><b>Value: </b><span class="js-nouislider-value"></span></div>
+                        <div>
+                            <label for="fin_arret" class="block text-xs text-text-secondary mb-2">Fin</label>
+                            <input type="date" name="fin_arret" id="fin_arret"
+                                value="{{ date('Y-m-d') }}"
+                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
                         </div>
                     </div>
                 </div>
-
-                </form>
-
             </div>
-        </div>
 
+            <!-- Submit Buttons -->
+            <div class="flex justify-center gap-4 pt-6 border-t border-slate-200">
+                <button type="submit" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+                    <i class="fa fa-save mr-2"></i>Enregistrer
+                </button>
+                <a href="{{ route('listesconsultation') }}" class="px-8 py-3 bg-gray-200 hover:bg-gray-300 text-text-primary rounded-lg font-medium transition-colors">
+                    <i class="fa fa-list mr-2"></i>Liste
+                </a>
+            </div>
+        </form>
     </div>
+</div>
+
+<script>
+function initializeConsultationForm() {
+    return {
+        showCauseArret: false,
+        showDateRange: false,
+
+        updateArretFields() {
+            const arretValue = document.getElementById('arret_travail').value;
+            this.showCauseArret = arretValue === '1';
+            this.showDateRange = arretValue === '1';
+        }
+    }
+}
+</script>
 
 @endsection

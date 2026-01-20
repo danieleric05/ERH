@@ -143,7 +143,7 @@ class EmployerController extends Controller
     public function post_precarite_ho(Request $request)
     {
 
-        if (Input::hasFile('fichiers')) {
+        if ($request->hasFile('fichiers')) {
 
             /*$verif_traitement = HAO1::where('statutid', 1)->get();
                     if(!isset($verif_traitement)){
@@ -866,8 +866,9 @@ class EmployerController extends Controller
 
     public function etapedeuxtravailleur($id)
     {
-
         $departements = Departement::orderBy('id', 'DESC')->get();
+
+        return view('travailleur.etape2', compact('departements', 'id'));
     }
 
     public function lientelechargerContrat($idtravailleur)
@@ -884,32 +885,37 @@ class EmployerController extends Controller
 
     public function telechargerContratJournalier(Request $request, $id)
     {
+        $travailleur = Travailleur::find($id);
 
-        $travailleur = Travailleur::where('id', $id)->first();
-        if (($travailleur->pieceidentite == "NULL") || ($travailleur->pieceidentite_livrele == "NULL") || ($travailleur->pieceidentite_lieu == "NULL")) {
-            return Redirect::back()->withErrors("Les informations de la piece d'identité ne sont pas renseigné, Veuillez contacter le travailleur svp.");
-        } else {
+        // Vérification correcte des pièces d'identité
+        if (
+            is_null($travailleur->pieceidentite) ||
+            is_null($travailleur->pieceidentite_livrele) ||
+            is_null($travailleur->pieceidentite_lieu)
+        ) {
+            return Redirect::back()->withErrors("Les informations de la pièce d'identité ne sont pas renseignées. Veuillez contacter le travailleur.");
+        }
 
-            $departements = Departement::where('id', $travailleur->departementid)->first();
-            $unites = Unites::where('id', $travailleur->uniteid)->first();
-            $pays = Pays::where('id', $travailleur->paysid)->first();
-            $equipes = Equipes::where('id', $travailleur->equipeid)->first();
+        // Récupération des données
+        $departements = Departement::find($travailleur->departementid);
+        $unites       = Unites::find($travailleur->uniteid);
+        $pays         = Pays::find($travailleur->nationaliteid);
+        $equipes      = Equipes::find($travailleur->equipeid);
 
-            if ($request->has('download')) {
-                // Set extra option
+        // Génération PDF
+        if ($request->has('download')) {
 
-                PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
-                // pass view file
+            PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
-                $pdf = PDF::loadView('contrat.contrat_journalier', compact('id', 'travailleur', 'departements', 'equipes', 'unites', 'pays'));
-                // download pdf
+            $pdf = PDF::loadView(
+                'contrat.contrat_journalier',
+                compact('id', 'travailleur', 'departements', 'equipes', 'unites', 'pays')
+            );
 
-                return $pdf->download("contrat_journalier-$travailleur->nom-$travailleur->prenom.pdf");
-
-                //dd('zzzzzzzzzzzzz');
-            }
+            return $pdf->download("contrat_journalier-$travailleur->nom-$travailleur->prenom.pdf");
         }
     }
+
 
     public function telechargerContratCDD(Request $request, $id)
     {

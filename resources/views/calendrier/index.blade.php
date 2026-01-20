@@ -1,28 +1,34 @@
-@extends('erh')
+@extends('layouts.erh')
 
 @section('content')
 
-<div class="block-header">
-    <div class="row">
-        <div class="col-lg-6 col-md-8 col-sm-12">
-            <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-left"></i></a> Calendrier des Absences</h2>
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('bienvenue') }}"><i class="icon-home"></i></a></li>
-                <li class="breadcrumb-item">Gestion des autorisations</li>
-                <li class="breadcrumb-item active">Calendrier</li>
-            </ul>
-        </div>
+<div class="px-6 py-8">
+    {{-- Section d'en-tête (Breadcrumb et Titre) --}}
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold text-text-primary">
+            Calendrier des Absences
+        </h1>
+        <nav class="text-sm font-medium text-slate-500" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2">
+                <li><a href="{{ route('bienvenue') }}" class="text-primary-accent hover:text-plastica-blue"><i class="icon-home"></i></a></li>
+                <li class="flex items-center">
+                    <svg class="h-5 w-5 text-slate-400 mx-2" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-text-secondary">Gestion des autorisations</span>
+                </li>
+                <li class="flex items-center">
+                    <svg class="h-5 w-5 text-slate-400 mx-2" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-text-secondary">Calendrier</span>
+                </li>
+            </ol>
+        </nav>
     </div>
-</div>
 
-<div class="row clearfix">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="body">
-                <div id="calendrier"></div>
-            </div>
-        </div>
-    </div>
+<div class="mt-6 bg-white rounded-lg shadow-lg-soft p-6">
+    <div id="calendrier"></div>
 </div>
 
 @endsection

@@ -1,140 +1,117 @@
-@extends('erhselect')
+@extends('layouts.erh')
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2><a class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Gestion des tenues </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Configuration</li>
-                    <li class="breadcrumb-item active">Attribuer une tenue</li>
-                </ul>
-            </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
-            </div>
-        </div>
-    </div>
-
-    <div class="row clearfix">
-
-        <div class="col-lg-12">
-
-            @include('success')
-            @include('errors')
-
-            <div class="card">
-
-                <form action="{{ url('post_gestion_tenue') }}" method="POST" role="form" class="form-auth-small">
-                @csrf
-                <div class="body">
-                    <div class="row clearfix">
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <label>Date</label>
-                            <div class="input-group mb-3">
-                                <input name="datereception" style="height: 40px; color: black; font-weight: bold" value="{{ date('Y-m-d') }}" type="date" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="travailleurid" class="control-label">Travailleur</label>
-                                <select name="travailleurid" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($data_travailleur as $trav)
-                                        <option value="{{ $trav->id }}">{{ $trav->nom.' '.$trav->prenom.' '.$trav->matricule }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="services" class="control-label">Services</label>
-                                <select required="" name="services" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($data_Services as $data)
-                                        <option value="{{ $data->id }}">{{ $data->label }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="tenuerecu" class="control-label">Article reçu</label>
-                                <select required="" name="tenuerecu" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($data_ArticleRecu as $data)
-                                         <option value="{{ $data->id }}">{{ $data->label }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="etat" class="control-label">Ancienne ou Nouvelle</label>
-                                <select required="" name="etat" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    <option selected value="1">Nouvelle</option>
-                                    <option value="4">Ancienne</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="tenue" class="control-label">Détail de la tenue</label>
-                                <textarea name="detail_tenue" placeholder="Couleur, Taille, Défaut" class="form-control" rows="3"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="chaussure" class="control-label">Détail de la chaussure</label>
-                                <textarea name="detail_chaussure" placeholder="Pointure, Couleur, ect" class="form-control" rows="3"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-12 col-sm-10 text-center" style="border: red 2px double; padding-top: 20px; padding-bottom:20px; padding-left: 15px; padding-right: 15px; margin-top: 40px">
-                            <button type="submit" class="btn btn-primary">Enregistrer</button>
-                            <a href="{{ route('listetenues') }}">
-                                <button style="padding-left: 35px; padding-right: 35px" type="button" class="btn btn-danger">
-                                    Liste
-                                </button>
-                            </a>
-							
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="body" style="display: none">
-                    <div class="row clearfix">
-                        <div class="col-lg-6 col-md-12">
-                            <p><b>Basic Example</b></p>
-                            <div id="nouislider_basic_example"></div>
-                            <div class="m-t-20 font-12"><b>Value: </b><span class="js-nouislider-value"></span></div>
-                        </div>
-                        <div class="col-lg-6 col-md-12">
-                            <p><b>Range Example</b></p>
-                            <div id="nouislider_range_example"></div>
-                            <div class="m-t-20 font-12"><b>Value: </b><span class="js-nouislider-value"></span></div>
-                        </div>
-                    </div>
-                </div>
-
-                </form>    
-
-            </div>
+<div class="p-6">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-3xl font-bold text-text-primary">Gestion des tenues</h1>
+            <a href="{{ route('listetenues') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-200 hover:bg-slate-300 text-text-primary rounded-lg transition">
+                <i class="fa fa-arrow-left"></i> Retour
+            </a>
         </div>
 
+        <!-- Breadcrumb -->
+        <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+            <a href="{{ url('bienvenue') }}" class="hover:text-primary-accent">
+                <i class="fa fa-home"></i> Accueil
+            </a>
+            <span>/</span>
+            <span>Configuration</span>
+            <span>/</span>
+            <span class="text-text-primary font-medium">Attribuer une tenue</span>
+        </nav>
     </div>
+
+    <!-- Messages -->
+    @include('success')
+    @include('errors')
+
+    <!-- Form Container -->
+    <div class="bg-white rounded-lg shadow-lg-soft p-8">
+        <h2 class="text-xl font-bold text-text-primary mb-6">Informations de Tenue</h2>
+
+        <form action="{{ url('post_gestion_tenue') }}" method="POST" class="form-auth-small">
+            @csrf
+
+            <!-- Form Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Date -->
+                <div>
+                    <label for="datereception" class="block text-sm font-medium text-text-primary mb-2">Date</label>
+                    <input name="datereception" id="datereception" value="{{ date('Y-m-d') }}" type="date" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
+                </div>
+
+                <!-- Travailleur -->
+                <div>
+                    <label for="travailleurid" class="block text-sm font-medium text-text-primary mb-2">Travailleur</label>
+                    <select name="travailleurid" id="travailleurid" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
+                        <option value="">-DEROULER-</option>
+                        @foreach($data_travailleur as $trav)
+                            <option value="{{ $trav->id }}">{{ $trav->nom }} {{ $trav->prenom }} {{ $trav->matricule }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <label for="services" class="block text-sm font-medium text-text-primary mb-2">Services</label>
+                    <select required name="services" id="services" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
+                        <option value="">-DEROULER-</option>
+                        @foreach($data_Services as $data)
+                            <option value="{{ $data->id }}">{{ $data->label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Article reçu -->
+                <div>
+                    <label for="tenuerecu" class="block text-sm font-medium text-text-primary mb-2">Article reçu</label>
+                    <select required name="tenuerecu" id="tenuerecu" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
+                        <option value="">-DEROULER-</option>
+                        @foreach($data_ArticleRecu as $data)
+                             <option value="{{ $data->id }}">{{ $data->label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Ancienne ou Nouvelle -->
+                <div>
+                    <label for="etat" class="block text-sm font-medium text-text-primary mb-2">Ancienne ou Nouvelle</label>
+                    <select required name="etat" id="etat" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
+                        <option value="">-DEROULER-</option>
+                        <option selected value="1">Nouvelle</option>
+                        <option value="4">Ancienne</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Textareas -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Détail de la tenue -->
+                <div>
+                    <label for="detail_tenue" class="block text-sm font-medium text-text-primary mb-2">Détail de la tenue</label>
+                    <textarea name="detail_tenue" id="detail_tenue" placeholder="Couleur, Taille, Défaut" rows="3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"></textarea>
+                </div>
+
+                <!-- Détail de la chaussure -->
+                <div>
+                    <label for="detail_chaussure" class="block text-sm font-medium text-text-primary mb-2">Détail de la chaussure</label>
+                    <textarea name="detail_chaussure" id="detail_chaussure" placeholder="Pointure, Couleur, etc" rows="3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"></textarea>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-4 justify-center pt-6 border-t border-slate-200">
+                <button type="submit" class="px-8 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
+                    Enregistrer
+                </button>
+                <a href="{{ route('listetenues') }}" class="px-8 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition">
+                    Liste
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 
 @endsection
