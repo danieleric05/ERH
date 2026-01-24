@@ -26,8 +26,23 @@
     <div class="bg-white rounded-lg shadow-lg-soft p-8">
         <h2 class="text-xl font-bold text-text-primary mb-6">Enregistrement</h2>
 
-        <form action="{{ url('post_travailleur_autres') }}" method="POST">
+        <form action="{{ url('post_travailleur_autres') }}" method="POST" enctype="multipart/form-data">
             @csrf
+
+            <!-- Photo de Profil -->
+            <div class="mb-6 p-4 bg-slate-50 rounded-lg">
+                <label for="photo" class="block text-sm font-medium text-text-primary mb-2">Photo du travailleur (optionnel)</label>
+                <input type="file" name="photo" id="photo" accept="image/jpeg,image/png,image/jpg"
+                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"
+                    onchange="previewPhotoAdd(this)">
+                <p class="text-xs text-text-secondary mt-2">Formats acceptés: JPG, PNG (max 2 Mo)</p>
+
+                <!-- Aperçu -->
+                <div class="mt-4" id="photoPreviewContainer" style="display: none;">
+                    <p class="text-xs font-semibold text-text-primary mb-2">Aperçu :</p>
+                    <img id="photoPreviewAdd" src="" alt="Aperçu" class="w-24 h-24 rounded-full object-cover border-2 border-slate-300">
+                </div>
+            </div>
 
             <!-- Grid Layout -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -132,5 +147,23 @@
         </form>
     </div>
 </div>
+
+<script>
+function previewPhotoAdd(input) {
+    const container = document.getElementById('photoPreviewContainer');
+    const preview = document.getElementById('photoPreviewAdd');
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            container.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        container.style.display = 'none';
+    }
+}
+</script>
 
 @endsection

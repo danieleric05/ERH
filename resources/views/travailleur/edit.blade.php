@@ -26,8 +26,34 @@
     <div class="bg-white rounded-lg shadow-lg-soft p-8">
         <h2 class="text-xl font-bold text-text-primary mb-6">Étape 2 : Enregistrement</h2>
 
-        <form action="{{ url('post_edit_travailleur/' . $edit->id) }}" method="POST">
+        <form action="{{ url('post_edit_travailleur/' . $edit->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
+
+            <!-- SECTION 0: Photo de Profil -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-text-primary mb-4 pb-2 border-b border-slate-200">Photo de Profil</h3>
+                <div class="flex flex-col md:flex-row items-center gap-6">
+                    <!-- Aperçu de la photo actuelle -->
+                    <div class="flex-shrink-0">
+                        <img id="photoPreview"
+                             src="{{ $edit->photo ? asset('rhassets/images/travailleurs/' . $edit->photo) : asset('rhassets/images/travailleurs/default.png') }}"
+                             alt="Photo du travailleur"
+                             class="w-32 h-32 rounded-full object-cover border-4 border-slate-200 shadow-lg">
+                    </div>
+
+                    <!-- Champ upload -->
+                    <div class="flex-1">
+                        <label for="photo" class="block text-sm font-medium text-text-primary mb-2">Changer la photo</label>
+                        <input type="file" name="photo" id="photo" accept="image/jpeg,image/png,image/jpg"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"
+                            onchange="previewPhoto(this)">
+                        <p class="text-xs text-text-secondary mt-2">Formats acceptés: JPG, PNG (max 2 Mo)</p>
+                        @if($edit->photo)
+                            <p class="text-xs text-green-600 mt-1">Photo actuelle : {{ $edit->photo }}</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
 
             <!-- SECTION 1: Informations de Base -->
             <div class="mb-8">
@@ -378,5 +404,17 @@
         </form>
     </div>
 </div>
+
+<script>
+function previewPhoto(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('photoPreview').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 
 @endsection

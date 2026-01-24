@@ -657,7 +657,6 @@ Route::middleware(['auth'])->group(function () {
         [EmployerController::class, 'post_edit_travailleur'],
     );
     Route::post("edit_travailleur/{id}", [EmployerController::class, 'edit_travailleur']);
-    Route::get("/etape-deux-travailleur/{id}", [EmployerController::class, 'etapedeuxtravailleur'])->name("etapedeuxtravailleur");
     Route::get("/edit-travailleur/{id}", [EmployerController::class, 'edittravailleur'])->name("edittravailleur");
     Route::get("/details-contrat-journalier/{id}", [EmployerController::class, 'lientelechargerContrat'])->name("lientelechargerContrat");
     Route::get("/telecharger-contrat-journalier/{id}", [EmployerController::class, 'telechargerContratJournalier'])->name("telechargerContratJournalier");

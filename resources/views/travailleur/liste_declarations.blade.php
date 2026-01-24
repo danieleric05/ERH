@@ -40,7 +40,7 @@
     @include('errors')
 
     <!-- Search Form -->
-    <div class="mb-6">
+    <div class="mb-6 flex justify-end">
         <form id="searchForm" class="flex items-center max-w-lg">
             <input type="text" name="search" id="searchInput" value="{{ request('search') }}" placeholder="Rechercher par nom, prénom, matricule..." class="w-full px-4 py-2 border border-slate-300 rounded-l-lg focus:ring-primary-accent focus:border-primary-accent transition-shadow" autocomplete="off">
             <button type="submit" class="px-4 py-2 bg-primary-accent text-white font-semibold rounded-r-lg hover:bg-plastica-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-accent transition-colors">
@@ -69,9 +69,10 @@
                 @forelse($data_declarations ?? [] as $listedata)
                     <tr class="border-b hover:bg-slate-50 transition">
                         <td class="px-6 py-4">
-                            <img src="{{ asset('rhassets/images/images.png') }}"
+                            <img src="{{ $listedata->photo ? asset('rhassets/images/travailleurs/' . $listedata->photo) : asset('rhassets/images/travailleurs/default.png') }}"
                                  height="50" width="50"
-                                 class="rounded-full object-cover w-12 h-12">
+                                 class="rounded-full object-cover w-12 h-12"
+                                 alt="Photo {{ $listedata->nom }}">
                         </td>
                         <td class="px-6 py-4">
                             <a href="{{ route('etapedeuxtravailleur', $listedata->id) }}"

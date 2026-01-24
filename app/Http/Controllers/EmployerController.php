@@ -618,13 +618,32 @@ class EmployerController extends Controller
             $travail->ip = $_SERVER['REMOTE_ADDR'];
             $travail->mois = date('m');
             $travail->annee = date('Y');
+
+            // Sauvegarder d'abord pour obtenir l'ID et le matricule
             $travail->save();
 
-            if ($travail->save()) {
+            // Gestion de l'upload de la photo après le premier save
+            if ($request->hasFile('photo')) {
+                try {
+                    $photo = $request->file('photo');
+                    $photoName = time() . '_' . $travail->matricule . '.' . $photo->getClientOriginalExtension();
+                    $destinationPath = public_path('../rhassets/images/travailleurs');
 
+                    // Créer le dossier s'il n'existe pas
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0777, true);
+                    }
 
-                return Redirect::back()->withSuccess("Travailleur: " . strtoupper($request->nom . ' ' . $request->prenom) . " enregistré avec succès .");
+                    $photo->move($destinationPath, $photoName);
+                    $travail->photo = $photoName;
+                    $travail->save();
+                } catch (\Exception $e) {
+                    // Log l'erreur mais continue l'enregistrement
+                    \Log::error('Erreur upload photo: ' . $e->getMessage());
+                }
             }
+
+            return Redirect::back()->withSuccess("Travailleur: " . strtoupper($request->nom . ' ' . $request->prenom) . " enregistré avec succès .");
         }
     }
 
@@ -704,15 +723,41 @@ class EmployerController extends Controller
         $travail->etapeid = 2; // fin enregistrement contrat telecharger
         $travail->inscrit_le = date('Y-m-d H-i-s');
         $travail->ip = $_SERVER['REMOTE_ADDR'];
+
+        // Gestion de l'upload de la photo
+        if ($request->hasFile('photo')) {
+            try {
+                // Supprimer l'ancienne photo si elle existe et n'est pas la photo par défaut
+                if ($travail->photo && $travail->photo !== 'default.png') {
+                    $oldPhotoPath = public_path('../rhassets/images/travailleurs/' . $travail->photo);
+                    if (file_exists($oldPhotoPath)) {
+                        unlink($oldPhotoPath);
+                    }
+                }
+
+                $photo = $request->file('photo');
+                $photoName = time() . '_' . $travail->matricule . '.' . $photo->getClientOriginalExtension();
+                $destinationPath = public_path('../rhassets/images/travailleurs');
+
+                // Créer le dossier s'il n'existe pas
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0777, true);
+                }
+
+                $photo->move($destinationPath, $photoName);
+                $travail->photo = $photoName;
+            } catch (\Exception $e) {
+                // Log l'erreur mais continue l'enregistrement
+                \Log::error('Erreur upload photo: ' . $e->getMessage());
+            }
+        }
+
         $travail->save();
 
-        if ($travail->save()) {
-
-            if ($travail->etapeid == 2) {
-                return Redirect::route('lientelechargerContrat', $id)->withSuccess("Fin de l'enregistrement du travailleur : " . strtoupper($request->nom . ' ' . $request->prenom) . " Vous pouvez télécharger son contrat .");
-            } else {
-                return Redirect::back()->withSuccess("La modification a été effectuée avec succès.");
-            }
+        if ($travail->etapeid == 2) {
+            return Redirect::route('lientelechargerContrat', $id)->withSuccess("Fin de l'enregistrement du travailleur : " . strtoupper($request->nom . ' ' . $request->prenom) . " Vous pouvez télécharger son contrat .");
+        } else {
+            return Redirect::back()->withSuccess("La modification a été effectuée avec succès.");
         }
 
         //}
@@ -866,9 +911,29 @@ class EmployerController extends Controller
 
     public function etapedeuxtravailleur($id)
     {
+        $edit = Travailleur::findOrFail($id);
         $departements = Departement::orderBy('id', 'DESC')->get();
+        $unites = Unites::orderBy('id', 'DESC')->get();
+        $equipes = Equipes::orderBy('id', 'DESC')->get();
+        $pays = Pays::orderBy('id', 'DESC')->get();
+        $fonctions = Fonction::orderBy('id', 'DESC')->get();
+        $commune = Commune::orderBy('id', 'DESC')->get();
+        $categories = Categories::orderBy('id', 'DESC')->get();
+        $niveauEtudes = NiveauEtude::orderBy('id', 'DESC')->get();
+        $data_typecontrat = \App\TypeContrat::orderBy('id', 'DESC')->get();
 
-        return view('travailleur.etape2', compact('departements', 'id'));
+        return view('travailleur.edit', compact(
+            'edit',
+            'departements',
+            'unites',
+            'equipes',
+            'pays',
+            'fonctions',
+            'commune',
+            'categories',
+            'niveauEtudes',
+            'data_typecontrat'
+        ));
     }
 
     public function lientelechargerContrat($idtravailleur)

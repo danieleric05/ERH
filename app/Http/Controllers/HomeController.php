@@ -89,7 +89,7 @@ class HomeController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Redirect()->route('se-connecter')->with('success', 'Vous êtes à présent déconnecté.');
+        return Redirect()->route('login')->with('success', 'Vous êtes à présent déconnecté.');
     }
 
 

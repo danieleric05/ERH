@@ -44,7 +44,7 @@
     @include('errors')
 
     <!-- Search Form -->
-    <div class="mb-6">
+    <div class="mb-6 flex justify-end">
         <form id="searchForm" class="flex items-center max-w-lg">
             <input type="text"
                    name="search"
@@ -67,7 +67,6 @@
                     <tr class="bg-slate-900 text-white border-b">
                         <th class="px-6 py-4 text-left text-sm font-semibold">Image</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold">Matricule</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Identifiant</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold">Nom & Prénoms</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold">Date d'embauche</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold">Date fin de contrat</th>
@@ -79,9 +78,10 @@
                 @forelse($data_travailleurdeux ?? [] as $listedata)
                     <tr class="border-b hover:bg-slate-50 transition">
                         <td class="px-6 py-4">
-                            <img src="{{ asset('rhassets/images/images.png') }}"
+                            <img src="{{ $listedata->photo ? asset('rhassets/images/travailleurs/' . $listedata->photo) : asset('rhassets/images/travailleurs/default.png') }}"
                                  height="50" width="50"
-                                 class="rounded-full object-cover w-12 h-12">
+                                 class="rounded-full object-cover w-12 h-12"
+                                 alt="Photo {{ $listedata->nom }}">
                         </td>
                         <td class="px-6 py-4">
                             <a href="{{ route('etapedeuxtravailleur', $listedata->id) }}"
@@ -90,9 +90,6 @@
                                class="font-bold hover:underline">
                                 {{ $listedata->matricule }}
                             </a>
-                        </td>
-                        <td class="px-6 py-4 text-slate-900 font-bold">
-                            {{ $listedata->identifiant ?? '-' }}
                         </td>
                         <td class="px-6 py-4 text-text-primary"
                             :title="$listedata->numero_securite ? 'DECL. CNPS' : ''">
