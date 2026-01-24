@@ -14,12 +14,21 @@
     2. Créer/importer la table `user` dans `c1appstat`
     3. Pointer vers la bonne base de données dans `.env`
 
-### Déploiement réseau
-- [ ] **Configurer l'application pour le partage réseau**
-  - Résoudre le problème de la table `user` manquante
-  - Tester l'accès depuis d'autres machines du réseau
-  - Configurer les permissions et firewall si nécessaire
-  - URL actuelle dans `.env` : `http://172.31.96.10:8000`
+### Déploiement réseau (WSL2)
+- [x] **Identifier le problème d'accès réseau**
+  - ✅ Windows IP : `10.10.60.14` (IP réseau réelle)
+  - ✅ WSL2 IP : `172.31.96.10` (IP virtuelle, isolée)
+  - ✅ Problème : WSL2 isolé du réseau Windows
+- [x] **Créer les scripts de configuration**
+  - ✅ `setup-wsl-network.ps1` - Configure port forwarding Windows → WSL2
+  - ✅ `remove-wsl-network.ps1` - Supprime la configuration
+  - ✅ `start-server-network.sh` - Démarre serveur avec --host=0.0.0.0
+  - ✅ `GUIDE_WSL2_RESEAU.md` - Documentation complète
+- [ ] **Exécuter la configuration réseau**
+  - [ ] Arrêter le serveur actuel (écoute sur 127.0.0.1)
+  - [ ] Redémarrer avec `./start-server-network.sh` (écoute sur 0.0.0.0)
+  - [ ] Exécuter `setup-wsl-network.ps1` sur Windows (PowerShell Admin)
+  - [ ] Tester l'accès : `http://10.10.60.14:8000`
 
 ### Migration SQL photos
 - [ ] **Exécuter le script SQL pour ajouter le champ photo**
