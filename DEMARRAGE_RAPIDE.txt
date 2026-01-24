@@ -1,0 +1,76 @@
+╔══════════════════════════════════════════════════════════════════╗
+║                  DÉMARRAGE RAPIDE ERH APPLICATION                ║
+║                    (Après redémarrage machine)                   ║
+╚══════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────┐
+│  ÉTAPE 1 : WSL2 (Ubuntu Terminal)                                │
+└──────────────────────────────────────────────────────────────────┘
+
+    cd ~/work/projects/erh/site
+    ./start-erh.sh
+
+    ✓ Le script démarre automatiquement le serveur
+    ✓ Affiche l'IP WSL2 actuelle
+    ✓ Donne les commandes Windows à exécuter
+
+┌──────────────────────────────────────────────────────────────────┐
+│  ÉTAPE 2 : Windows (PowerShell Administrateur)                   │
+└──────────────────────────────────────────────────────────────────┘
+
+    1. Clic droit sur Démarrer → "Terminal (Admin)"
+
+    2. Exécuter:
+       cd \\wsl$\Ubuntu\home\daniel\work\projects\erh\site
+       .\setup-wsl2-simple.ps1
+
+┌──────────────────────────────────────────────────────────────────┐
+│  ACCÈS À L'APPLICATION                                           │
+└──────────────────────────────────────────────────────────────────┘
+
+    Votre machine:
+      • http://localhost:8000
+      • http://10.10.60.14:8000
+
+    Réseau (collègues):
+      • http://10.10.60.14:8000
+
+┌──────────────────────────────────────────────────────────────────┐
+│  COMMANDES UTILES                                                │
+└──────────────────────────────────────────────────────────────────┘
+
+    Arrêter le serveur:
+      ./stop-erh.sh
+
+    Vérifier l'état:
+      ss -tlnp | grep 8000
+
+    Voir les logs:
+      tail -f /tmp/erh-laravel-server.log
+
+┌──────────────────────────────────────────────────────────────────┐
+│  EN CAS DE PROBLÈME                                              │
+└──────────────────────────────────────────────────────────────────┘
+
+    1. Le script ne démarre pas?
+       → chmod +x start-erh.sh
+
+    2. Port déjà utilisé?
+       → pkill -f "php artisan serve"
+
+    3. Base de données non accessible?
+       → sudo service mysql start
+
+    4. Documentation complète:
+       → PROCEDURE_DEMARRAGE.md
+
+═══════════════════════════════════════════════════════════════════
+
+           💡 Astuce: Ajoutez un alias dans ~/.bashrc
+
+    alias erh-start='cd ~/work/projects/erh/site && ./start-erh.sh'
+    alias erh-stop='cd ~/work/projects/erh/site && ./stop-erh.sh'
+
+           Puis tapez simplement: erh-start
+
+═══════════════════════════════════════════════════════════════════
