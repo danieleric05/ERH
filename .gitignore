@@ -18,3 +18,4 @@ bootstrap/cache/*.php
 
 # Scripts locaux
 *.ps1
+rhassets/
