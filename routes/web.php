@@ -656,6 +656,10 @@ Route::middleware(['auth'])->group(function () {
         "post_edit_travailleur/{id}",
         [EmployerController::class, 'post_edit_travailleur'],
     );
+    Route::post(
+        "delete_photo_travailleur/{id}",
+        [EmployerController::class, 'delete_photo_travailleur']
+    )->name('delete_photo_travailleur');
     Route::post("edit_travailleur/{id}", [EmployerController::class, 'edit_travailleur']);
     Route::get("/edit-travailleur/{id}", [EmployerController::class, 'edittravailleur'])->name("edittravailleur");
     Route::get("/details-contrat-journalier/{id}", [EmployerController::class, 'lientelechargerContrat'])->name("lientelechargerContrat");

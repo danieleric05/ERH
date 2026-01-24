@@ -49,7 +49,18 @@
                             onchange="previewPhoto(this)">
                         <p class="text-xs text-text-secondary mt-2">Formats acceptés: JPG, PNG (max 2 Mo)</p>
                         @if($edit->photo)
-                            <p class="text-xs text-green-600 mt-1">Photo actuelle : {{ $edit->photo }}</p>
+                            <div class="mt-3 flex items-center gap-3">
+                                <p class="text-xs text-green-600">Photo actuelle : {{ $edit->photo }}</p>
+                                <form action="{{ route('delete_photo_travailleur', $edit->id) }}" method="POST"
+                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette photo ?');"
+                                      class="inline-block">
+                                    @csrf
+                                    <button type="submit"
+                                            class="px-3 py-1.5 text-xs bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                                        <i class="fa fa-trash"></i> Supprimer la photo
+                                    </button>
+                                </form>
+                            </div>
                         @endif
                     </div>
                 </div>

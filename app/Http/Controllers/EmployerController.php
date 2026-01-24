@@ -764,6 +764,29 @@ class EmployerController extends Controller
 
     }
 
+    public function delete_photo_travailleur($id)
+    {
+        $travailleur = Travailleur::findOrFail($id);
+
+        // Vérifier si le travailleur a une photo
+        if ($travailleur->photo && $travailleur->photo !== 'default.png') {
+            $photoPath = public_path('../rhassets/images/travailleurs/' . $travailleur->photo);
+
+            // Supprimer le fichier physique s'il existe
+            if (file_exists($photoPath)) {
+                unlink($photoPath);
+            }
+
+            // Mettre à NULL dans la base de données
+            $travailleur->photo = null;
+            $travailleur->save();
+
+            return Redirect::back()->withSuccess("La photo a été supprimée avec succès.");
+        }
+
+        return Redirect::back()->withErrors("Aucune photo à supprimer.");
+    }
+
     public function edit_travailleur($id, Request $request)
     {
 
