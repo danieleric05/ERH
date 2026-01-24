@@ -12,3 +12,9 @@ npm-debug.log
 yarn-error.log
 .env
 .phpunit.result.cache
+
+# Fichiers de cache Laravel
+bootstrap/cache/*.php
+
+# Scripts locaux
+*.ps1
