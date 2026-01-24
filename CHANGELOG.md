@@ -86,17 +86,41 @@
 - ✅ `CHANGELOG.md` - Ce fichier (créé 2026-01-24)
 - ✅ `TODO.md` - Liste des tâches restantes (créé 2026-01-24)
 
+#### Affichage des photos dans toutes les listes
+- **Session :** 2026-01-24 (continuation)
+- **Fichiers corrigés :**
+  - `travailleur/liste.blade.php` - Remplacement `images.png` par photo réelle
+  - `travailleur/liste_certificat_travail.blade.php` - Remplacement `images.png` par photo réelle
+  - `travailleur/listejournalierfin_contrat.blade.php` - Remplacement conditionnels obsolètes par photo réelle
+- **Résultat :** Toutes les listes de travailleurs affichent maintenant la vraie photo avec fallback sur `default.png`
+
+#### Suppression de photos en cas d'erreur
+- **Nouvelle méthode :** `EmployerController@delete_photo_travailleur()`
+- **Nouvelle route :** POST `/delete_photo_travailleur/{id}` (nommée)
+- **UI :** Bouton "Supprimer la photo" dans le formulaire d'édition
+  - Visible uniquement si une photo existe
+  - Demande de confirmation avant suppression
+  - Supprime le fichier physique et met la colonne à NULL
+- **Fichiers modifiés :**
+  - `app/Http/Controllers/EmployerController.php` (+23 lignes)
+  - `routes/web.php` (+4 lignes)
+  - `resources/views/travailleur/edit.blade.php` (+13 lignes)
+
 ### 📊 Statistiques
 
-**Commit principal :** `c76c5df - fix: corrections critiques et amélioration UX`
+**Commits principaux :**
+- `8b5dce0 - feat: ajout fonctionnalité suppression de photo travailleur`
+- `458ede8 - chore: ignorer dossier rhassets dans site/`
+- `9df4cc6 - fix: affichage photos réelles dans toutes les listes de travailleurs`
+- `c76c5df - fix: corrections critiques et amélioration UX`
 
-**Fichiers modifiés :** 13 fichiers
-- 2 contrôleurs (HomeController, EmployerController)
-- 1 fichier de routes (web.php)
-- 9 vues de travailleurs
-- 2 vues de layout (header, contenu)
-- 1 migration SQL (nouveau fichier)
-- 1 vue historique (refonte complète)
+**Fichiers modifiés (session 2026-01-24) :** 6 fichiers
+- 1 contrôleur (EmployerController) +23 lignes
+- 1 fichier de routes (web.php) +4 lignes
+- 4 vues de travailleurs +14 lignes
+- 1 fichier config (.gitignore) +1 ligne
+
+**Total projet :** 19 fichiers modifiés, ~750 insertions/suppressions
 
 **Lignes modifiées :**
 - +499 insertions

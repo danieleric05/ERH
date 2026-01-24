@@ -41,10 +41,12 @@
 
 ## 🟡 Priorité Moyenne - Important mais pas urgent
 
-### Tests
-- [ ] Tester le système de connexion/déconnexion
-- [ ] Tester l'upload de photos pour les travailleurs
+### Tests et validation
+- [x] Tester le système de connexion/déconnexion (déjà corrigé)
+- [ ] Tester l'upload de photos pour les travailleurs (nouvelle fonctionnalité)
 - [ ] Tester la modification d'un travailleur avec photo
+- [ ] Tester la suppression de photo (nouvelle fonctionnalité)
+- [ ] Tester l'affichage des photos dans toutes les listes
 - [ ] Tester les exports Excel (SAGE et Paie)
 - [ ] Tester la page de recherche & historique
 
@@ -61,22 +63,22 @@
 
 ### Améliorations UI restantes
 - [ ] Moderniser les pages suivantes (encore en ancien style) :
-  - [ ] `travailleur/liste.blade.php`
-  - [ ] `travailleur/liste_certificat_travail.blade.php`
-  - [ ] `travailleur/listejournalierfin_contrat.blade.php`
+  - [x] `travailleur/liste.blade.php` - Photos ajoutées
+  - [x] `travailleur/liste_certificat_travail.blade.php` - Photos ajoutées
+  - [x] `travailleur/listejournalierfin_contrat.blade.php` - Photos ajoutées
   - [ ] `contrat/detail_contrat.blade.php`
   - [ ] `profil/index.blade.php`
   - [ ] Pages de santé (consultations, accidents)
   - [ ] Pages de sanctions
   - [ ] Pages de variables
 
-- [ ] Remplacer toutes les occurrences de `images.png` restantes :
-  - `profil/index.blade.php`
-  - `travailleur/liste_certificat_travail.blade.php`
-  - `travailleur/liste.blade.php`
-  - `travailleur/listejournalierfin_contrat.blade.php`
-  - `contrat/detail_contrat.blade.php`
-  - `insert/link.blade.php`
+- [x] Remplacer toutes les occurrences de `images.png` dans les listes de travailleurs :
+  - ~~`profil/index.blade.php`~~ - À faire
+  - [x] `travailleur/liste_certificat_travail.blade.php` - ✅ Corrigé
+  - [x] `travailleur/liste.blade.php` - ✅ Corrigé
+  - [x] `travailleur/listejournalierfin_contrat.blade.php` - ✅ Corrigé
+  - ~~`contrat/detail_contrat.blade.php`~~ - À faire
+  - ~~`insert/link.blade.php`~~ - À faire
 
 ## 🟢 Priorité Basse - Améliorations futures
 
@@ -107,6 +109,7 @@
 
 ## ✅ Terminé (Session 2026-01-24)
 
+### Partie 1 - Corrections et modernisation
 - [x] Corriger le bug de déconnexion (logout)
 - [x] Corriger l'erreur lors de la modification d'un travailleur
 - [x] Commenter le lien `stock_tenues` (fonctionnalité archivée)
@@ -117,7 +120,18 @@
 - [x] Ajouter la colonne "Photo" dans toutes les listes de travailleurs
 - [x] Créer le fichier CHANGELOG.md
 - [x] Créer le fichier TODO.md
-- [x] Commit des modifications (`c76c5df`)
+
+### Partie 2 - Finalisation système de photos (continuation)
+- [x] Corriger l'affichage des photos dans les 3 listes manquantes :
+  - [x] `travailleur/liste.blade.php` - Remplacé `images.png` par photo réelle
+  - [x] `travailleur/liste_certificat_travail.blade.php` - Remplacé `images.png` par photo réelle
+  - [x] `travailleur/listejournalierfin_contrat.blade.php` - Remplacé conditionnels obsolètes par photo réelle
+- [x] Ajouter la fonctionnalité de suppression de photo
+  - [x] Nouvelle méthode `delete_photo_travailleur()` dans EmployerController
+  - [x] Nouvelle route POST `/delete_photo_travailleur/{id}`
+  - [x] Bouton de suppression dans le formulaire d'édition
+- [x] Mettre à jour les fichiers de suivi (CHANGELOG.md, TODO.md)
+- [x] Commit des modifications (3 commits)
 
 ## 📋 Fonctionnalités archivées (à ne pas toucher)
 
@@ -136,11 +150,29 @@ Pour réactiver : décommenter les routes et vérifier les contrôleurs associé
 - **Routes :** Toujours utiliser les noms de routes dans les liens
 - **Formulaires avec upload :** Toujours ajouter `enctype="multipart/form-data"`
 
+### Gestion des photos (Implémentation complète)
+
+**Fonctionnalités disponibles :**
+- ✅ Upload de photos lors de l'ajout d'un travailleur
+- ✅ Upload de photos lors de la modification d'un travailleur
+- ✅ Aperçu en temps réel lors de l'upload
+- ✅ Suppression de l'ancienne photo lors du remplacement
+- ✅ Bouton de suppression de photo (nouvelle fonctionnalité)
+- ✅ Affichage des photos dans toutes les listes de travailleurs
+- ✅ Photo par défaut si aucune photo uploadée
+
+**Fichiers clés :**
+- Migration : `database/migrations/add_photo_to_travailleur.sql`
+- Dossier des photos : `/rhassets/images/travailleurs/`
+- Nomenclature : `timestamp_MATRICULE.extension` (ex: `1769260455_J0007438.jpg`)
+- Photo par défaut : `default.png`
+
 ### Prochaine session recommandée
-1. Résoudre le problème de la table `user`
-2. Exécuter la migration SQL pour les photos
-3. Tester l'application complètement
-4. Déployer sur le réseau
+1. Résoudre le problème de la table `user` (database sync)
+2. Tester complètement le système de photos
+3. Moderniser les pages restantes (listes anciennes routes)
+4. Améliorer la performance (N+1 queries, pagination)
+5. Déployer sur le réseau avec accès réseau complet
 
 ---
 
