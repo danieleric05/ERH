@@ -52,12 +52,12 @@
                             @foreach($data_travailleur as $listedata)
                                 <tr>
                                     <td>
-                                        @if(!$listedata->avatar)
-                                            <img src="{{ asset('rhassets/images/images.png') }}" height="50" width="50" class="rounded-circle user-photo">
-                                        @endif
-                                        @if($listedata->avatar)
-                                            <img src="{{ asset('rhassets/images/images.png') }}" height="50" width="50" class="rounded-circle user-photo">
-                                        @endif
+                                        <img src="{{ $listedata->photo
+                                                ? asset('rhassets/images/travailleurs/' . $listedata->photo)
+                                                : asset('rhassets/images/travailleurs/default.png') }}"
+                                             alt="Photo {{ $listedata->nom }}"
+                                             height="50" width="50"
+                                             class="rounded-circle user-photo">
                                     </td>
                                     <td style="color: black; font-weight: bold">
                                         <a title="MODIFIER" style="color: red" href="{{ route('etapedeuxtravailleur', $listedata->id) }}">

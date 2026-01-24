@@ -43,7 +43,10 @@
                 @forelse($data_certificat_travail ?? [] as $listedata)
                     <tr class="border-b hover:bg-slate-50 transition">
                         <td class="px-6 py-4">
-                            <img src="{{ asset('rhassets/images/images.png') }}"
+                            <img src="{{ $listedata->photo
+                                    ? asset('rhassets/images/travailleurs/' . $listedata->photo)
+                                    : asset('rhassets/images/travailleurs/default.png') }}"
+                                 alt="Photo {{ $listedata->nom }}"
                                  height="50" width="50"
                                  class="rounded-full object-cover w-12 h-12">
                         </td>
