@@ -62,7 +62,8 @@ class ImportSanctions extends Command
                 $this->newLine();
                 $this->warn('⚠️  ERREURS DÉTAILLÉES (premiers 15)');
                 foreach (array_slice($summary['errors'], 0, 15) as $i => $error) {
-                    $this->line(($i + 1) . ". Ligne {$error['ligne']}: {$error['matricule']} ({$error['nom']})");
+                    $lineInfo = isset($error['ligne']) && !empty($error['ligne']) ? "Ligne {$error['ligne']}: " : '';
+                    $this->line(($i + 1) . ". {$lineInfo}{$error['matricule']} ({$error['nom']})");
                     $this->line("   → {$error['erreur']}");
                 }
                 if (count($summary['errors']) > 15) {

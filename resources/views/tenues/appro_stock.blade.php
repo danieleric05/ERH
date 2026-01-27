@@ -28,7 +28,7 @@
     @include('errors')
 
     <!-- Form Container -->
-    <div class="bg-white rounded-lg shadow-lg-soft p-8 mb-8">
+    <div class="bg-white rounded-lg shadow-lg-soft p-8 mb-8" x-data="tableSort()">
         <h2 class="text-xl font-bold text-text-primary mb-6">Ajouter un approvisionnement</h2>
 
         <form action="{{ url('post_appro_stock') }}" method="POST" class="form-auth-small">
@@ -91,10 +91,30 @@
             <table class="w-full">
                 <thead>
                     <tr class="bg-slate-900 text-white border-b">
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Article</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Quantité</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Fournisseur</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold">Date de réception</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('article')">
+                            <div class="flex items-center gap-2">
+                                Article
+                                <span x-show="sortBy === 'article'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('quantit')">
+                            <div class="flex items-center gap-2">
+                                Quantité
+                                <span x-show="sortBy === 'quantit'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('fournisseur')">
+                            <div class="flex items-center gap-2">
+                                Fournisseur
+                                <span x-show="sortBy === 'fournisseur'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('datederception')">
+                            <div class="flex items-center gap-2">
+                                Date de réception
+                                <span x-show="sortBy === 'datederception'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
                     </tr>
                 </thead>
@@ -123,5 +143,67 @@
         </div>
     </div>
 </div>
+
+
+<script>
+function tableSort() {
+    return {
+        sortBy: null,
+        sortDir: 'asc',
+
+        sort(column) {
+            if (this.sortBy === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = column;
+                this.sortDir = 'asc';
+            }
+            this.sortTable();
+        },
+
+        sortTable() {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
+
+            rows.sort((a, b) => {
+                let valueA, valueB;
+
+                // Récupérer les données de la colonne
+                const cells = Array.from(a.querySelectorAll('td'));
+                if (cells.length === 0) return 0;
+
+                // Déterminer l'index de la colonne
+                let colIndex = 0;
+                const headers = document.querySelectorAll('thead th');
+                let clickCount = 0;
+                for (let i = 0; i < headers.length; i++) {
+                    if (headers[i].textContent.toLowerCase().includes(this.sortBy.toLowerCase())) {
+                        colIndex = i;
+                        break;
+                    }
+                }
+
+                valueA = a.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+                valueB = b.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+
+                // Essayer de convertir en date
+                const dateA = new Date(valueA).getTime();
+                const dateB = new Date(valueB).getTime();
+
+                if (!isNaN(dateA) && !isNaN(dateB) && dateA > 0 && dateB > 0) {
+                    return this.sortDir === 'asc' ? dateA - dateB : dateB - dateA;
+                }
+
+                // Comparaison textuelle
+                return this.sortDir === 'asc'
+                    ? String(valueA).localeCompare(String(valueB), 'fr-FR')
+                    : String(valueB).localeCompare(String(valueA), 'fr-FR');
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    }
+}
+</script>
 
 @endsection

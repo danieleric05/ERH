@@ -39,18 +39,52 @@
         </div>
 
         {{-- Stock Table --}}
-        <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
-            <div class="overflow-x-auto">
+        <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()"><div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-slate-200">
                     <thead class="bg-slate-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Type de tenue</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Taille</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Couleur</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Quantité</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Prix unitaire</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Valeur totale</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">État</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('typedetenue')">
+                            <div class="flex items-center gap-2">
+                                Type de tenue
+                                <span x-show="sortBy === 'typedetenue'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('taille')">
+                            <div class="flex items-center gap-2">
+                                Taille
+                                <span x-show="sortBy === 'taille'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('couleur')">
+                            <div class="flex items-center gap-2">
+                                Couleur
+                                <span x-show="sortBy === 'couleur'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('quantit')">
+                            <div class="flex items-center gap-2">
+                                Quantité
+                                <span x-show="sortBy === 'quantit'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('prixunitaire')">
+                            <div class="flex items-center gap-2">
+                                Prix unitaire
+                                <span x-show="sortBy === 'prixunitaire'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('valeurtotale')">
+                            <div class="flex items-center gap-2">
+                                Valeur totale
+                                <span x-show="sortBy === 'valeurtotale'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('tat')">
+                            <div class="flex items-center gap-2">
+                                État
+                                <span x-show="sortBy === 'tat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
@@ -119,5 +153,67 @@
         </div>
 
     </div>
+
+
+<script>
+function tableSort() {
+    return {
+        sortBy: null,
+        sortDir: 'asc',
+
+        sort(column) {
+            if (this.sortBy === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = column;
+                this.sortDir = 'asc';
+            }
+            this.sortTable();
+        },
+
+        sortTable() {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
+
+            rows.sort((a, b) => {
+                let valueA, valueB;
+
+                // Récupérer les données de la colonne
+                const cells = Array.from(a.querySelectorAll('td'));
+                if (cells.length === 0) return 0;
+
+                // Déterminer l'index de la colonne
+                let colIndex = 0;
+                const headers = document.querySelectorAll('thead th');
+                let clickCount = 0;
+                for (let i = 0; i < headers.length; i++) {
+                    if (headers[i].textContent.toLowerCase().includes(this.sortBy.toLowerCase())) {
+                        colIndex = i;
+                        break;
+                    }
+                }
+
+                valueA = a.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+                valueB = b.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+
+                // Essayer de convertir en date
+                const dateA = new Date(valueA).getTime();
+                const dateB = new Date(valueB).getTime();
+
+                if (!isNaN(dateA) && !isNaN(dateB) && dateA > 0 && dateB > 0) {
+                    return this.sortDir === 'asc' ? dateA - dateB : dateB - dateA;
+                }
+
+                // Comparaison textuelle
+                return this.sortDir === 'asc'
+                    ? String(valueA).localeCompare(String(valueB), 'fr-FR')
+                    : String(valueB).localeCompare(String(valueA), 'fr-FR');
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    }
+}
+</script>
 
 @endsection

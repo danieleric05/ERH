@@ -49,16 +49,36 @@
         </div>
 
         {{-- Tableau --}}
-        <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
+        <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-slate-200" id="travailleursTable">
                     <thead class="bg-slate-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Image</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Matricule</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Nom & Prénoms</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Embauche</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Fin contrat</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition select-none" @click="sort('matricule')">
+                                <div class="flex items-center gap-2">
+                                    Matricule
+                                    <span x-show="sortBy === 'matricule'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition select-none" @click="sort('nom')">
+                                <div class="flex items-center gap-2">
+                                    Nom & Prénoms
+                                    <span x-show="sortBy === 'nom'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition select-none" @click="sort('embauche')">
+                                <div class="flex items-center gap-2">
+                                    Embauche
+                                    <span x-show="sortBy === 'embauche'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition select-none" @click="sort('fin')">
+                                <div class="flex items-center gap-2">
+                                    Fin contrat
+                                    <span x-show="sortBy === 'fin'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                                </div>
+                            </th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">État</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
                         </tr>
@@ -205,5 +225,66 @@
             }
         })();
     </script>
+
+<script>
+function tableSort() {
+    return {
+        sortBy: null,
+        sortDir: 'asc',
+
+        sort(column) {
+            if (this.sortBy === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = column;
+                this.sortDir = 'asc';
+            }
+            this.sortTable();
+        },
+
+        sortTable() {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
+
+            rows.sort((a, b) => {
+                let valueA, valueB;
+
+                switch(this.sortBy) {
+                    case 'matricule':
+                        valueA = a.querySelector('td:nth-child(2) a')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(2) a')?.textContent.trim() || '';
+                        break;
+                    case 'nom':
+                        valueA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        break;
+                    case 'embauche':
+                        valueA = a.querySelector('td:nth-child(4)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(4)')?.textContent.trim() || '';
+                        valueA = new Date(valueA).getTime() || 0;
+                        valueB = new Date(valueB).getTime() || 0;
+                        break;
+                    case 'fin':
+                        valueA = a.querySelector('td:nth-child(5)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(5)')?.textContent.trim() || '';
+                        valueA = new Date(valueA).getTime() || 0;
+                        valueB = new Date(valueB).getTime() || 0;
+                        break;
+                }
+
+                if (typeof valueA === 'number' && typeof valueB === 'number') {
+                    return this.sortDir === 'asc' ? valueA - valueB : valueB - valueA;
+                } else {
+                    return this.sortDir === 'asc'
+                        ? String(valueA).localeCompare(String(valueB), 'fr-FR')
+                        : String(valueB).localeCompare(String(valueA), 'fr-FR');
+                }
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    }
+}
+</script>
 
 @endsection

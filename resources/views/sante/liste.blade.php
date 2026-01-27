@@ -24,23 +24,63 @@
     @include('errors')
 
     <!-- Main Content -->
-    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()">
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
                     <tr class="bg-slate-900 text-white border-b">
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Infirmier</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Matricule</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Travailleur</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('infirmier')">
+                            <div class="flex items-center gap-2">
+                                Infirmier
+                                <span x-show="sortBy === 'infirmier'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('matricule')">
+                            <div class="flex items-center gap-2">
+                                Matricule
+                                <span x-show="sortBy === 'matricule'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('travailleur')">
+                            <div class="flex items-center gap-2">
+                                Travailleur
+                                <span x-show="sortBy === 'travailleur'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
                         @if(Auth::user()->idrole == 4)
                             <th class="px-6 py-4 text-left text-sm font-semibold">Consultation</th>
                             <th class="px-6 py-4 text-left text-sm font-semibold">Prescription</th>
                         @endif
-                        <th class="px-6 py-4 text-center text-sm font-semibold">Arrêt travail</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold">Début</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold">Fin</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold">État</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Enregistré le</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('arret')">
+                            <div class="flex items-center justify-center gap-2">
+                                Arrêt travail
+                                <span x-show="sortBy === 'arret'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('debut')">
+                            <div class="flex items-center justify-center gap-2">
+                                Début
+                                <span x-show="sortBy === 'debut'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('fin')">
+                            <div class="flex items-center justify-center gap-2">
+                                Fin
+                                <span x-show="sortBy === 'fin'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('etat')">
+                            <div class="flex items-center justify-center gap-2">
+                                État
+                                <span x-show="sortBy === 'etat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('enregistre')">
+                            <div class="flex items-center gap-2">
+                                Enregistré le
+                                <span x-show="sortBy === 'enregistre'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
                     </tr>
                 </thead>
@@ -153,3 +193,98 @@
     @include('sante.modal_edit')
 
 @endsection
+
+<script>
+function tableSort() {
+    return {
+        sortBy: null,
+        sortDir: 'asc',
+
+        sort(column) {
+            if (this.sortBy === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = column;
+                this.sortDir = 'asc';
+            }
+            this.sortTable();
+        },
+
+        sortTable() {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
+
+            rows.sort((a, b) => {
+                let valueA, valueB;
+                const baseCol = this.getBaseColumnIndex();
+
+                switch(this.sortBy) {
+                    case 'infirmier':
+                        valueA = a.querySelector('td:nth-child(1)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(1)')?.textContent.trim() || '';
+                        break;
+                    case 'matricule':
+                        valueA = a.querySelector('td:nth-child(2)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(2)')?.textContent.trim() || '';
+                        break;
+                    case 'travailleur':
+                        valueA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        break;
+                    case 'arret':
+                        valueA = a.querySelector('td:nth-child(' + (baseCol + 1) + ')').textContent.includes('AVEC') ? 1 : 0;
+                        valueB = b.querySelector('td:nth-child(' + (baseCol + 1) + ')').textContent.includes('AVEC') ? 1 : 0;
+                        break;
+                    case 'debut':
+                        valueA = a.querySelector('td:nth-child(' + (baseCol + 2) + ')')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(' + (baseCol + 2) + ')')?.textContent.trim() || '';
+                        valueA = new Date(valueA).getTime() || 0;
+                        valueB = new Date(valueB).getTime() || 0;
+                        break;
+                    case 'fin':
+                        valueA = a.querySelector('td:nth-child(' + (baseCol + 3) + ')')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(' + (baseCol + 3) + ')')?.textContent.trim() || '';
+                        valueA = new Date(valueA).getTime() || 0;
+                        valueB = new Date(valueB).getTime() || 0;
+                        break;
+                    case 'etat':
+                        valueA = a.querySelector('td:nth-child(' + (baseCol + 4) + ')')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(' + (baseCol + 4) + ')')?.textContent.trim() || '';
+                        break;
+                    case 'enregistre':
+                        valueA = a.querySelector('td:nth-child(' + (baseCol + 5) + ')')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(' + (baseCol + 5) + ')')?.textContent.trim() || '';
+                        valueA = new Date(valueA).getTime() || 0;
+                        valueB = new Date(valueB).getTime() || 0;
+                        break;
+                }
+
+                if (typeof valueA === 'number' && typeof valueB === 'number') {
+                    return this.sortDir === 'asc' ? valueA - valueB : valueB - valueA;
+                } else {
+                    return this.sortDir === 'asc'
+                        ? String(valueA).localeCompare(String(valueB), 'fr-FR')
+                        : String(valueB).localeCompare(String(valueA), 'fr-FR');
+                }
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        },
+
+        getBaseColumnIndex() {
+            // Déterminer le nombre de colonnes avant les colonnes de base
+            const headerCells = document.querySelectorAll('thead th');
+            let count = 0;
+            headerCells.forEach((cell, idx) => {
+                if (idx < 3) return; // Infirmier, Matricule, Travailleur
+                if (cell.textContent.includes('Consultation') || cell.textContent.includes('Prescription')) {
+                    count++;
+                } else {
+                    return;
+                }
+            });
+            return 3 + count;
+        }
+    }
+}
+</script>

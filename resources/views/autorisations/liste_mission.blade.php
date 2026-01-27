@@ -30,19 +30,58 @@
     @include('errors')
 
     <!-- Main Content -->
-    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
-        <div class="overflow-x-auto">
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()"><div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="bg-slate-900 text-white border-b">
-                        <th class="px-4 py-4 text-left text-sm font-semibold">Demandeur</th>
-                        <th class="px-4 py-4 text-left text-sm font-semibold">Début</th>
-                        <th class="px-4 py-4 text-left text-sm font-semibold">Fin</th>
-                        <th class="px-4 py-4 text-left text-sm font-semibold">Pays</th>
-                        <th class="px-4 py-4 text-left text-sm font-semibold">Nuitées</th>
-                        <th class="px-4 py-4 text-left text-sm font-semibold">Journées</th>
-                        <th class="px-4 py-4 text-center text-sm font-semibold">Transport</th>
-                        <th class="px-4 py-4 text-center text-sm font-semibold">Etat</th>
+                        <th class="px-4 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('demandeur')">
+                            <div class="flex items-center gap-2">
+                                Demandeur
+                                <span x-show="sortBy === 'demandeur'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-4 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('dbut')">
+                            <div class="flex items-center gap-2">
+                                Début
+                                <span x-show="sortBy === 'dbut'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-4 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('fin')">
+                            <div class="flex items-center gap-2">
+                                Fin
+                                <span x-show="sortBy === 'fin'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-4 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('pays')">
+                            <div class="flex items-center gap-2">
+                                Pays
+                                <span x-show="sortBy === 'pays'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-4 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('nuites')">
+                            <div class="flex items-center gap-2">
+                                Nuitées
+                                <span x-show="sortBy === 'nuites'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-4 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('journes')">
+                            <div class="flex items-center gap-2">
+                                Journées
+                                <span x-show="sortBy === 'journes'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-4 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('transport')">
+                            <div class="flex items-center gap-2">
+                                Transport
+                                <span x-show="sortBy === 'transport'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-4 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('etat')">
+                            <div class="flex items-center gap-2">
+                                Etat
+                                <span x-show="sortBy === 'etat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
                         <th class="px-4 py-4 text-center text-sm font-semibold">Options</th>
                     </tr>
                 </thead>
@@ -144,5 +183,67 @@
     </div>
 
     @include('tenues.modal_edit')
+
+
+<script>
+function tableSort() {
+    return {
+        sortBy: null,
+        sortDir: 'asc',
+
+        sort(column) {
+            if (this.sortBy === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = column;
+                this.sortDir = 'asc';
+            }
+            this.sortTable();
+        },
+
+        sortTable() {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
+
+            rows.sort((a, b) => {
+                let valueA, valueB;
+
+                // Récupérer les données de la colonne
+                const cells = Array.from(a.querySelectorAll('td'));
+                if (cells.length === 0) return 0;
+
+                // Déterminer l'index de la colonne
+                let colIndex = 0;
+                const headers = document.querySelectorAll('thead th');
+                let clickCount = 0;
+                for (let i = 0; i < headers.length; i++) {
+                    if (headers[i].textContent.toLowerCase().includes(this.sortBy.toLowerCase())) {
+                        colIndex = i;
+                        break;
+                    }
+                }
+
+                valueA = a.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+                valueB = b.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+
+                // Essayer de convertir en date
+                const dateA = new Date(valueA).getTime();
+                const dateB = new Date(valueB).getTime();
+
+                if (!isNaN(dateA) && !isNaN(dateB) && dateA > 0 && dateB > 0) {
+                    return this.sortDir === 'asc' ? dateA - dateB : dateB - dateA;
+                }
+
+                // Comparaison textuelle
+                return this.sortDir === 'asc'
+                    ? String(valueA).localeCompare(String(valueB), 'fr-FR')
+                    : String(valueB).localeCompare(String(valueA), 'fr-FR');
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    }
+}
+</script>
 
 @endsection

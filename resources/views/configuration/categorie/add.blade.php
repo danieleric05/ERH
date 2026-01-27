@@ -64,4 +64,62 @@
     @include('configuration.categorie.modal_categorie')
     @include('configuration.categorie.edit')
 
+
+<script>
+function tableSort() {
+    return {
+        sortBy: null,
+        sortDir: 'asc',
+
+        sort(column) {
+            if (this.sortBy === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = column;
+                this.sortDir = 'asc';
+            }
+            this.sortTable();
+        },
+
+        sortTable() {
+            const tbody = document.querySelector('tbody');
+            if (!tbody) return;
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                const headers = document.querySelectorAll('thead th');
+                let colIndex = 0;
+                
+                for (let i = 0; i < headers.length; i++) {
+                    if (headers[i].textContent.toLowerCase().includes(this.sortBy.toLowerCase())) {
+                        colIndex = i;
+                        break;
+                    }
+                }
+
+                const cellA = a.querySelector('td:nth-child(' + (colIndex + 1) + ')');
+                const cellB = b.querySelector('td:nth-child(' + (colIndex + 1) + ')');
+                
+                if (!cellA || !cellB) return 0;
+
+                let valueA = cellA.textContent.trim();
+                let valueB = cellB.textContent.trim();
+
+                const dateA = new Date(valueA).getTime();
+                const dateB = new Date(valueB).getTime();
+
+                if (!isNaN(dateA) && !isNaN(dateB) && dateA > 0 && dateB > 0) {
+                    return this.sortDir === 'asc' ? dateA - dateB : dateB - dateA;
+                }
+
+                return this.sortDir === 'asc'
+                    ? String(valueA).localeCompare(String(valueB), 'fr-FR')
+                    : String(valueB).localeCompare(String(valueA), 'fr-FR');
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    }
+}
+</script>
 @endsection

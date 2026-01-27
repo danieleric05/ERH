@@ -30,15 +30,34 @@
     @include('errors')
 
     <!-- Main Content -->
-    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
-        <div class="overflow-x-auto">
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()"><div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
                     <tr class="bg-slate-900 text-white border-b">
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Employés</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold">Nombre d'heures</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Date</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold">État</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('employs')">
+                            <div class="flex items-center gap-2">
+                                Employés
+                                <span x-show="sortBy === 'employs'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('nombredheures')">
+                            <div class="flex items-center gap-2">
+                                Nombre d'heures
+                                <span x-show="sortBy === 'nombredheures'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('date')">
+                            <div class="flex items-center gap-2">
+                                Date
+                                <span x-show="sortBy === 'date'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('tat')">
+                            <div class="flex items-center gap-2">
+                                État
+                                <span x-show="sortBy === 'tat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
                     </tr>
                 </thead>
@@ -112,5 +131,67 @@
     </div>
 
     @include('tenues.modal_edit')
+
+
+<script>
+function tableSort() {
+    return {
+        sortBy: null,
+        sortDir: 'asc',
+
+        sort(column) {
+            if (this.sortBy === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = column;
+                this.sortDir = 'asc';
+            }
+            this.sortTable();
+        },
+
+        sortTable() {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
+
+            rows.sort((a, b) => {
+                let valueA, valueB;
+
+                // Récupérer les données de la colonne
+                const cells = Array.from(a.querySelectorAll('td'));
+                if (cells.length === 0) return 0;
+
+                // Déterminer l'index de la colonne
+                let colIndex = 0;
+                const headers = document.querySelectorAll('thead th');
+                let clickCount = 0;
+                for (let i = 0; i < headers.length; i++) {
+                    if (headers[i].textContent.toLowerCase().includes(this.sortBy.toLowerCase())) {
+                        colIndex = i;
+                        break;
+                    }
+                }
+
+                valueA = a.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+                valueB = b.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+
+                // Essayer de convertir en date
+                const dateA = new Date(valueA).getTime();
+                const dateB = new Date(valueB).getTime();
+
+                if (!isNaN(dateA) && !isNaN(dateB) && dateA > 0 && dateB > 0) {
+                    return this.sortDir === 'asc' ? dateA - dateB : dateB - dateA;
+                }
+
+                // Comparaison textuelle
+                return this.sortDir === 'asc'
+                    ? String(valueA).localeCompare(String(valueB), 'fr-FR')
+                    : String(valueB).localeCompare(String(valueA), 'fr-FR');
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    }
+}
+</script>
 
 @endsection

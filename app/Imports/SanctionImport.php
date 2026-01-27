@@ -13,6 +13,7 @@ class SanctionImport
     public $success = 0;
     public $skipped = 0;
     public $errors = [];
+    private $demandeurCache = [];  // Cache pour les demandeurs
 
     /**
      * Mapping types sanctions CSV → ENT (e_sanction.sanction_applique)
@@ -75,6 +76,14 @@ class SanctionImport
         $headers = array_map('trim', $headers);
         Log::info("En-têtes CSV: " . json_encode($headers));
 
+        // Détecter colonnes optionnelles
+        $hasDemandeur = in_array('Demandeur', $headers);
+        $hasQuart = in_array('Quart', $headers);
+        $hasStatut = in_array('Statut', $headers);
+
+        Log::info("Colonnes optionnelles détectées - Demandeur: " . ($hasDemandeur ? 'OUI' : 'NON') .
+                  ", Quart: " . ($hasQuart ? 'OUI' : 'NON') . ", Statut: " . ($hasStatut ? 'OUI' : 'NON'));
+
         $lineNumber = 1;
         while (($data = fgetcsv($handle, 0, ';')) !== false) {
             $lineNumber++;
@@ -85,8 +94,12 @@ class SanctionImport
                 continue;
             }
 
-            // Traiter la ligne
-            $this->processRow($row, $lineNumber);
+            // Traiter la ligne avec info colonnes optionnelles
+            $this->processRow($row, $lineNumber, [
+                'hasDemandeur' => $hasDemandeur,
+                'hasQuart' => $hasQuart,
+                'hasStatut' => $hasStatut
+            ]);
         }
 
         fclose($handle);
@@ -96,7 +109,7 @@ class SanctionImport
     /**
      * Traiter une ligne individuelle
      */
-    private function processRow(array $row, int $lineNumber): void
+    private function processRow(array $row, int $lineNumber, array $optionalColumns = []): void
     {
         try {
             // Valider ligne non vide
@@ -107,20 +120,20 @@ class SanctionImport
             // Récupérer travailleur
             $matricule = trim($row['MATLE'] ?? '');
             if (empty($matricule)) {
-                $this->addError($row, 'Matricule vide');
+                $this->addError($row, 'Matricule vide', $lineNumber);
                 return;
             }
 
             $travailleur = Travailleur::where('matricule', $matricule)->first();
             if (!$travailleur) {
-                $this->addError($row, "Matricule orphelin: {$matricule}");
+                $this->addError($row, "Matricule orphelin: {$matricule}", $lineNumber);
                 return;
             }
 
             // Vérifier dates obligatoires
             $dateSanction = $this->parseDate($row['date courrier'] ?? null);
             if (!$dateSanction) {
-                $this->addError($row, 'Date courrier vide ou invalide');
+                $this->addError($row, 'Date courrier vide ou invalide', $lineNumber);
                 return;
             }
 
@@ -157,7 +170,16 @@ class SanctionImport
 
             // Créer enregistrement
             $sanction = new Sanctions();
-            $sanction->demandeurid = auth()->id() ?? 1;
+
+            // === DEMANDEUR ===
+            if ($optionalColumns['hasDemandeur'] ?? false) {
+                $demandeurName = trim($row['Demandeur'] ?? '');
+                $demandeur = $this->findDemandeur($demandeurName);
+                $sanction->demandeurid = $demandeur ? $demandeur->id : (auth()->id() ?? 1);
+            } else {
+                $sanction->demandeurid = auth()->id() ?? 1;
+            }
+
             $sanction->employeid = $matricule;
             $sanction->motif = 0;
             $sanction->expose_motif = trim($row['Motif'] ?? '');
@@ -175,8 +197,23 @@ class SanctionImport
             $sanction->debut = $dateNotification ?? $dateSanction;
             $sanction->fin = $fin;
 
-            $sanction->quart = 0;
-            $sanction->statutid = 1;
+            // === QUART ===
+            if ($optionalColumns['hasQuart'] ?? false) {
+                $quart = trim($row['Quart'] ?? '0');
+                $sanction->quart = is_numeric($quart) ? (int)$quart : 0;
+            } else {
+                $sanction->quart = 0;
+            }
+
+            // === STATUT ===
+            if ($optionalColumns['hasStatut'] ?? false) {
+                $statut = trim($row['Statut'] ?? 'Enregistré');
+                // Mapper valeurs possibles: Enregistré = 1, Ajouté aux variables = 2
+                $sanction->statutid = ($statut === 'Ajouté aux variables' || $statut === '2') ? 2 : 1;
+            } else {
+                $sanction->statutid = 1;
+            }
+
             $sanction->userid = auth()->id() ?? 1;
 
             // Extraire année/mois
@@ -190,9 +227,36 @@ class SanctionImport
             Log::info("Sanction importée ligne {$lineNumber}: {$matricule} - Type: {$normalizedSanction}");
 
         } catch (\Exception $e) {
-            $this->addError($row, $e->getMessage());
+            $this->addError($row, $e->getMessage(), $lineNumber);
             Log::error("Erreur ligne {$lineNumber}: {$e->getMessage()}");
         }
+    }
+
+    /**
+     * Chercher un demandeur par nom/prénom avec cache
+     */
+    private function findDemandeur(string $name): ?Travailleur
+    {
+        if (empty($name)) {
+            return null;
+        }
+
+        $name = trim($name);
+
+        // Vérifier le cache
+        if (isset($this->demandeurCache[$name])) {
+            return $this->demandeurCache[$name];
+        }
+
+        // Chercher en base
+        $demandeur = Travailleur::where('nom', 'like', '%' . $name . '%')
+            ->orWhere('prenom', 'like', '%' . $name . '%')
+            ->first();
+
+        // Stocker dans le cache (même si null)
+        $this->demandeurCache[$name] = $demandeur;
+
+        return $demandeur;
     }
 
     /**
@@ -269,13 +333,14 @@ class SanctionImport
     /**
      * Ajouter une erreur au log
      */
-    private function addError($row, string $error): void
+    private function addError($row, string $error, int $lineNumber = 0): void
     {
         if ($row instanceof Collection) {
             $row = $row->toArray();
         }
 
         $this->errors[] = [
+            'ligne' => $lineNumber,
             'matricule' => $row['MATLE'] ?? 'N/A',
             'nom' => $row['Nom'] ?? 'N/A',
             'erreur' => $error,

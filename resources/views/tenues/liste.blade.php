@@ -34,17 +34,46 @@
     @include('errors')
 
     <!-- Main Content -->
-    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
-        <div class="overflow-x-auto">
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()"><div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
                     <tr class="bg-slate-900 text-white border-b">
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Matricule</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Nom & Prénoms</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Service</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold">Date réception</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold">Article reçu</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold">État tenue</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('matricule')">
+                            <div class="flex items-center gap-2">
+                                Matricule
+                                <span x-show="sortBy === 'matricule'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('nomprnoms')">
+                            <div class="flex items-center gap-2">
+                                Nom & Prénoms
+                                <span x-show="sortBy === 'nomprnoms'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('service')">
+                            <div class="flex items-center gap-2">
+                                Service
+                                <span x-show="sortBy === 'service'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('daterception')">
+                            <div class="flex items-center gap-2">
+                                Date réception
+                                <span x-show="sortBy === 'daterception'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('articlereu')">
+                            <div class="flex items-center gap-2">
+                                Article reçu
+                                <span x-show="sortBy === 'articlereu'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('tattenue')">
+                            <div class="flex items-center gap-2">
+                                État tenue
+                                <span x-show="sortBy === 'tattenue'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
                     </tr>
                 </thead>
@@ -120,5 +149,67 @@
     </div>
 
     @include('tenues.modal_edit')
+
+
+<script>
+function tableSort() {
+    return {
+        sortBy: null,
+        sortDir: 'asc',
+
+        sort(column) {
+            if (this.sortBy === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = column;
+                this.sortDir = 'asc';
+            }
+            this.sortTable();
+        },
+
+        sortTable() {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
+
+            rows.sort((a, b) => {
+                let valueA, valueB;
+
+                // Récupérer les données de la colonne
+                const cells = Array.from(a.querySelectorAll('td'));
+                if (cells.length === 0) return 0;
+
+                // Déterminer l'index de la colonne
+                let colIndex = 0;
+                const headers = document.querySelectorAll('thead th');
+                let clickCount = 0;
+                for (let i = 0; i < headers.length; i++) {
+                    if (headers[i].textContent.toLowerCase().includes(this.sortBy.toLowerCase())) {
+                        colIndex = i;
+                        break;
+                    }
+                }
+
+                valueA = a.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+                valueB = b.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+
+                // Essayer de convertir en date
+                const dateA = new Date(valueA).getTime();
+                const dateB = new Date(valueB).getTime();
+
+                if (!isNaN(dateA) && !isNaN(dateB) && dateA > 0 && dateB > 0) {
+                    return this.sortDir === 'asc' ? dateA - dateB : dateB - dateA;
+                }
+
+                // Comparaison textuelle
+                return this.sortDir === 'asc'
+                    ? String(valueA).localeCompare(String(valueB), 'fr-FR')
+                    : String(valueB).localeCompare(String(valueA), 'fr-FR');
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    }
+}
+</script>
 
 @endsection

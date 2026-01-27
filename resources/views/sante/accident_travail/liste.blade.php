@@ -24,17 +24,42 @@
     @include('errors')
 
     <!-- Main Content -->
-    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()">
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
                     <tr class="bg-slate-900 text-white border-b">
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Travailleur</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Cause</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Prescription</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('travailleur')">
+                            <div class="flex items-center gap-2">
+                                Travailleur
+                                <span x-show="sortBy === 'travailleur'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('cause')">
+                            <div class="flex items-center gap-2">
+                                Cause
+                                <span x-show="sortBy === 'cause'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('prescription')">
+                            <div class="flex items-center gap-2">
+                                Prescription
+                                <span x-show="sortBy === 'prescription'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Arrêt travail</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Date</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold">État</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('date')">
+                            <div class="flex items-center gap-2">
+                                Date
+                                <span x-show="sortBy === 'date'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('etat')">
+                            <div class="flex items-center justify-center gap-2">
+                                État
+                                <span x-show="sortBy === 'etat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
                     </tr>
                 </thead>
@@ -106,3 +131,66 @@
     @include('sante.accident_travail.modal_edit')
 
 @endsection
+
+<script>
+function tableSort() {
+    return {
+        sortBy: null,
+        sortDir: 'asc',
+
+        sort(column) {
+            if (this.sortBy === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = column;
+                this.sortDir = 'asc';
+            }
+            this.sortTable();
+        },
+
+        sortTable() {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
+
+            rows.sort((a, b) => {
+                let valueA, valueB;
+
+                switch(this.sortBy) {
+                    case 'travailleur':
+                        valueA = a.querySelector('td:nth-child(1)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(1)')?.textContent.trim() || '';
+                        break;
+                    case 'cause':
+                        valueA = a.querySelector('td:nth-child(2)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(2)')?.textContent.trim() || '';
+                        break;
+                    case 'prescription':
+                        valueA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        break;
+                    case 'date':
+                        valueA = a.querySelector('td:nth-child(5)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(5)')?.textContent.trim() || '';
+                        valueA = new Date(valueA).getTime() || 0;
+                        valueB = new Date(valueB).getTime() || 0;
+                        break;
+                    case 'etat':
+                        valueA = a.querySelector('td:nth-child(6)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(6)')?.textContent.trim() || '';
+                        break;
+                }
+
+                if (typeof valueA === 'number' && typeof valueB === 'number') {
+                    return this.sortDir === 'asc' ? valueA - valueB : valueB - valueA;
+                } else {
+                    return this.sortDir === 'asc'
+                        ? String(valueA).localeCompare(String(valueB), 'fr-FR')
+                        : String(valueB).localeCompare(String(valueA), 'fr-FR');
+                }
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    }
+}
+</script>

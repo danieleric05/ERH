@@ -30,18 +30,53 @@
     @include('errors')
 
     <!-- Main Content -->
-    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()">
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
                     <tr class="bg-slate-900 text-white border-b">
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Demandeur</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold">Fautif(s)</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Motif</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Sanction appliquée</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Résultat</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold">États</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold">Date sanction</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('demandeur'">
+                            <div class="flex items-center gap-2">
+                                Demandeur
+                                <span x-show="sortBy === 'demandeur'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('fautif')">
+                            <div class="flex items-center justify-center gap-2">
+                                Fautif(s)
+                                <span x-show="sortBy === 'fautif'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('motif')">
+                            <div class="flex items-center gap-2">
+                                Motif
+                                <span x-show="sortBy === 'motif'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('sanction')">
+                            <div class="flex items-center gap-2">
+                                Sanction appliquée
+                                <span x-show="sortBy === 'sanction'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('resultat')">
+                            <div class="flex items-center gap-2">
+                                Résultat
+                                <span x-show="sortBy === 'resultat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('statut')">
+                            <div class="flex items-center justify-center gap-2">
+                                États
+                                <span x-show="sortBy === 'statut'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('date')">
+                            <div class="flex items-center gap-2">
+                                Date sanction
+                                <span x-show="sortBy === 'date'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
                     </tr>
                 </thead>
@@ -185,3 +220,86 @@
     </div>
 
 @endsection
+
+<script>
+function tableSort() {
+    return {
+        sortBy: 'date',
+        sortDir: 'desc',
+
+        sort(column) {
+            // Si on clique sur la même colonne, inverser la direction
+            if (this.sortBy === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = column;
+                this.sortDir = 'asc'; // Par défaut croissant pour une nouvelle colonne
+            }
+
+            this.sortTable();
+        },
+
+        sortTable() {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
+
+            rows.sort((a, b) => {
+                let valueA, valueB;
+
+                switch(this.sortBy) {
+                    case 'demandeur':
+                        valueA = a.querySelector('td:nth-child(1)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(1)')?.textContent.trim() || '';
+                        break;
+                    case 'fautif':
+                        valueA = a.querySelector('td:nth-child(2)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(2)')?.textContent.trim() || '';
+                        break;
+                    case 'motif':
+                        valueA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        break;
+                    case 'sanction':
+                        valueA = a.querySelector('td:nth-child(4) span')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(4) span')?.textContent.trim() || '';
+                        break;
+                    case 'resultat':
+                        valueA = a.querySelector('td:nth-child(5)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(5)')?.textContent.trim() || '';
+                        break;
+                    case 'statut':
+                        valueA = a.querySelector('td:nth-child(6)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(6)')?.textContent.trim() || '';
+                        break;
+                    case 'date':
+                        valueA = a.querySelector('td:nth-child(7)')?.textContent.trim() || '';
+                        valueB = b.querySelector('td:nth-child(7)')?.textContent.trim() || '';
+                        // Convertir au format comparable pour les dates
+                        valueA = new Date(valueA).getTime() || 0;
+                        valueB = new Date(valueB).getTime() || 0;
+                        break;
+                }
+
+                // Comparaison numérique ou textuelle
+                if (typeof valueA === 'number' && typeof valueB === 'number') {
+                    return this.sortDir === 'asc' ? valueA - valueB : valueB - valueA;
+                } else {
+                    return this.sortDir === 'asc'
+                        ? String(valueA).localeCompare(String(valueB), 'fr-FR')
+                        : String(valueB).localeCompare(String(valueA), 'fr-FR');
+                }
+            });
+
+            // Réinsérer les lignes triées
+            rows.forEach(row => tbody.appendChild(row));
+        },
+
+        init() {
+            // Trier par défaut par date décroissante au chargement
+            this.$nextTick(() => {
+                this.sortTable();
+            });
+        }
+    }
+}
+</script>
