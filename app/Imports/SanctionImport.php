@@ -6,12 +6,9 @@ use App\Sanctions;
 use App\Travailleur;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 
-class SanctionImport implements ToCollection, WithHeadingRow
+class SanctionImport
 {
     public $success = 0;
     public $skipped = 0;
@@ -49,107 +46,153 @@ class SanctionImport implements ToCollection, WithHeadingRow
         'LICENCIEMENT' => 7,
     ];
 
-    public function collection(Collection $rows)
+    /**
+     * Importer depuis fichier CSV avec délimiteur personnalisé (;)
+     */
+    public function importFromFile(string $filePath): void
     {
-        foreach ($rows as $row) {
-            try {
-                // Valider ligne non vide
-                if ($this->isEmptyRow($row)) {
-                    continue;
-                }
-
-                // Récupérer travailleur
-                $matricule = trim($row['MATLE'] ?? '');
-                if (empty($matricule)) {
-                    $this->addError($row, 'Matricule vide');
-                    continue;
-                }
-
-                $travailleur = Travailleur::where('matricule', $matricule)->first();
-                if (!$travailleur) {
-                    $this->addError($row, "Matricule orphelin: {$matricule}");
-                    continue;
-                }
-
-                // Vérifier dates obligatoires
-                $dateSanction = $this->parseDate($row['date courrier'] ?? null);
-                if (!$dateSanction) {
-                    $this->addError($row, 'Date courrier vide ou invalide');
-                    continue;
-                }
-
-                // Vérifier si sanction déjà existante (doublon)
-                $verif = Sanctions::where('employeid', $matricule)
-                    ->where('datesanction', $dateSanction)
-                    ->first();
-
-                if ($verif) {
-                    $this->skipped++;
-                    Log::info("Sanction dupliquée ignorée: {$matricule} du {$dateSanction}");
-                    continue;
-                }
-
-                // Normaliser type sanction
-                $sanctionType = trim($row['Sanction'] ?? '');
-                $normalizedSanction = $this->normalizeSanction($sanctionType);
-
-                // Si sanction vide ou non trouvée, on peut la passer en attente
-                if (empty($sanctionType)) {
-                    $this->skipped++;
-                    Log::warning("Sanction vide pour {$matricule}");
-                    continue;
-                }
-
-                // Extraire nombre de jours
-                $nombreJours = $this->extractDays($sanctionType);
-
-                // Calculer fin de sanction
-                $fin = null;
-                if ($nombreJours > 0 && $dateSanction) {
-                    $fin = Carbon::parse($dateSanction)->addDays($nombreJours);
-                }
-
-                // Créer enregistrement
-                $sanction = new Sanctions();
-                $sanction->demandeurid = auth()->id() ?? 1; // Utilisateur courant
-                $sanction->employeid = $matricule;
-                $sanction->motif = 0; // Par défaut (peut référencer table e_motif si elle existe)
-                $sanction->expose_motif = trim($row['Motif'] ?? '');
-                $sanction->datesanction = $dateSanction;
-
-                // Date du fait fautif = date courrier si pas spécifiée
-                $dateFautes = $this->parseDate($row['Date Sanction'] ?? null);
-                $sanction->datefautes = $dateFautes ?? $dateSanction;
-
-                $sanction->sanction_applique = $normalizedSanction;
-                $sanction->nombre_jour = $nombreJours;
-
-                // Début = date notification ou date sanction
-                $dateNotification = $this->parseDate($row['Date Notification'] ?? null);
-                $sanction->debut = $dateNotification ?? $dateSanction;
-                $sanction->fin = $fin;
-
-                $sanction->quart = 0; // Pas d'info quart dans CSV
-                $sanction->statutid = 1; // Actif
-                $sanction->userid = auth()->id() ?? 1;
-
-                // Extraire année/mois de date sanction
-                $carbonDate = Carbon::parse($dateSanction);
-                $sanction->mois = $carbonDate->month;
-                $sanction->annee = $carbonDate->year;
-
-                $sanction->save();
-                $this->success++;
-
-                Log::info("Sanction importée: {$matricule} - Type: {$normalizedSanction}");
-
-            } catch (\Exception $e) {
-                $this->addError($row, $e->getMessage());
-                Log::error("Erreur importation sanction: {$e->getMessage()}");
-            }
+        if (!file_exists($filePath)) {
+            throw new \Exception("Fichier non trouvé: {$filePath}");
         }
 
+        // Lire avec encodage UTF-8
+        $handle = fopen($filePath, 'r');
+        if (!$handle) {
+            throw new \Exception("Impossible d'ouvrir le fichier: {$filePath}");
+        }
+
+        // Configurer encodage pour fgetcsv
+        stream_filter_append($handle, 'convert.iconv.ISO-8859-1/UTF-8');
+
+        // Lire en-têtes (première ligne)
+        $headers = fgetcsv($handle, 0, ';');
+        if (!$headers) {
+            fclose($handle);
+            throw new \Exception("Fichier CSV vide ou non lisible");
+        }
+
+        // Normaliser en-têtes (trim)
+        $headers = array_map('trim', $headers);
+        Log::info("En-têtes CSV: " . json_encode($headers));
+
+        $lineNumber = 1;
+        while (($data = fgetcsv($handle, 0, ';')) !== false) {
+            $lineNumber++;
+
+            // Construire array associatif
+            $row = array_combine($headers, array_pad($data, count($headers), null));
+            if ($row === false) {
+                continue;
+            }
+
+            // Traiter la ligne
+            $this->processRow($row, $lineNumber);
+        }
+
+        fclose($handle);
         $this->logSummary();
+    }
+
+    /**
+     * Traiter une ligne individuelle
+     */
+    private function processRow(array $row, int $lineNumber): void
+    {
+        try {
+            // Valider ligne non vide
+            if ($this->isEmptyRow($row)) {
+                return;
+            }
+
+            // Récupérer travailleur
+            $matricule = trim($row['MATLE'] ?? '');
+            if (empty($matricule)) {
+                $this->addError($row, 'Matricule vide');
+                return;
+            }
+
+            $travailleur = Travailleur::where('matricule', $matricule)->first();
+            if (!$travailleur) {
+                $this->addError($row, "Matricule orphelin: {$matricule}");
+                return;
+            }
+
+            // Vérifier dates obligatoires
+            $dateSanction = $this->parseDate($row['date courrier'] ?? null);
+            if (!$dateSanction) {
+                $this->addError($row, 'Date courrier vide ou invalide');
+                return;
+            }
+
+            // Vérifier si sanction déjà existante (doublon)
+            $verif = Sanctions::where('employeid', $matricule)
+                ->where('datesanction', $dateSanction)
+                ->first();
+
+            if ($verif) {
+                $this->skipped++;
+                Log::info("Sanction dupliquée ignorée: {$matricule} du {$dateSanction}");
+                return;
+            }
+
+            // Normaliser type sanction
+            $sanctionType = trim($row['Sanction'] ?? '');
+            $normalizedSanction = $this->normalizeSanction($sanctionType);
+
+            // Si sanction vide ou non trouvée, ignorer
+            if (empty($sanctionType)) {
+                $this->skipped++;
+                Log::warning("Sanction vide pour {$matricule}");
+                return;
+            }
+
+            // Extraire nombre de jours
+            $nombreJours = $this->extractDays($sanctionType);
+
+            // Calculer fin de sanction
+            $fin = null;
+            if ($nombreJours > 0 && $dateSanction) {
+                $fin = Carbon::parse($dateSanction)->addDays($nombreJours);
+            }
+
+            // Créer enregistrement
+            $sanction = new Sanctions();
+            $sanction->demandeurid = auth()->id() ?? 1;
+            $sanction->employeid = $matricule;
+            $sanction->motif = 0;
+            $sanction->expose_motif = trim($row['Motif'] ?? '');
+            $sanction->datesanction = $dateSanction;
+
+            // Date du fait fautif
+            $dateFautes = $this->parseDate($row['Date Sanction'] ?? null);
+            $sanction->datefautes = $dateFautes ?? $dateSanction;
+
+            $sanction->sanction_applique = $normalizedSanction;
+            $sanction->nombre_jour = $nombreJours;
+
+            // Début = date notification ou date sanction
+            $dateNotification = $this->parseDate($row['Date Notification'] ?? null);
+            $sanction->debut = $dateNotification ?? $dateSanction;
+            $sanction->fin = $fin;
+
+            $sanction->quart = 0;
+            $sanction->statutid = 1;
+            $sanction->userid = auth()->id() ?? 1;
+
+            // Extraire année/mois
+            $carbonDate = Carbon::parse($dateSanction);
+            $sanction->mois = $carbonDate->month;
+            $sanction->annee = $carbonDate->year;
+
+            $sanction->save();
+            $this->success++;
+
+            Log::info("Sanction importée ligne {$lineNumber}: {$matricule} - Type: {$normalizedSanction}");
+
+        } catch (\Exception $e) {
+            $this->addError($row, $e->getMessage());
+            Log::error("Erreur ligne {$lineNumber}: {$e->getMessage()}");
+        }
     }
 
     /**
@@ -214,16 +257,24 @@ class SanctionImport implements ToCollection, WithHeadingRow
     /**
      * Vérifier si une ligne est vide
      */
-    private function isEmptyRow(array $row): bool
+    private function isEmptyRow($row): bool
     {
-        return empty($row['MATLE']) && empty($row['Nom']) && empty($row['Sanction']);
+        if ($row instanceof Collection) {
+            $row = $row->toArray();
+        }
+
+        return empty($row['MATLE'] ?? null) && empty($row['Nom'] ?? null) && empty($row['Sanction'] ?? null);
     }
 
     /**
      * Ajouter une erreur au log
      */
-    private function addError(array $row, string $error): void
+    private function addError($row, string $error): void
     {
+        if ($row instanceof Collection) {
+            $row = $row->toArray();
+        }
+
         $this->errors[] = [
             'matricule' => $row['MATLE'] ?? 'N/A',
             'nom' => $row['Nom'] ?? 'N/A',

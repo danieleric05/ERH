@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Imports\SanctionImport;
 use Illuminate\Console\Command;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ImportSanctions extends Command
 {
@@ -43,7 +42,7 @@ class ImportSanctions extends Command
 
         try {
             $import = new SanctionImport();
-            Excel::import($import, $filePath);
+            $import->importFromFile($filePath);
 
             $duration = round(microtime(true) - $startTime, 2);
             $summary = $import->getSummary();
