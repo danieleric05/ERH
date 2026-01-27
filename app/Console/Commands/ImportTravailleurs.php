@@ -2,17 +2,17 @@
 
 namespace App\Console\Commands;
 
-use App\Imports\SanctionImport;
+use App\Imports\TravailleurImport;
 use Illuminate\Console\Command;
 
-class ImportSanctions extends Command
+class ImportTravailleurs extends Command
 {
     /**
      * Nom et description de la commande
      */
-    protected $signature = 'sanctions:import {file : Chemin du fichier CSV à importer}';
+    protected $signature = 'travailleurs:import {file : Chemin du fichier CSV à importer}';
 
-    protected $description = 'Importer les sanctions depuis un fichier CSV';
+    protected $description = 'Importer les travailleurs/embauchés depuis un fichier CSV Sage';
 
     /**
      * Exécuter la commande
@@ -27,12 +27,13 @@ class ImportSanctions extends Command
             return 1;
         }
 
+        $fileSize = filesize($filePath);
         $this->info("📂 Fichier détecté: {$filePath}");
-        $this->line("Taille: " . number_format(filesize($filePath) / 1024, 2) . " KB");
+        $this->line("   Taille: " . number_format($fileSize / 1024, 2) . " KB");
 
         // Confirmation
         if (!$this->confirm('Procéder à l\'importation ?')) {
-            $this->info('Importation annulée.');
+            $this->info('⚠️  Importation annulée.');
             return 0;
         }
 
@@ -41,7 +42,7 @@ class ImportSanctions extends Command
         $startTime = microtime(true);
 
         try {
-            $import = new SanctionImport();
+            $import = new TravailleurImport();
             $import->importFromFile($filePath);
 
             $duration = round(microtime(true) - $startTime, 2);
@@ -52,23 +53,23 @@ class ImportSanctions extends Command
             $this->info('✅ Importation terminée en ' . $duration . 's');
             $this->line('');
             $this->info('📊 RÉSUMÉ');
-            $this->line('  ✅ Importées : ' . $summary['success']);
-            $this->line('  ⏭️  Ignorées : ' . $summary['skipped']);
-            $this->line('  ❌ Erreurs : ' . count($summary['errors']));
-            $this->line('  ━━━━━━━━━━━━━━━━━');
-            $this->line('  📈 Total : ' . $summary['total']);
+            $this->line('  ✅ Importés   : ' . $summary['success']);
+            $this->line('  ⏭️  Ignorés   : ' . $summary['skipped']);
+            $this->line('  ❌ Erreurs   : ' . count($summary['errors']));
+            $this->line('  ━━━━━━━━━━━━━━━━━━━');
+            $this->line('  📈 Total     : ' . $summary['total']);
 
+            // Afficher détails des erreurs si présentes
             if (!empty($summary['errors'])) {
                 $this->newLine();
-                $this->warn('⚠️  ERREURS DÉTAILLÉES (premiers 15)');
-                foreach (array_slice($summary['errors'], 0, 15) as $i => $error) {
+                $this->warn('⚠️  ERREURS DÉTAILLÉES (premiers 20)');
+                foreach (array_slice($summary['errors'], 0, 20) as $i => $error) {
                     $this->line(($i + 1) . ". Ligne {$error['ligne']}: {$error['matricule']} ({$error['nom']})");
                     $this->line("   → {$error['erreur']}");
                 }
-                if (count($summary['errors']) > 15) {
-                    $this->line("   ... et " . (count($summary['errors']) - 15) . " autres erreurs");
+                if (count($summary['errors']) > 20) {
+                    $this->line("   ... et " . (count($summary['errors']) - 20) . " autres erreurs");
                 }
-                $this->warn("\n⚠️  Consultez les logs (storage/logs/laravel.log) pour la liste complète des erreurs");
             }
 
             return 0;
@@ -80,4 +81,3 @@ class ImportSanctions extends Command
         }
     }
 }
-
