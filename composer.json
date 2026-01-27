@@ -16,7 +16,8 @@
         "spatie/laravel-html": "^3.5"
     },
     "require-dev": {
-        "mockery/mockery": "^1.6",  
+        "laravel/boost": "^2.0",
+        "mockery/mockery": "^1.6",
         "phpunit/phpunit": "^9.6"
     },
     "replace": {
