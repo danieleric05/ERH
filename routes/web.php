@@ -10,6 +10,7 @@ use App\Http\Controllers\SanteController;
 use App\Http\Controllers\VariablesController;
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\OffreEmploiController;
+use App\Http\Controllers\CandidatureController;
 
 /*
 |--------------------------------------------------------------------------
@@ -684,4 +685,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/recrutement/offres/{id}/edit', [OffreEmploiController::class, 'edit'])->name('offres.edit');
     Route::put('/recrutement/offres/{id}', [OffreEmploiController::class, 'update'])->name('offres.update');
     Route::post('/recrutement/offres/{id}/close', [OffreEmploiController::class, 'close'])->name('offres.close');
+
+    /******************************* RECRUTEMENT - CANDIDATURES *******************************************/
+
+    Route::get('/recrutement/candidatures', [CandidatureController::class, 'index'])->name('candidatures.index');
+    Route::get('/recrutement/candidatures/kanban', [CandidatureController::class, 'kanban'])->name('candidatures.kanban');
+    Route::get('/recrutement/candidatures/{id}', [CandidatureController::class, 'show'])->name('candidatures.show');
+    Route::post('/recrutement/candidatures/{id}/statut', [CandidatureController::class, 'changerStatut'])->name('candidatures.statut');
+    Route::post('/recrutement/candidatures/{id}/assigner', [CandidatureController::class, 'assignerRecruteur'])->name('candidatures.assigner');
+    Route::post('/recrutement/candidatures/{id}/rejeter', [CandidatureController::class, 'rejeter'])->name('candidatures.rejeter');
+    Route::post('/recrutement/candidatures/{id}/embaucher', [CandidatureController::class, 'convertirEnTravailleur'])->name('candidatures.embaucher');
+    Route::get('/recrutement/candidatures/{id}/evaluer', [CandidatureController::class, 'evaluer'])->name('candidatures.evaluer');
+    Route::post('/recrutement/candidatures/{id}/evaluation', [CandidatureController::class, 'storeEvaluation'])->name('candidatures.evaluation');
 });
