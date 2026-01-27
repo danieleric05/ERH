@@ -1,0 +1,84 @@
+================================================================================
+  CONFIGURATION WINDOWS - COMMANDES À COPIER-COLLER
+================================================================================
+
+IP WSL2 actuelle : 172.31.96.10
+IP Windows cible : 10.10.60.14
+Port : 8000
+
+================================================================================
+ÉTAPE 1 : Ouvrir PowerShell en ADMINISTRATEUR
+================================================================================
+
+Windows + X → "Terminal (Admin)"
+OU
+Clic droit Démarrer → "Windows PowerShell (Administrateur)"
+
+
+================================================================================
+ÉTAPE 2 : COPIER-COLLER CES COMMANDES
+================================================================================
+
+cd \\wsl$\Ubuntu\home\daniel\work\projects\erh\site
+
+Set-ExecutionPolicy Bypass -Scope Process -Force
+
+.\setup-wsl-network.ps1
+
+
+================================================================================
+ÉTAPE 3 : TESTER DANS UN NAVIGATEUR
+================================================================================
+
+http://localhost:8000
+http://10.10.60.14:8000
+
+
+================================================================================
+SI ÇA NE MARCHE PAS
+================================================================================
+
+1. Vérifier que le serveur WSL2 tourne :
+   - Ouvrir Ubuntu (WSL)
+   - Taper : ps aux | grep "php artisan serve"
+   - Si rien : cd /home/daniel/work/projects/erh/site
+              php artisan serve --host=0.0.0.0 --port=8000
+
+2. Re-exécuter le script PowerShell
+
+3. Vérifier le pare-feu Windows
+
+
+================================================================================
+RÉSULTAT ATTENDU
+================================================================================
+
+================================================
+  Configuration réseau WSL2 pour ERH
+================================================
+
+1. Récupération de l'IP WSL2...
+   IP WSL2 : 172.31.96.10 ✅
+
+2. Récupération de l'IP Windows...
+   IP Windows : 10.10.60.14 ✅
+
+3. Nettoyage des anciennes règles...
+   Nettoyage terminé ✅
+
+4. Création du port forwarding...
+   Port forwarding créé avec succès ! ✅
+
+5. Configuration du pare-feu Windows...
+   Règle pare-feu créée avec succès ! ✅
+
+
+================================================================================
+PARTAGER AVEC LES TESTEURS
+================================================================================
+
+"Le site ERH est accessible pour les tests sur :
+http://10.10.60.14:8000"
+
+
+================================================================================
