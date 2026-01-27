@@ -169,6 +169,4 @@
         </div>
     </div>
 
-    @include('tenues.modal_edit')
-
 @endsection

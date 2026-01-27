@@ -9,6 +9,7 @@ use App\Http\Controllers\SanctionController;
 use App\Http\Controllers\SanteController;
 use App\Http\Controllers\VariablesController;
 use App\Http\Controllers\ConfigController;
+use App\Http\Controllers\OffreEmploiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -470,7 +471,7 @@ Route::middleware(['auth'])->group(function () {
             ->get();
         return view("sanctions.edit", compact("data_travailleur"));
     });
-    Route::get("/liste-sanction", [SanctionController::class, 'listes_anctions'])->name("listesanctions");
+    Route::get("/liste-sanction", [SanctionController::class, 'listes_sanctions'])->name("listesanctions");
     Route::get("/telecharger-sanction/{id}", [SanctionController::class, 'techarger_sanctions'])->name("techarger_sanctions");
     Route::get("/sanction-variable/{id}", [SanctionController::class, 'sanctionvariable'])->name("sanctionvariable");
     Route::get("/add-autorisation-variables/{id}", [SanctionController::class, 'autorisationvariable'])->name("autorisationvariable");
@@ -673,4 +674,14 @@ Route::middleware(['auth'])->group(function () {
     // ARCHIVÉ - Précarité : Route::get("/telecharger-fiche-precarite/{id}", [EmployerController::class, 'telechargerFichePrecarite'])->name("telechargerFichePrecarite");
 
     Route::get('/api/calendrier/evenements', [EmployerController::class, 'getEvenementsCalendrier'])->name('calendrier.evenements');
+
+    /******************************* RECRUTEMENT - OFFRES D'EMPLOI *******************************************/
+
+    Route::get('/recrutement/offres', [OffreEmploiController::class, 'index'])->name('offres.index');
+    Route::get('/recrutement/offres/create', [OffreEmploiController::class, 'create'])->name('offres.create');
+    Route::post('/recrutement/offres', [OffreEmploiController::class, 'store'])->name('offres.store');
+    Route::get('/recrutement/offres/{id}', [OffreEmploiController::class, 'show'])->name('offres.show');
+    Route::get('/recrutement/offres/{id}/edit', [OffreEmploiController::class, 'edit'])->name('offres.edit');
+    Route::put('/recrutement/offres/{id}', [OffreEmploiController::class, 'update'])->name('offres.update');
+    Route::post('/recrutement/offres/{id}/close', [OffreEmploiController::class, 'close'])->name('offres.close');
 });

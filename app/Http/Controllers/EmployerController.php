@@ -1091,13 +1091,14 @@ class EmployerController extends Controller
         $sanction = Sanctions::where('id', $idsanc)->first();
         $frdate = Carbon::parse($sanction->datefautes)->formatLocalized('%d %b %Y');
 
-        //$listesanctiones = unserialize($sanct->employeid);
+        $listesanctiones = unserialize($sanction->employeid);
         $travailleur = Travailleur::where('matricule', $mat)->first();
 
         $departements = Departement::where('id', $travailleur->departementid)->first();
         $unites = Unites::where('id', $travailleur->uniteid)->first();
         $pays = Pays::where('id', $travailleur->paysid)->first();
         $equipes = Equipes::where('id', $travailleur->equipeid)->first();
+        $id = $idsanc;
 
         if ($request->has('download')) {
             // Set extra option

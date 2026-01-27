@@ -132,7 +132,7 @@
                 </div>
 
                 <!-- Conditional Fields for Mise à Pied -->
-                <div x-show="showMiseAPiedFields" class="hidden border-t border-slate-200 pt-4 mt-4">
+                <div x-show="showMiseAPiedFields" class="border-t border-slate-200 pt-4 mt-4">
                     <h4 class="text-md font-semibold text-text-primary mb-4">Période de Mise à Pied</h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Nombre de Jours -->

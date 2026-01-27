@@ -97,6 +97,14 @@
                             class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
                     </div>
 
+                    <!-- Date de la Faute -->
+                    <div>
+                        <label for="datefautes" class="block text-sm font-medium text-text-primary mb-2">Date de la Faute</label>
+                        <input required type="date" name="datefautes" id="datefautes"
+                            value="{{ date('Y-m-d') }}"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
+                    </div>
+
                     <!-- Sanction Appliquée -->
                     <div>
                         <label for="sanction_applique" class="block text-sm font-medium text-text-primary mb-2">Sanction Appliquée</label>
@@ -111,7 +119,7 @@
                     </div>
 
                     <!-- Nombre de Jours (Conditional) -->
-                    <div x-show="showMiseAPiedFields" class="hidden">
+                    <div x-show="showMiseAPiedFields">
                         <label for="nombre_jour" class="block text-sm font-medium text-text-primary mb-2">Nombre de Jours</label>
                         <input type="text" name="nombre_jour" id="nombre_jour"
                             class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"

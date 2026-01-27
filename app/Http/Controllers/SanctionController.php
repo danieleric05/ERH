@@ -20,7 +20,7 @@ class SanctionController extends Controller
         $verif = Sanctions::Where('demandeurid', $request->demandeurid)->Where('employeid', $request->concerneid)->Where('datesanction', $request->datesanction)->first();
 
         if($verif){
-            return Redirect::back()->withErrors("Impossible qu'un employé ai des heures supplémentaire égales durant la meme journée.");
+            return Redirect::back()->withErrors("Une sanction existe déjà pour ce(s) employé(s) à cette date.");
         }else{
 
             $tabDate = explode("-", $request->datesanction);
@@ -59,7 +59,7 @@ class SanctionController extends Controller
         return view('sanctions.fiche_sanction', compact('sanct'));
     }
 
-    public function listes_anctions(){
+    public function listes_sanctions(){
         $Sanctions = Sanctions::orderBy('id', 'DESC')->get();
         return view('sanctions.liste', compact('Sanctions'));
     }
