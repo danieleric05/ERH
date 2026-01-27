@@ -997,9 +997,9 @@ Ces assets ne sont pas gérés par npm/composer mais stockés directement :
 
 ### 🔴 HAUTE PRIORITÉ - CRITIQUE
 
-#### 1. Table `user` vs `users`
+#### 1. Architecture authentification à deux tables (CLARIFIÉ)
 
-**Problème:** Le modèle `User.php` cherche la table `user` (singulier), mais Laravel crée `users` (pluriel).
+**CLARIFIÉ ✅ -** Le modèle `User.php` cherche la table `user` (singulier), mais Laravel crée `users` (pluriel).
 
 ```php
 // app/User.php
