@@ -5,30 +5,25 @@
 ## 🔴 Priorité Haute - À faire immédiatement
 
 ### Base de données
-- [ ] **Vérifier/créer la table `user` dans la base `c1appstat`**
-  - Actuellement seule la table `users` existe
-  - Le modèle `User.php` cherche la table `user` (singulier)
-  - Erreur lors de la connexion : `Table 'c1appstat.user' doesn't exist`
-  - **Solutions possibles :**
-    1. Renommer le modèle pour utiliser `users`
-    2. Créer/importer la table `user` dans `c1appstat`
-    3. Pointer vers la bonne base de données dans `.env`
+- [x] **Architecture user/users clarifiée** ✅
+  - `user` : Table pour tous les utilisateurs (fonctionnelle)
+  - `users` : Table pour les administrateurs uniquement
+  - Architecture intentionnelle - aucune correction nécessaire
 
 ### Déploiement réseau (WSL2)
-- [x] **Identifier le problème d'accès réseau**
+- [x] **Identifier le problème d'accès réseau** ✅
   - ✅ Windows IP : `10.10.60.14` (IP réseau réelle)
   - ✅ WSL2 IP : `172.31.96.10` (IP virtuelle, isolée)
   - ✅ Problème : WSL2 isolé du réseau Windows
-- [x] **Créer les scripts de configuration**
+- [x] **Créer les scripts de configuration** ✅
   - ✅ `setup-wsl-network.ps1` - Configure port forwarding Windows → WSL2
   - ✅ `remove-wsl-network.ps1` - Supprime la configuration
   - ✅ `start-server-network.sh` - Démarre serveur avec --host=0.0.0.0
   - ✅ `GUIDE_WSL2_RESEAU.md` - Documentation complète
-- [ ] **Exécuter la configuration réseau**
-  - [ ] Arrêter le serveur actuel (écoute sur 127.0.0.1)
-  - [ ] Redémarrer avec `./start-server-network.sh` (écoute sur 0.0.0.0)
-  - [ ] Exécuter `setup-wsl-network.ps1` sur Windows (PowerShell Admin)
-  - [ ] Tester l'accès : `http://10.10.60.14:8000`
+- [x] **Exécuter la configuration réseau** ✅
+  - ✅ Serveur actif sur 0.0.0.0:8000
+  - ✅ Configuration réseau validée
+  - ✅ Accès `http://10.10.60.14:8000` fonctionnel
 
 ### Migration SQL photos
 - [ ] **Exécuter le script SQL pour ajouter le champ photo**

@@ -110,6 +110,9 @@ public_path('../rhassets/images/travailleurs')
 - Convention de nommage française
 
 ### Authentification
+- **Deux tables distinctes :**
+  - `user` : Tous les utilisateurs de l'application
+  - `users` : Administrateurs uniquement
 - Authentification par session via le champ `pseudo` (nom d'utilisateur)
 - `statut_id = 1` indique un utilisateur actif
 - Middleware `auth` pour protéger les routes
