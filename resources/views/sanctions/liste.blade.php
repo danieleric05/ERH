@@ -61,7 +61,20 @@
                         </td>
                         <td class="px-6 py-4 text-center text-sm">
                             <div class="flex flex-wrap gap-1 justify-center">
-                                @foreach(unserialize($vari->employeid) as $matricule)
+                                @php
+                                    $matricules = [];
+                                    if (!empty($vari->employeid)) {
+                                        try {
+                                            $matricules = unserialize($vari->employeid);
+                                            if (!is_array($matricules)) {
+                                                $matricules = [$matricules];
+                                            }
+                                        } catch (Exception $e) {
+                                            $matricules = [];
+                                        }
+                                    }
+                                @endphp
+                                @forelse($matricules as $matricule)
                                     @php
                                         $travailleur = \App\Travailleur::where('matricule', $matricule)->first();
                                     @endphp
@@ -70,7 +83,9 @@
                                             {{ $matricule }}
                                         </span>
                                     @endif
-                                @endforeach
+                                @empty
+                                    <span class="text-slate-400 text-xs">-</span>
+                                @endforelse
                             </div>
                         </td>
                         <td class="px-6 py-4 text-sm text-text-secondary">

@@ -181,7 +181,18 @@ class SanctionController extends Controller
 
             $nb_jour = $SanctionsFirst->nombre_jour;
 
-            $consernes = unserialize($SanctionsFirst->employeid);
+            // Sécuriser unserialize avec gestion d'erreur
+            $consernes = [];
+            if (!empty($SanctionsFirst->employeid)) {
+                try {
+                    $consernes = unserialize($SanctionsFirst->employeid);
+                    if (!is_array($consernes)) {
+                        $consernes = [$consernes];
+                    }
+                } catch (Exception $e) {
+                    return Redirect::back()->withErrors("Erreur : données de sanction corrompues.");
+                }
+            }
 
             $verif_traitement = HAO1::where('statutid', 1)->get();
 

@@ -30,15 +30,27 @@
 							
                         </div>
                         <div class="body text-center perso_color">
-							
+
 							<?php
-								$sanctions = unserialize($sanct->employeid);
+								$sanctions = [];
+								if (!empty($sanct->employeid)) {
+									try {
+										$sanctions = unserialize($sanct->employeid);
+										if (!is_array($sanctions)) {
+											$sanctions = [$sanctions];
+										}
+									} catch (Exception $e) {
+										$sanctions = [];
+									}
+								}
 							?>
-							@foreach($sanctions as $sant)
+							@forelse($sanctions as $sant)
 								<a target="_blank" title="{{ App\Travailleur::where('matricule', $sant)->first()->nom }} {{ App\Travailleur::where('matricule', $sant)->first()->prenom }}" href="{{ route('telechargerSanctions', ['mat' => $sant, 'idsanc' => $sanct->id]) }}?download=pdf">
 										<button type="button" class="btn btn-outline-secondary">DOWNLOAD - {{ $sant}} </button>
 								</a>
-							@endforeach
+							@empty
+								<p class="text-slate-500">Aucune sanction à télécharger</p>
+							@endforelse
                         </div>
                     </div>
                 </div>

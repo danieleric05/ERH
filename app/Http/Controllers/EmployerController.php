@@ -1089,9 +1089,25 @@ class EmployerController extends Controller
     public function telechargerSanctions(Request $request, $mat, $idsanc)
     {
         $sanction = Sanctions::where('id', $idsanc)->first();
+        if (!$sanction) {
+            abort(404, 'Sanction non trouvée');
+        }
+
         $frdate = Carbon::parse($sanction->datefautes)->formatLocalized('%d %b %Y');
 
-        $listesanctiones = unserialize($sanction->employeid);
+        // Sécuriser unserialize avec gestion d'erreur
+        $listesanctiones = [];
+        if (!empty($sanction->employeid)) {
+            try {
+                $listesanctiones = unserialize($sanction->employeid);
+                if (!is_array($listesanctiones)) {
+                    $listesanctiones = [$listesanctiones];
+                }
+            } catch (Exception $e) {
+                $listesanctiones = [];
+            }
+        }
+
         $travailleur = Travailleur::where('matricule', $mat)->first();
 
         $departements = Departement::where('id', $travailleur->departementid)->first();
