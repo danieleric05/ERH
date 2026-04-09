@@ -25,7 +25,6 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Carbon;
 
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\ArrayExport;
 
 class RecruController extends Controller
 {
@@ -131,7 +130,12 @@ class RecruController extends Controller
                     );
                 }
 
-                return Excel::download(new ArrayExport($customer_array), 'Liste_des_journaliers.xlsx');
+                $export = new class($customer_array) implements \Maatwebsite\Excel\Concerns\FromArray {
+                    protected $data;
+                    public function __construct($data) { $this->data = $data; }
+                    public function array(): array { return $this->data; }
+                };
+                return Excel::download($export, 'Liste_des_journaliers.xlsx');
 
             }elseif( ($tabCodes['0'] == null) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == null) ){
 
@@ -178,7 +182,12 @@ class RecruController extends Controller
                     );
                 }
 
-                return Excel::download(new ArrayExport($customer_array), 'Liste_des_embauches.xlsx');
+                $export = new class($customer_array) implements \Maatwebsite\Excel\Concerns\FromArray {
+                    protected $data;
+                    public function __construct($data) { $this->data = $data; }
+                    public function array(): array { return $this->data; }
+                };
+                return Excel::download($export, 'Liste_des_embauches.xlsx');
 
             }elseif(($tabCodes['0'] != null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 1) ){
                 //dd('okkkkk');
@@ -224,7 +233,12 @@ class RecruController extends Controller
                     );
                 }
 
-                return Excel::download(new ArrayExport($customer_array), 'Liste_Journalier_Par_Unite.xlsx');
+                $export = new class($customer_array) implements \Maatwebsite\Excel\Concerns\FromArray {
+                    protected $data;
+                    public function __construct($data) { $this->data = $data; }
+                    public function array(): array { return $this->data; }
+                };
+                return Excel::download($export, 'Liste_Journalier_Par_Unite.xlsx');
 
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 3) ){
 				
@@ -310,7 +324,12 @@ class RecruController extends Controller
                     );
                 }
 
-                return Excel::download(new ArrayExport($customer_array), 'Journalier_Fin_Contrat.xlsx');
+                $export = new class($customer_array) implements \Maatwebsite\Excel\Concerns\FromArray {
+                    protected $data;
+                    public function __construct($data) { $this->data = $data; }
+                    public function array(): array { return $this->data; }
+                };
+                return Excel::download($export, 'Journalier_Fin_Contrat.xlsx');
 
             }
 
@@ -531,7 +550,12 @@ class RecruController extends Controller
                     );
                 }
 
-                return Excel::download(new ArrayExport($customer_array), 'Liste_Journalier_Par_Unite.xlsx');
+                $export = new class($customer_array) implements \Maatwebsite\Excel\Concerns\FromArray {
+                    protected $data;
+                    public function __construct($data) { $this->data = $data; }
+                    public function array(): array { return $this->data; }
+                };
+                return Excel::download($export, 'Liste_Journalier_Par_Unite.xlsx');
 
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 3) ){
 				//dd('iciooooooooooooooooo');
@@ -585,7 +609,12 @@ class RecruController extends Controller
                     );
                 }
 
-                return Excel::download(new ArrayExport($customer_array), 'Journalier_Par_Periode.xlsx');
+                $export = new class($customer_array) implements \Maatwebsite\Excel\Concerns\FromArray {
+                    protected $data;
+                    public function __construct($data) { $this->data = $data; }
+                    public function array(): array { return $this->data; }
+                };
+                return Excel::download($export, 'Journalier_Par_Periode.xlsx');
 
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 4) ){
 
@@ -646,7 +675,12 @@ class RecruController extends Controller
                     );
                 }
 
-                return Excel::download(new ArrayExport($customer_array), 'Journalier_Fin_Contrat.xlsx');
+                $export = new class($customer_array) implements \Maatwebsite\Excel\Concerns\FromArray {
+                    protected $data;
+                    public function __construct($data) { $this->data = $data; }
+                    public function array(): array { return $this->data; }
+                };
+                return Excel::download($export, 'Journalier_Fin_Contrat.xlsx');
 
             }
 
@@ -773,7 +807,12 @@ class RecruController extends Controller
 
             }
 
-                return Excel::download(new ArrayExport($customer_array), 'Liste_Variables.xlsx');
+                $export = new class($customer_array) implements \Maatwebsite\Excel\Concerns\FromArray {
+                    protected $data;
+                    public function __construct($data) { $this->data = $data; }
+                    public function array(): array { return $this->data; }
+                };
+                return Excel::download($export, 'Liste_Variables.xlsx');
 
 
         }
@@ -827,7 +866,12 @@ class RecruController extends Controller
         }
 
 
-        return Excel::download(new ArrayExport($customer_array), 'Travailleurs_Fin_Contrat.xlsx');
+        $export = new class($customer_array) implements \Maatwebsite\Excel\Concerns\FromArray {
+            protected $data;
+            public function __construct($data) { $this->data = $data; }
+            public function array(): array { return $this->data; }
+        };
+        return Excel::download($export, 'Travailleurs_Fin_Contrat.xlsx');
 
     }
 
