@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Carbon;
 
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ArrayExport;
 
 class RecruController extends Controller
 {
@@ -130,12 +131,7 @@ class RecruController extends Controller
                     );
                 }
 
-                Excel::create('Liste des journaliers', function($excel) use ($customer_array){
-                    $excel->setTitle('Liste des journaliers');
-                    $excel->sheet('Liste des journaliers', function($sheet) use ($customer_array){
-                        $sheet->fromArray($customer_array, null, 'A1', false, false);
-                    });
-                })->download('xlsx');
+                return Excel::download(new ArrayExport($customer_array), 'Liste_des_journaliers.xlsx');
 
             }elseif( ($tabCodes['0'] == null) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == null) ){
 
@@ -182,12 +178,7 @@ class RecruController extends Controller
                     );
                 }
 
-                Excel::create('Liste des embauchés', function($excel) use ($customer_array){
-                    $excel->setTitle('Liste des embauchés');
-                    $excel->sheet('Liste des embauchés', function($sheet) use ($customer_array){
-                        $sheet->fromArray($customer_array, null, 'A1', false, false);
-                    });
-                })->download('xlsx');
+                return Excel::download(new ArrayExport($customer_array), 'Liste_des_embauches.xlsx');
 
             }elseif(($tabCodes['0'] != null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 1) ){
                 //dd('okkkkk');
@@ -233,12 +224,7 @@ class RecruController extends Controller
                     );
                 }
 
-                Excel::create('ListeJournalierParUnite', function($excel) use ($customer_array){
-                    $excel->setTitle('Liste des journalier par unites');
-                    $excel->sheet('Liste des journalier', function($sheet) use ($customer_array){
-                        $sheet->fromArray($customer_array, null, 'A1', false, false);
-                    });
-                })->download('xlsx');
+                return Excel::download(new ArrayExport($customer_array), 'Liste_Journalier_Par_Unite.xlsx');
 
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 3) ){
 				
@@ -281,12 +267,7 @@ class RecruController extends Controller
                     );
                 }
 
-                Excel::create('ListeJournalierParUnite', function($excel) use ($customer_array){
-                    $excel->setTitle('Liste des journalier par unites');
-                    $excel->sheet('Liste des journalier', function($sheet) use ($customer_array){
-                        $sheet->fromArray($customer_array, null, 'A1', false, false);
-                    });
-                })->download('xlsx');
+                return Excel::download(new ArrayExport($customer_array), 'Liste_Journalier_Par_Periode.xlsx');
 
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 4) ){
 
@@ -329,12 +310,7 @@ class RecruController extends Controller
                     );
                 }
 
-                Excel::create('JournalierFinContrat', function($excel) use ($customer_array){
-                    $excel->setTitle('Journaliers en fin de contrat');
-                    $excel->sheet('Journaliers fin contrat', function($sheet) use ($customer_array){
-                        $sheet->fromArray($customer_array, null, 'A1', false, false);
-                    });
-                })->download('xlsx');
+                return Excel::download(new ArrayExport($customer_array), 'Journalier_Fin_Contrat.xlsx');
 
             }
 
@@ -426,12 +402,7 @@ class RecruController extends Controller
                     );
                 }
 
-                Excel::create('Liste des journaliers', function($excel) use ($customer_array){
-                    $excel->setTitle('Liste des journaliers');
-                    $excel->sheet('Liste des journaliers', function($sheet) use ($customer_array){
-                        $sheet->fromArray($customer_array, null, 'A1', false, false);
-                    });
-                })->download('xlsx');
+                return Excel::download(new ArrayExport($customer_array), 'Liste_Journaliers.xlsx');
 
             }elseif( ($tabCodes['0'] == null) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == null) ){
 				//var_dump('oklllllllllllll');
@@ -504,12 +475,7 @@ class RecruController extends Controller
                     );
                 }
 
-                Excel::create('Liste des embauchés', function($excel) use ($customer_array){
-                    $excel->setTitle('Liste des embauchés');
-                    $excel->sheet('Liste des embauchés', function($sheet) use ($customer_array){
-                        $sheet->fromArray($customer_array, null, 'A1', false, false);
-                    });
-                })->download('xlsx');
+                return Excel::download(new ArrayExport($customer_array), 'Liste_Embauches.xlsx');
 
             }elseif(($tabCodes['0'] != null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 1) ){
                 
@@ -565,12 +531,7 @@ class RecruController extends Controller
                     );
                 }
 
-                Excel::create('ListeJournalierParUnite', function($excel) use ($customer_array){
-                    $excel->setTitle('Liste des journalier par unites');
-                    $excel->sheet('Liste des journalier', function($sheet) use ($customer_array){
-                        $sheet->fromArray($customer_array, null, 'A1', false, false);
-                    });
-                })->download('xlsx');
+                return Excel::download(new ArrayExport($customer_array), 'Liste_Journalier_Par_Unite.xlsx');
 
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 3) ){
 				//dd('iciooooooooooooooooo');
@@ -624,12 +585,7 @@ class RecruController extends Controller
                     );
                 }
 
-                Excel::create('Journalier-par-periode', function($excel) use ($customer_array){
-                    $excel->setTitle('Liste des journalier par unites');
-                    $excel->sheet('Liste des journalier', function($sheet) use ($customer_array){
-                        $sheet->fromArray($customer_array, null, 'A1', false, false);
-                    });
-                })->download('xlsx');
+                return Excel::download(new ArrayExport($customer_array), 'Journalier_Par_Periode.xlsx');
 
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 4) ){
 
@@ -690,12 +646,7 @@ class RecruController extends Controller
                     );
                 }
 
-                Excel::create('JournalierFinContrat', function($excel) use ($customer_array){
-                    $excel->setTitle('Journaliers en fin de contrat');
-                    $excel->sheet('Journaliers fin contrat', function($sheet) use ($customer_array){
-                        $sheet->fromArray($customer_array, null, 'A1', false, false);
-                    });
-                })->download('xlsx');
+                return Excel::download(new ArrayExport($customer_array), 'Journalier_Fin_Contrat.xlsx');
 
             }
 
@@ -822,12 +773,7 @@ class RecruController extends Controller
 
             }
 
-                Excel::create('Liste des Variables', function($excel) use ($customer_array){
-                    $excel->setTitle('Liste des Variables');
-                    $excel->sheet('Liste des Variables', function($sheet) use ($customer_array){
-                        $sheet->fromArray($customer_array, null, 'A1', false, false);
-                    });
-                })->download('xlsx');
+                return Excel::download(new ArrayExport($customer_array), 'Liste_Variables.xlsx');
 
 
         }
@@ -881,12 +827,7 @@ class RecruController extends Controller
         }
 
 
-        Excel::create('Travailleurs en fin de contrat', function($excel) use ($customer_array){
-            $excel->setTitle('Travailleurs en fin de contrat');
-            $excel->sheet('Travailleurs en fin de contrat', function($sheet) use ($customer_array){
-                $sheet->fromArray($customer_array, null, 'A1', false, false);
-            });
-        })->download('xlsx');
+        return Excel::download(new ArrayExport($customer_array), 'Travailleurs_Fin_Contrat.xlsx');
 
     }
 

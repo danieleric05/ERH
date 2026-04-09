@@ -849,6 +849,9 @@ class EmployerController extends Controller
         $commune = Commune::orderBy('id', 'DESC')->get();
         $niveauEtudes = NiveauEtude::orderBy('id', 'DESC')->get();
         $edit = Travailleur::where('id', $id)->first();
+        if (!$edit) {
+            return Redirect::back()->withErrors("Travailleur introuvable.");
+        }
         return view("travailleur.edit", compact('id', 'edit', 'pays', 'data_typecontrat', 'unites', 'niveauEtudes', 'commune', 'categories', 'fonctions', 'departements', 'equipes'));
 
     }
