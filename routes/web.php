@@ -70,8 +70,6 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
             $data_departements = \App\Departement::get();
             $data_pays = \App\Pays::get();
             $mat_journalier = \App\Travailleur::where('matricule', 'like', '%' . $termJ . '%')->get()->limit(10);
-			dd($data_journalier);
-			$chiffre = substr($data_journalier->matricule, 4);
             return view('travailleur.addautres', compact('data_journalier', 'data_fonctions', 'data_pays', 'data_unites', 'data_equipes', 'data_departements'));
         });
         Route::get('/ajouter-travailleur-etape-un', function () {
