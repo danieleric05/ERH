@@ -95,19 +95,17 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
 			
             return view('travailleur.add', compact('data_journalier', 'maj_big', 'data_typecontrat', 'data_pays', 'data_unites', 'data_equipes', 'data_departements'));
         });
-        Route::get('/ajouter-travailleur-etape-deux/{slug}', function () { 
-		return view('travailleur.edit'); 
-		});
+        Route::get('/ajouter-travailleur-etape-deux/{slug}', 'EmployerController@etapedeuxtravailleur');
         Route::get('/telecharger-contrat/{slug}', function () { return view('travailleur.contrat'); });
 
         //Route::get('/declaration-travailleurs',['as'=>'declaration', 'uses'=>'RecruController@declaration']);
         Route::get('action/declaration/travailleurs', 'RecruController@declaration');
-        Route::post('post_search', 'RecruController@post_search');
-        Route::post('post_search_varaiables', 'RecruController@post_search_varaiables');
+        Route::post('post_search', ['as' => 'post_search', 'uses' => 'RecruController@post_search']);
+        Route::post('post_search_varaiables', ['as' => 'post_search_varaiables', 'uses' => 'RecruController@post_search_varaiables']);
         Route::get('reconduire/journalier', 'RecruController@reconduireJournalier');
         Route::get('/action-telecharger-contrat/{id}',['as'=>'actionsContrat', 'uses'=>'RecruController@actionsContrat']);
         Route::get('/telecharger-exel-travailleurs/{code}',['as'=>'excel_download', 'uses'=>'RecruController@excel_download']);
-        Route::get('/telecharger-quinzaine-/{code}',['as'=>'excel_download_quinzaine', 'uses'=>'RecruController@excel_download_quinzaine']);
+        Route::get('/telecharger-quinzaine/{code}',['as'=>'excel_download_quinzaine', 'uses'=>'RecruController@excel_download_quinzaine']);
         Route::get('/telecharger-exel-travailleurs-fin-contrat',['as'=>'excel_download_fin_contrat', 'uses'=>'RecruController@excel_download_fin_contrat']);
         Route::get('/telecharger-exel-variables-travailleurs/{code}',['as'=>'excel_download_variables', 'uses'=>'RecruController@excel_download_variables']);
         Route::get('/travailleurs-contrat-cessations',['as'=>'liste_cessations', 'uses'=>'RecruController@liste_cessations']);
