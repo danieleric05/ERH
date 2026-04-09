@@ -281,7 +281,12 @@ class RecruController extends Controller
                     );
                 }
 
-                return Excel::download(new ArrayExport($customer_array), 'Liste_Journalier_Par_Periode.xlsx');
+                $export = new class($customer_array) implements \Maatwebsite\Excel\Concerns\FromArray {
+                    protected $data;
+                    public function __construct($data) { $this->data = $data; }
+                    public function array(): array { return $this->data; }
+                };
+                return Excel::download($export, 'Liste_Journalier_Par_Periode.xlsx');
 
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 4) ){
 
@@ -421,7 +426,12 @@ class RecruController extends Controller
                     );
                 }
 
-                return Excel::download(new ArrayExport($customer_array), 'Liste_Journaliers.xlsx');
+                $export = new class($customer_array) implements \Maatwebsite\Excel\Concerns\FromArray {
+                    protected $data;
+                    public function __construct($data) { $this->data = $data; }
+                    public function array(): array { return $this->data; }
+                };
+                return Excel::download($export, 'Liste_Journaliers.xlsx');
 
             }elseif( ($tabCodes['0'] == null) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == null) ){
 				//var_dump('oklllllllllllll');
@@ -494,7 +504,12 @@ class RecruController extends Controller
                     );
                 }
 
-                return Excel::download(new ArrayExport($customer_array), 'Liste_Embauches.xlsx');
+                $export = new class($customer_array) implements \Maatwebsite\Excel\Concerns\FromArray {
+                    protected $data;
+                    public function __construct($data) { $this->data = $data; }
+                    public function array(): array { return $this->data; }
+                };
+                return Excel::download($export, 'Liste_Embauches.xlsx');
 
             }elseif(($tabCodes['0'] != null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 1) ){
                 
@@ -827,7 +842,7 @@ class RecruController extends Controller
 
         $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
             'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
-            'Date de fin de contrat', 'Département', 'Equipe', 'Emploi occupé');
+            'Date de fin de contrat', 'Département', 'Equipe', 'Emploi occupé', 'Commune');
 
 
         foreach($fin_contrat as $customer)
@@ -840,11 +855,18 @@ class RecruController extends Controller
             $equipe = Equipes::where('id', $customer->equipeid)->first();
             $departement = Departement::where('id', $customer->departementid)->first();
 			$fonction = Fonction::where('id', $customer->fonction_entrepriseid)->first();
-			
+			$commune = Commune::where('id', $customer->communeid)->first();
+
 			if($fonction == null){
 				$fonctions = 'INCONNU';
 			}else{
 				$fonctions = $fonction->label;
+			}
+
+			if($commune == null){
+				$communes = 'INCONNU';
+			}else{
+				$communes = $commune->label;
 			}
 			
 
@@ -862,6 +884,7 @@ class RecruController extends Controller
                 'Département'  => $departement->label,
                 'Equipe'  => $equipe->label,
                 'Emploi occupé'  => $fonctions,
+                'Commune'  => $communes,
             );
         }
 
@@ -1175,8 +1198,6 @@ class RecruController extends Controller
 
         if($request->actionid == 6){
             // reconduction
-            $datefincontrat = date( "Y-m-d", strtotime( "$request->datechoisit +330 day" ) );
-
             $actionup = Travailleur::find($request->id);
             $actionup->etapeid = $request->actionid;
             $actionup->date_debut_contrat = $request->datechoisit;
