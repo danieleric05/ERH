@@ -215,9 +215,6 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
         Route::post('post_sante', 'SanteController@post_sante');
         Route::post('post_accident_travail', 'SanteController@post_accident_travail');
         Route::post('post_historiques_sante', 'SanteController@post_historiques_sante');
-        Route::post('add/santes', 'SanteController@addsantes');
-        Route::post('update/santes/updatesantes', 'SanteController@updatesantes');
-        Route::get('edit/santes/data', 'SanteController@editsantes');
         Route::get('/ajouter-consultation', function () { return view('menu.sante.consultation'); });
         Route::get('/liste-accident-travail',['as'=>'listesaccident', 'uses'=>'SanteController@listesaccident']);
         Route::get('/liste-consultations',['as'=>'listesconsultation', 'uses'=>'SanteController@listesconsultation']);
