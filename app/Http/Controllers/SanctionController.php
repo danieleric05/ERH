@@ -187,12 +187,10 @@ class SanctionController extends Controller
 
                     if($mat == $all->matricule){
 
-                        $update_H0A1 = HAO1::find($all->id);
-                        //$update_H0A1 = new HAO1();
-                        $update_H0A1->variable += intval($nb_jour);
-                        $update_H0A1->userid = Auth::user()->id;
-                        $update_H0A1->updated_at = Carbon::now();
-                        $update_H0A1->save();
+                        $all->variable += intval($nb_jour);
+                        $all->userid = Auth::user()->id;
+                        $all->updated_at = Carbon::now();
+                        $all->save();
 
                     }
 
@@ -211,7 +209,7 @@ class SanctionController extends Controller
 
         }
 
-        return view('sanctions.liste', compact('Sanctions'));
+        return Redirect::back()->withErrors("Sanction introuvable.");
     }
 
 
@@ -235,8 +233,12 @@ class SanctionController extends Controller
 
                 if($demandeurid){
 
-                    $hao1_mat_first = HAO1::where('matricule', $demandeurid->matricule)->first();
-                    $update_H0A1 = HAO1::find($hao1_mat_first->id);
+                    $update_H0A1 = HAO1::where('matricule', $demandeurid->matricule)->first();
+
+                    if (!$update_H0A1) {
+                        return Redirect::back()->withErrors("Impossible, le HA01 du demandeur n'a pas été importé.");
+                    }
+
                     $update_H0A1->variable += intval($nb_jour);
                     $update_H0A1->userid = Auth::user()->id;
                     $update_H0A1->updated_at = Carbon::now();
@@ -261,7 +263,7 @@ class SanctionController extends Controller
 
         }
 
-        return view('sanctions.liste', compact('Sanctions'));
+        return Redirect::back()->withErrors("Autorisation introuvable.");
 
     }
 
@@ -281,8 +283,12 @@ class SanctionController extends Controller
 
                 if($demandeurid){
 
-                    $hao1_mat_first = HAO1::where('matricule', $demandeurid->matricule)->first();
-                    $update_H0A1 = HAO1::find($hao1_mat_first->id);
+                    $update_H0A1 = HAO1::where('matricule', $demandeurid->matricule)->first();
+
+                    if (!$update_H0A1) {
+                        return Redirect::back()->withErrors("Impossible, le HA01 du demandeur n'a pas été importé.");
+                    }
+
                     $update_H0A1->variable = intval($nb_jour);
                     $update_H0A1->userid = Auth::user()->id;
                     $update_H0A1->updated_at = Carbon::now();
@@ -307,6 +313,6 @@ class SanctionController extends Controller
 
         }
 
-        return view('sanctions.liste', compact('Sanctions'));
+        return Redirect::back()->withErrors("Mission introuvable.");
     }
 }
