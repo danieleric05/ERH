@@ -34,24 +34,28 @@
 @endsection
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('rhassets/vendor/fullcalendar/fullcalendar.min.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
 @endpush
 
 @push('scripts')
-<script src="{{ asset('rhassets/bundles/fullcalendarscripts.bundle.js') }}"></script>
-<script src="{{ asset('rhassets/vendor/fullcalendar/fullcalendar.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        $('#calendrier').fullCalendar({
-            header: {
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendrier');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'fr',
+            initialView: 'dayGridMonth',
+            headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'month,agendaWeek,agendaDay'
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
+            height: 'auto',
             events: '{{ route('calendrier.evenements') }}',
             eventColor: '#007bff'
         });
+        calendar.render();
     });
 </script>
 @endpush

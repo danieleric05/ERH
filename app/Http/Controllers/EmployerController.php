@@ -927,8 +927,8 @@ class EmployerController extends Controller
 
             $evenements[] = [
                 'title' => ($autorisation->travailleur?->nom ?? 'N/A') . ' : ' . $motif,
-                'start' => $autorisation->date_debut,
-                'end' => $autorisation->date_fin,
+                'start' => $autorisation->debut,
+                'end' => date('Y-m-d', strtotime($autorisation->fin . ' +1 day')),
             ];
         }
 
