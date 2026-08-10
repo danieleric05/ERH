@@ -124,12 +124,12 @@ class ConfigController extends Controller
         $unites = Unites::orderBy('id', 'DESC')->get();
 
         $data_equipe = Equipes::orderBy('id', 'DESC')->get();
-        return view('configuration.equipe.add', compact('unites', 'Travailleur', 'data_equipe'));
+        return view('configuration.equipe.add2', compact('unites', 'Travailleur', 'data_equipe'));
     }
 
     public function addequipes(Request $get){
 
-        $cmptDepartement = Departement::where('id', $get->id)->first();
+        $cmptDepartement = Equipes::where('id', $get->id)->first();
 
         if($cmptDepartement){
             return Redirect::back()->withErrors("Désoler l'identifiant à déjà été utilisé.");

@@ -248,11 +248,9 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
         Route::post('update/departements/updatedepartements', 'ConfigController@updatedepartements');
         Route::get('edit/departements/data', 'ConfigController@editdepartementsurl');
         Route::get('delete/departements/data', 'ConfigController@deletedepartements');
-        Route::get('departements/{id}', 'ConfigController@show')->name('departements.show');
 
         /*******************************  EQUIPE *******************************************/
         Route::get('equipes', 'ConfigController@index_equipes')->name('equipes');
-        Route::get('equipes/{id}', 'ConfigController@show_equipes')->name('equipes.show');
         Route::post('add/equipes/addequipes', 'ConfigController@addequipes');
         Route::post('update/equipes/updateequipes', 'ConfigController@updateequipes');
         Route::get('edit/equipes/data', 'ConfigController@editequipesurl');
@@ -261,7 +259,6 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
         /*******************************  UNITES *******************************************/
 
         Route::get('unites', 'ConfigController@index_unites')->name('unites');
-        Route::get('unites/{id}', 'ConfigController@show_unites')->name('unites.show');
         Route::post('add/unites', 'ConfigController@addunites');
         Route::post('update/unites/updateunites', 'ConfigController@updateunites');
         Route::get('edit/unites/data', 'ConfigController@editunitessurl');
@@ -270,7 +267,6 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
         /*******************************  FONCTION *******************************************/
 
         Route::get('fonctions', 'ConfigController@index_fonction')->name('fonctions');
-        Route::get('fonctions/{id}', 'ConfigController@show_fonctions')->name('fonctions.show');
         Route::post('add/fonctions/fonctions', 'ConfigController@addfonctions');
         Route::post('update/fonctions/updatefonctions', 'ConfigController@updatefonctions');
         Route::get('edit/fonctions/data', 'ConfigController@editfonctionsurl');
@@ -278,7 +274,6 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
 
         /*******************************  NIVEAU ETUDE *******************************************/
         Route::get('categories', 'ConfigController@index_categories')->name('categories');
-        Route::get('categories/{id}', 'ConfigController@show_categories')->name('categories.show');
 
         Route::post('add/categories/addcategories', 'ConfigController@addcategories');
         Route::post('update/categories/updatecategories', 'ConfigController@updatecategories');
@@ -286,7 +281,6 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
         Route::get('delete/categories/data', 'ConfigController@deletecategories');
 
         Route::get('niveauEtude', 'ConfigController@index_niveauEtude')->name('niveauEtude');
-        Route::get('niveauEtude/{id}', 'ConfigController@show_niveauEtude')->name('niveauEtude.show');
 
         Route::post('add/niveauEtude/addniveauEtude', 'ConfigController@addniveauEtude');
         Route::post('update/niveauEtude/updateniveauEtude', 'ConfigController@updateniveauEtude');
@@ -296,7 +290,6 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
         /*******************************  EQUIPE *******************************************/
 
         Route::get('pays', 'ConfigController@index_pays')->name('pays');
-        Route::get('pays/{id}', 'ConfigController@show_pays')->name('pays.show');
         Route::post('add/pays/addpays', 'ConfigController@addpays');
         Route::post('update/pays/updatepays', 'ConfigController@updatepays');
         Route::get('edit/pays/data', 'ConfigController@editpaysurl');
