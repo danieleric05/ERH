@@ -76,15 +76,14 @@ class HomeController extends Controller
 
         $change = User::find($id);
 
-        $change->derniere_cnx = new \DateTime();
-
-        if($change->save() == true) {
-
-            Auth::logout();
-
-            return Redirect()->route('login')->withErrors('Vous êtes à présent déconnecté.');
-
+        if ($change) {
+            $change->derniere_cnx = new \DateTime();
+            $change->save();
         }
+
+        Auth::logout();
+
+        return Redirect()->route('login')->withErrors('Vous êtes à présent déconnecté.');
     }
 
 

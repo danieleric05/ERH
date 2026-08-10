@@ -116,6 +116,36 @@ class ConfigController extends Controller
         }
 
     }
+
+    public function editunitessurl(Request $get){
+        $id = $get->id;
+        $data = Unites::find($id);
+        return $data;
+    }
+
+    public function updateunites(Request $get){
+
+        $update = Unites::where("id", $get->id)->update([
+            "label" => $get->label,
+            "userid" => Auth::user()->id,
+            "updated_at" => Carbon::now()
+        ]);
+        if($update){
+            return response()->json("success");
+        }else{
+            return response()->json("error");
+        }
+    }
+
+    public function deleteunites(Request $get){
+        $id = $get->id;
+        $delete = Unites::where("id", $id)->delete();
+        if($delete){
+            return response()->json("success");
+        }else{
+            return response()->json("error");
+        }
+    }
         /***** EQUIPE *****/
     public function index_equipes(){
 

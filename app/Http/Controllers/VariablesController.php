@@ -120,7 +120,12 @@ class VariablesController extends Controller
 
     public function listevariables_automatique(){
         $variableHS = Variables::Where('cause', 2)->orderBy('id', 'DESC')->get();
-        return view("variables.listevariables_automatique", compact('variableHS', 'tenues'));
+        return view("variables.listevariables_automatique", compact('variableHS'));
+    }
+
+    public function listevariables_autres_variables(){
+        $data_travailleur = Travailleur::where('etapeid', '!=', 3)->where('statutid', '!=', 4)->orderBy('id', 'DESC')->get();
+        return view('variables.autres_variables', compact('data_travailleur'));
     }
 
 

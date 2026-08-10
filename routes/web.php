@@ -139,7 +139,6 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
 
         /** CONGES */
         Route::get('/ajouter-conges', function () { return view('menu.conges.ajouter'); });
-        Route::get('/liste-conges',['as'=>'listeconges', 'uses'=>'RecruController@listeconges']);
 
         /** ¨PRECARITE */
         Route::get('/ajouter-ha01', function () {
@@ -178,7 +177,6 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
         Route::post('post_variables_manuelle', 'VariablesController@post_variables_manuelle');
         Route::post('post_autres_variables', 'VariablesController@post_autres_variables');
         Route::post('post_variables_heure_sup', 'VariablesController@post_variables_heure_sup');
-        Route::get('/precarite-calcules',['as'=>'precarite_calc', 'uses'=>'EmployerController@precarite_calc']);
         Route::get('/liste-variables-automatique',['as'=>'listevariables_automatique', 'uses'=>'VariablesController@listevariables_automatique']);
         Route::get('/liste-variables-manuelles',['as'=>'listevariables_manuelle', 'uses'=>'VariablesController@listevariables_manuelle']);
         Route::get('/liste-variables-heure-supplementaire',['as'=>'listevariables_heure_supp', 'uses'=>'VariablesController@listevariables_heure_supp']);
@@ -301,7 +299,6 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
         Route::post('post_edit_travailleur/{id}', 'EmployerController@post_edit_travailleur');
         Route::post('edit_travailleur/{id}', 'EmployerController@edit_travailleur');
         Route::get('/etape-deux-travailleur/{id}',['as'=>'etapedeuxtravailleur', 'uses'=>'EmployerController@etapedeuxtravailleur']);
-        Route::get('/edit-travailleur/{id}',['as'=>'edittravailleur', 'uses'=>'EmployerController@edittravailleur']);
         Route::get('/details-contrat-journalier/{id}',['as'=>'lientelechargerContrat', 'uses'=>'EmployerController@lientelechargerContrat']);
         Route::get('/telecharger-contrat-journalier/{id}', ['as'=>'telechargerContratJournalier', 'uses'=>'EmployerController@telechargerContratJournalier']);
         Route::get('/telecharger-cessassion-contrat/{id}', ['as'=>'telechargerContratCessassion', 'uses'=>'EmployerController@telechargerContratCessassion']);
