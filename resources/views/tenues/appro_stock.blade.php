@@ -122,7 +122,7 @@
                     @forelse($data_ApproTenues ?? [] as $tenues)
                         <tr class="border-b hover:bg-slate-50 transition">
                             <td class="px-6 py-4 text-sm text-text-primary">
-                                {{ App\ArticleRecu::where('id', $tenues->articleid)->first()->label ?? '-' }}
+                                {{ optional(App\ArticleRecu::where('id', $tenues->articleid)->first())->label ?? '-' }}
                             </td>
                             <td class="px-6 py-4 text-sm text-text-primary">{{ $tenues->quantite }}</td>
                             <td class="px-6 py-4 text-sm text-text-primary">{{ $tenues->fournisseur }}</td>

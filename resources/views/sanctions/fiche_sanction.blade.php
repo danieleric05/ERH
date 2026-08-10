@@ -45,7 +45,7 @@
 								}
 							?>
 							@forelse($sanctions as $sant)
-								<a target="_blank" title="{{ App\Travailleur::where('matricule', $sant)->first()->nom }} {{ App\Travailleur::where('matricule', $sant)->first()->prenom }}" href="{{ route('telechargerSanctions', ['mat' => $sant, 'idsanc' => $sanct->id]) }}?download=pdf">
+								<a target="_blank" title="{{ optional(App\Travailleur::where('matricule', $sant)->first())->nom }} {{ optional(App\Travailleur::where('matricule', $sant)->first())->prenom }}" href="{{ route('telechargerSanctions', ['mat' => $sant, 'idsanc' => $sanct->id]) }}?download=pdf">
 										<button type="button" class="btn btn-outline-secondary">DOWNLOAD - {{ $sant}} </button>
 								</a>
 							@empty

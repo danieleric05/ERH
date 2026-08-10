@@ -27,7 +27,7 @@
 		<div class="col-lg-4 col-md-12">
 			<div class="card member-card">
 				<div class="header bg-info">
-					<h4 class="m-t-5 text-light">{{ \App\Travailleur::where('id', $id)->first()->prenom }} {{ \App\Travailleur::where('id', $id)->first()->nom }}</h4>
+					<h4 class="m-t-5 text-light">{{ optional(\App\Travailleur::where('id', $id)->first())->prenom }} {{ optional(\App\Travailleur::where('id', $id)->first())->nom }}</h4>
 					<br/>
 				</div>
 				<div class="member-img">
@@ -40,7 +40,7 @@
 							<li><a title="twitter" href="javascript:void(0);"><i class="fa fa-twitter"></i></a></li>
 							<li><a title="instagram" href="javascript:void(0);"><i class="fa fa-instagram"></i></a></li>
 						</ul>
-						<p class="text-muted">{{ \App\Travailleur::where('id', $id)->first()->description }}</p>
+						<p class="text-muted">{{ optional(\App\Travailleur::where('id', $id)->first())->description }}</p>
 					</div>
 					<hr>
 					<div class="row">
@@ -48,7 +48,7 @@
 							<h5 style="font-size: 12px; font-weight: bold">
 							
 							@foreach($data_unites as $unite)
-								@if($unite->id == \App\Travailleur::where('id', $id)->first()->uniteid)
+								@if($unite->id == optional(\App\Travailleur::where('id', $id)->first())->uniteid)
 									{{ $unite->label }}
 								@endif
 							@endforeach
@@ -60,7 +60,7 @@
 							<h5 style="font-size: 11px; font-weight: bold">
 							
 								@foreach($data_equipes as $equipe)
-									@if($equipe->id == \App\Travailleur::where('id', $id)->first()->equipeid)
+									@if($equipe->id == optional(\App\Travailleur::where('id', $id)->first())->equipeid)
 										{{ $equipe->label }}
 									@endif
 								@endforeach
@@ -115,13 +115,13 @@
 										@endif
 									</td>
 									<td>
-									{{ \App\Travailleur::where('id', $info->travailleurid)->first()->matricule }}
+									{{ optional(\App\Travailleur::where('id', $info->travailleurid)->first())->matricule }}
 									</td>
 									<td>
-									{{ \App\Travailleur::where('id', $info->travailleurid)->first()->nom }}
+									{{ optional(\App\Travailleur::where('id', $info->travailleurid)->first())->nom }}
 									</td>
 									<td>
-										{{ \App\Travailleur::where('id', $info->travailleurid)->first()->prenom }}
+										{{ optional(\App\Travailleur::where('id', $info->travailleurid)->first())->prenom }}
 									</td>
 									<td class="text-center">
 										<span class="badge badge-primary">{{ $info->debut_contrat }}</span>
@@ -167,13 +167,13 @@
 								@foreach($infoHistUnite as $hist)
 								<tr>
 									<td>
-									{{ \App\Travailleur::where('id', $hist->travailleurid)->first()->matricule }}
+									{{ optional(\App\Travailleur::where('id', $hist->travailleurid)->first())->matricule }}
 									</td>
 									<td>
-									{{ \App\Travailleur::where('id', $hist->travailleurid)->first()->nom }}
+									{{ optional(\App\Travailleur::where('id', $hist->travailleurid)->first())->nom }}
 									</td>
 									<td>
-										{{ \App\Travailleur::where('id', $hist->travailleurid)->first()->prenom }}
+										{{ optional(\App\Travailleur::where('id', $hist->travailleurid)->first())->prenom }}
 									</td>
 									<td class="text-center">
 										<span class="badge badge-primary">{{ $hist->date_choix }}</span>
@@ -213,10 +213,10 @@
 									<tbody>
 										<tr>
 											<td>
-											{{ \App\Travailleur::where('id', $hist->travailleurid)->first()->matricule }}
+											{{ optional(\App\Travailleur::where('id', $hist->travailleurid)->first())->matricule }}
 											</td>
 											<td>
-											{{ \App\Travailleur::where('id', $hist->travailleurid)->first()->nom }} {{ \App\Travailleur::where('id', $hist->travailleurid)->first()->prenom }}
+											{{ optional(\App\Travailleur::where('id', $hist->travailleurid)->first())->nom }} {{ optional(\App\Travailleur::where('id', $hist->travailleurid)->first())->prenom }}
 											</td>
 											
 											<td class="text-center">

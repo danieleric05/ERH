@@ -60,7 +60,7 @@
             <b>Adresse :</b> &nbsp;ville : __<b><u>Abidjan</u></b>__&nbsp;&nbsp;&nbsp;Commune :
     <u>
         @if($travailleur->communeid)
-        {{ $commune = \App\Commune::where('id', $travailleur->communeid )->first()->label }}
+        {{ $commune = optional(\App\Commune::where('id', $travailleur->communeid )->first())->label }}
             @endif
     </u>
     quartier: ______&nbsp;&nbsp;&nbsp;&nbsp;  ILot N°: _____ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Lot N°: ____<br/>
@@ -73,8 +73,8 @@
                 <b style="font-size: 18px; font-weight: bold"><u>EMPLOI</u></b><br/>
                 <b>. Emploi actuel</b>  <br/>
 
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Date d’embauche</i>  &nbsp;&nbsp;&nbsp; /_<u><?=$tabDateDebut['2']?></u>_/ /_<u><?=$tabDateDebut['1']?></u>_/ /_<u><?=$tabDateDebut['0']?></u>_/ &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Fonction ____<u style="font-weight: bold; color: black;">  @if($travailleur->fonction_entrepriseid) {{ $fonction = \App\Fonction::where('id', $travailleur->fonction_entrepriseid )->first()->label }}@endif</u>____ <br/>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Catégorie professionelle</i> : ________<u style="font-weight: bold; color: black;">{{ $categorie= \App\Categories::where('id', $travailleur->categorieid )->first()->label }}</u>______  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Matricule Paie : ______<u style="font-weight: bold; color: black;"><b style="color: black; font-size: 15px"><?= $travailleur->matricule ?></b></u>______ <br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Date d’embauche</i>  &nbsp;&nbsp;&nbsp; /_<u><?=$tabDateDebut['2']?></u>_/ /_<u><?=$tabDateDebut['1']?></u>_/ /_<u><?=$tabDateDebut['0']?></u>_/ &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Fonction ____<u style="font-weight: bold; color: black;">  @if($travailleur->fonction_entrepriseid) {{ $fonction = optional(\App\Fonction::where('id', $travailleur->fonction_entrepriseid )->first())->label }}@endif</u>____ <br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Catégorie professionelle</i> : ________<u style="font-weight: bold; color: black;">{{ $categorie= optional(\App\Categories::where('id', $travailleur->categorieid )->first())->label }}</u>______  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Matricule Paie : ______<u style="font-weight: bold; color: black;"><b style="color: black; font-size: 15px"><?= $travailleur->matricule ?></b></u>______ <br/>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Date de départ</i> <b style="color: black">&nbsp;&nbsp;&nbsp; /_<u><?=$tabDateFin['2']?></u>_/ /_<u><?=$tabDateFin['1']?></u>_/ /_<u><?=$tabDateFin['0']?></u>_/ &nbsp;&nbsp;&nbsp;</b>  Motif: ___<u style="font-weight: bold; color: black "><?= $travailleur->motif_fin_contrat ?></u>___ <br/>
 
             <br/>
