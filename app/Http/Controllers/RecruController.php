@@ -31,7 +31,8 @@ class RecruController extends Controller
     public function listetravailleurs(){
         //$termJ = 'J';
         $data_travailleurdeux = Travailleur::where('statutid', 1)->orderBy('id', 'DESC')->get();
-        return view('travailleur.liste', compact('data_travailleurdeux'));
+        $equipesById = Equipes::whereIn('id', $data_travailleurdeux->pluck('equipeid'))->get()->keyBy('id');
+        return view('travailleur.liste', compact('data_travailleurdeux', 'equipesById'));
     }
 
     public function liste_tous_travailleurs(){
@@ -100,7 +101,8 @@ class RecruController extends Controller
 
     public function liste_certificat_travail(){
         $data_certificat_travail = Travailleur::where('etapeid', '!=' ,3)->where('etapeid',4)->orderBy('id', 'DESC')->get();
-        return view('travailleur.liste_certificat_travail', compact('data_certificat_travail'));
+        $equipesById = Equipes::whereIn('id', $data_certificat_travail->pluck('equipeid'))->get()->keyBy('id');
+        return view('travailleur.liste_certificat_travail', compact('data_certificat_travail', 'equipesById'));
     }
 
     public function historique(){
@@ -648,14 +650,16 @@ class RecruController extends Controller
                     }
 
                     foreach (unserialize($customer->travailleurid) as $servaiable){
-                        $prenom = \App\Travailleur::where('matricule', $servaiable)->first()->prenom ;
-                        $nom = \App\Travailleur::where('matricule', $servaiable)->first()->nom ;
-                        $trava = \App\Travailleur::where('matricule', $servaiable)->first()->matricule ;
+                        $travailleurVar = \App\Travailleur::where('matricule', $servaiable)->first();
+
+                        if (!$travailleurVar) {
+                            continue;
+                        }
 
                         $customer_array[] = array(
-                            'Matricule'  => $trava,
-                            'Nom'  => $nom ,
-                            'Prénom'  => $prenom,
+                            'Matricule'  => $travailleurVar->matricule,
+                            'Nom'  => $travailleurVar->nom,
+                            'Prénom'  => $travailleurVar->prenom,
                             'Jour'  => $jour,
                             'Variables'  => $variables,
                             'Nombre de jour'  => $nb_jour,
@@ -705,14 +709,16 @@ class RecruController extends Controller
                     }
 
                     foreach (unserialize($customer->travailleurid) as $servaiable){
-                        $prenom = \App\Travailleur::where('matricule', $servaiable)->first()->prenom ;
-                        $nom = \App\Travailleur::where('matricule', $servaiable)->first()->nom ;
-                        $trava = \App\Travailleur::where('matricule', $servaiable)->first()->matricule ;
+                        $travailleurVar = \App\Travailleur::where('matricule', $servaiable)->first();
+
+                        if (!$travailleurVar) {
+                            continue;
+                        }
 
                         $customer_array[] = array(
-                            'Matricule'  => $trava,
-                            'Nom'  => $nom ,
-                            'Prénom'  => $prenom,
+                            'Matricule'  => $travailleurVar->matricule,
+                            'Nom'  => $travailleurVar->nom,
+                            'Prénom'  => $travailleurVar->prenom,
                             'Jour'  => $jour,
                             'Variables'  => $variables,
                             'Nombre de jour'  => $nb_jour,
@@ -807,7 +813,10 @@ class RecruController extends Controller
                     ->where('cause', 1)
                     ->get();
 
-                return view('variables.historique', compact('recherches', 'code'));
+                $matricules = $recherches->flatMap(fn($rech) => unserialize($rech->travailleurid))->unique();
+                $travailleursByMatricule = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
+
+                return view('variables.historique', compact('recherches', 'code', 'travailleursByMatricule'));
 
             }else{
 
@@ -821,7 +830,10 @@ class RecruController extends Controller
                     ->where('type_variable', $request->variablesid)
                     ->get();
 
-                return view('variables.historique', compact('recherches', 'code'));
+                $matricules = $recherches->flatMap(fn($rech) => unserialize($rech->travailleurid))->unique();
+                $travailleursByMatricule = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
+
+                return view('variables.historique', compact('recherches', 'code', 'travailleursByMatricule'));
 
 
             }
@@ -988,7 +1000,6 @@ class RecruController extends Controller
             $actionup->equipeid = $request->equipeid;
             $actionup->departementid = $request->departementid;
             $actionup->updated_at = Carbon::now();
-            $actionup->save();
 
             if($actionup->save()){
                 $verif_unite = HistoriqueUnite::where('travailleurid', $request->id)->where('uniteid', $request->uniteid)->where('equipeid', $request->equipeid)->first();
@@ -1003,7 +1014,6 @@ class RecruController extends Controller
                     $unite->date_choix = $request->datechoisit;
                     $unite->userid = Auth::user()->id;
                     $unite->updated_at = Carbon::now();
-                    $unite->save();
                     if($unite->save()){
                         return Redirect::back()->withSuccess("Ce journalier a changé d'equipe avec success.");
                     }
@@ -1019,7 +1029,6 @@ class RecruController extends Controller
             $actionup->numero_securite = $request->numcnps;
             $actionup->date_cnps = $request->datechoisit;
             $actionup->updated_at = Carbon::now();
-            $actionup->save();
 
             if($actionup->save()){
 
@@ -1032,7 +1041,6 @@ class RecruController extends Controller
                     $actions->travailleurid = $request->id;
                     $actions->userid = Auth::user()->id;
                     $actions->actionid = $request->actionid;
-                    $actions->save();
                     if($actions->save() == true){
                         return Redirect::route('actionsContrat', $actions->travailleurid)->withSuccess("Merci de télécharger le contrat PDF ");
                     }
@@ -1048,7 +1056,6 @@ class RecruController extends Controller
             $actionup->date_fin_contrat = $request->datechoisit;
             $actionup->motif_fin_contrat = $request->motif_fin_contrat;
             $actionup->updated_at = Carbon::now();
-            $actionup->save();
 
             if($actionup->save()){
 
@@ -1065,7 +1072,6 @@ class RecruController extends Controller
                     $actions->travailleurid = $request->id;
                     $actions->userid = Auth::user()->id;
                     $actions->actionid = $request->actionid;
-                    $actions->save();
 
                     if($actions->save() == true){
 
@@ -1088,7 +1094,6 @@ class RecruController extends Controller
             $actionup->userid = Auth::user()->id;
             $actionup->date_fin_contrat = $request->datechoisit;
             $actionup->updated_at = Carbon::now();
-            $actionup->save();
 
             if($actionup->save()){
 
@@ -1103,7 +1108,6 @@ class RecruController extends Controller
                     $actions->travailleurid = $request->id;
                     $actions->userid = Auth::user()->id;
                     $actions->actionid = $request->actionid;
-                    $actions->save();
                     if($actions->save() == true){
                         return Redirect::route('actionsContrat', $actions->travailleurid)->withSuccess("Merci de télécharger le contrat PDF ");
                     }
@@ -1125,7 +1129,6 @@ class RecruController extends Controller
             $actiSantes->statutid = 2; // reçu
             $actiSantes->recu_par = Auth::user()->id;
             $actiSantes->updated_at = Carbon::now();
-            $actiSantes->save();
 
             if($actiSantes->save()){
                 return Redirect::back()->withSuccess("La réception du travailleur a été confirmé ");
@@ -1148,7 +1151,6 @@ class RecruController extends Controller
             $actionup->date_fin_contrat = $request->datefin;
             $actionup->userid = Auth::user()->id;
             $actionup->updated_at = Carbon::now();
-            $actionup->save();
 
             if($actionup->save()){
 
@@ -1165,7 +1167,6 @@ class RecruController extends Controller
                     $actions->travailleur_mat = $actionup->travailleur_mat;
                     $actions->userid = Auth::user()->id;
                     $actions->actionid = $request->actionid; //Reconduire 6
-                    $actions->save();
                     if($actions->save() == true){
                         return Redirect::route('lientelechargerContrat', $actions->travailleurid)->withSuccess("Mr/Mme : ".strtoupper($actionup->nom.' '.$actionup->prenom.''.$actionup->prenom_suite)." a été reconduit, vous pouvez télécharger son contrat .");
                     }
@@ -1190,7 +1191,6 @@ class RecruController extends Controller
                     $verif_Matricule_update->userid = Auth::user()->id;
                     $verif_Matricule_update->statutid = 3; // payer et telecharger
                     $verif_Matricule_update->updated_at = Carbon::now();
-                    $verif_Matricule_update->save();
 
                     if($verif_Matricule_update->save()){
                         return Redirect::route('actionsContrat', $actionup->id)->withSuccess("Merci de télécharger le contrat PDF ");

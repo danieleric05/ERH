@@ -61,9 +61,8 @@ class SanteController extends Controller
 
             $sante->mois = intval($tabDate['1']);
             $sante->annee = intval($tabDate['0']);
-            $sante->save();
             if($sante->save()){
-				
+
 					$uniteJ = \App\Unites::where('id', $journalierAT->uniteid)->first()->label;
 					$equipeJ = \App\Equipes::where('id', $journalierAT->equipeid)->first()->label;
 					$fonctionJ = \App\Fonction::where('id', $journalierAT->fonction_entrepriseid)->first()->label;
@@ -175,7 +174,6 @@ class SanteController extends Controller
             $sante->userid = Auth::user()->id;
             $sante->mois = intval($tabDate['1']);
             $sante->annee = intval($tabDate['0']);
-            $sante->save();
             if($sante->save()){
                 return Redirect::back()->withSuccess("Consultation enregistré avec succès.");
             }
@@ -190,14 +188,18 @@ class SanteController extends Controller
 
     public function listesconsultation(){
         $listeSante = Santes::where('id', Auth::user()->id)->orderBy('id', 'DESC')->get();
-        $equipes = Equipes::orderBy('id', 'DESC')->get();
-        return view("sante.liste", compact('listeSante', 'equipes'));
+
+        $userIds = $listeSante->pluck('userid')->merge($listeSante->pluck('recu_par'))->unique();
+        $usersById = \App\User::whereIn('id', $userIds)->get()->keyBy('id');
+        $travailleursById = Travailleur::whereIn('id', $listeSante->pluck('travailleurid'))->get()->keyBy('id');
+
+        return view("sante.liste", compact('listeSante', 'usersById', 'travailleursById'));
     }
 
     public function listesaccident(){
         $listeAT = AccidentTravail::orderBy('id', 'DESC')->get();
-        $equipes = Equipes::orderBy('id', 'DESC')->get();
-        return view("sante.accident_travail.liste", compact('listeAT', 'equipes'));
+        $travailleursById = Travailleur::whereIn('id', $listeAT->pluck('travailleurid'))->get()->keyBy('id');
+        return view("sante.accident_travail.liste", compact('listeAT', 'travailleursById'));
     }
 
     public function accident_travail_traiter($id){
@@ -207,7 +209,6 @@ class SanteController extends Controller
 			
 			$accTraiter = AccidentTravail::find($id_article->id);
 			$accTraiter->statutid = 2;
-			$accTraiter->save();
 			if($accTraiter->save() == true){
 				return Redirect::back()->withSuccess("L'accident de travail du matricule : ".strtoupper($id_article->travailleur_mat)." a été traité avec succès");
 			}else{

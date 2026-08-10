@@ -21,7 +21,8 @@ class ConfigController extends Controller
     public function index(){
         $unites = Unites::orderBy('id', 'DESC')->get();
         $data_departement = Departement::orderBy('id', 'DESC')->get();
-        return view('configuration.departement.add', compact('unites', 'data_departement'));
+        $unitesById = $unites->keyBy('id');
+        return view('configuration.departement.add', compact('unites', 'data_departement', 'unitesById'));
     }
 
     public function adddepartements(Request $get){
@@ -40,7 +41,6 @@ class ConfigController extends Controller
             $Departements->description = $get->description;
             $Departements->userid = Auth::user()->id;
             $Departements->created_at = Carbon::now();
-            $Departements->save();
 
             if( $Departements->save() == true){
                 return Redirect::back()->withSuccess("Le departement : ".strtoupper($get->label)." a été enregistré avec succès.");
@@ -105,7 +105,6 @@ class ConfigController extends Controller
             $Equipe->label = strtoupper($get->label);
             $Equipe->userid = Auth::user()->id;
             $Equipe->created_at = Carbon::now();
-            $Equipe->save();
 
             if( $Equipe->save() == true){
                 return Redirect::back()->withSuccess("L'unité : ".strtoupper($get->label)." a été enregistré avec succès.");
@@ -117,6 +116,36 @@ class ConfigController extends Controller
         }
 
     }
+
+    public function editunitessurl(Request $get){
+        $id = $get->id;
+        $data = Unites::find($id);
+        return $data;
+    }
+
+    public function updateunites(Request $get){
+
+        $update = Unites::where("id", $get->id)->update([
+            "label" => $get->label,
+            "userid" => Auth::user()->id,
+            "updated_at" => Carbon::now()
+        ]);
+        if($update){
+            return response()->json("success");
+        }else{
+            return response()->json("error");
+        }
+    }
+
+    public function deleteunites(Request $get){
+        $id = $get->id;
+        $delete = Unites::where("id", $id)->delete();
+        if($delete){
+            return response()->json("success");
+        }else{
+            return response()->json("error");
+        }
+    }
         /***** EQUIPE *****/
     public function index_equipes(){
 
@@ -125,12 +154,12 @@ class ConfigController extends Controller
         $unites = Unites::orderBy('id', 'DESC')->get();
 
         $data_equipe = Equipes::orderBy('id', 'DESC')->get();
-        return view('configuration.equipe.add', compact('unites', 'Travailleur', 'data_equipe'));
+        return view('configuration.equipe.add2', compact('unites', 'Travailleur', 'data_equipe'));
     }
 
     public function addequipes(Request $get){
 
-        $cmptDepartement = Departement::where('id', $get->id)->first();
+        $cmptDepartement = Equipes::where('id', $get->id)->first();
 
         if($cmptDepartement){
             return Redirect::back()->withErrors("Désoler l'identifiant à déjà été utilisé.");
@@ -145,7 +174,6 @@ class ConfigController extends Controller
             $Equipe->description = $get->description;
             $Equipe->userid = Auth::user()->id;
             $Equipe->created_at = Carbon::now();
-            $Equipe->save();
 
             if( $Equipe->save() == true){
                 return Redirect::back()->withSuccess("L'equipe : ".strtoupper($get->label)." a été enregistré avec succès.");
@@ -213,7 +241,6 @@ class ConfigController extends Controller
                 $Fonctions->label = strtoupper($get->label);
                 $Fonctions->description = $get->description;
                 $Fonctions->userid = Auth::user()->id;
-                $Fonctions->save();
 
                 if( $Fonctions->save() == true){
                     return Redirect::back()->withSuccess("La fonction : ".strtolower($get->label)." a été enregistré avec succès.");

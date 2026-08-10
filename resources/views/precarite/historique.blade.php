@@ -112,8 +112,8 @@
                             <td class="px-6 py-4 text-sm text-text-primary"><?= $rech->matricule ?></td>
                             @if($rech->matricule)
                                 <td class="px-6 py-4 text-sm text-text-primary">
-                                    {{ $trava = \App\Travailleur::where('matricule', $rech->matricule )->first()->nom }} 
-                                    {{ \App\Travailleur::where('matricule', $rech->matricule )->first()->prenom }}
+                                    {{ optional($travailleursByMatricule->get($rech->matricule))->nom }}
+                                    {{ optional($travailleursByMatricule->get($rech->matricule))->prenom }}
                                 </td>
                             @endif
                             <td class="px-6 py-4 text-center text-sm text-text-primary"><?= $rech->valeur ?></td>

@@ -88,7 +88,7 @@
                 <tbody>
                 @forelse($liste_mission ?? [] as $auto)
                     @php
-                        $trava = \App\Travailleur::where('id', $auto->demandeurid)->first();
+                        $trava = $travailleursById->get($auto->demandeurid);
                         $transport_labels = [
                             1 => 'Avion',
                             2 => 'Bateau',

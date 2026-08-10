@@ -41,7 +41,7 @@
                     <tbody class="bg-white divide-y divide-slate-200">
                         @forelse($Precarites ?? [] as $index => $rech)
                             @php
-                                $travailleur = $rech->matricule ? \App\Travailleur::where('matricule', $rech->matricule)->first() : null;
+                                $travailleur = $rech->matricule ? $travailleursByMatricule->get($rech->matricule) : null;
                             @endphp
                             <tr class="hover:bg-slate-50 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary font-semibold">

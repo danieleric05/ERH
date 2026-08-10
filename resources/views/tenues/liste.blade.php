@@ -80,9 +80,9 @@
                 <tbody>
                 @forelse($tenues ?? [] as $listedata)
                     @php
-                        $travailleur = \App\Travailleur::where('id', $listedata->travailleurid)->first();
-                        $service = \App\Services_tenue::where('id', $listedata->services)->first();
-                        $articleRecu = \App\ArticleRecu::where('id', $listedata->tenuerecu)->first();
+                        $travailleur = $travailleursById->get($listedata->travailleurid);
+                        $service = $servicesById->get($listedata->services);
+                        $articleRecu = $articlesById->get($listedata->tenuerecu);
                     @endphp
                     <tr class="border-b hover:bg-slate-50 transition">
                         <td class="px-6 py-4 text-text-primary font-semibold">

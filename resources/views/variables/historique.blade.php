@@ -120,8 +120,8 @@
                                     <tr>
                                         <td>
                                             @foreach( unserialize($rech->travailleurid) as $servaiable )
-                                                <span title="{{ $trava = \App\Travailleur::where('matricule', $servaiable )->first()->nom }} {{ $trava = \App\Travailleur::where('matricule', $servaiable )->first()->prenom }}" class="badge badge-dark" style="font-weight: bold">
-                                                    {{ $trava = \App\Travailleur::where('matricule', $servaiable )->first()->matricule }}
+                                                <span title="{{ optional($travailleursByMatricule->get($servaiable))->nom }} {{ optional($travailleursByMatricule->get($servaiable))->prenom }}" class="badge badge-dark" style="font-weight: bold">
+                                                    {{ optional($travailleursByMatricule->get($servaiable))->matricule }}
                                                 </span> <br/>
                                             @endforeach
                                         </td>

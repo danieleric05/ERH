@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AutresVariables;
+use App\Travailleur;
 use App\Variables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +34,6 @@ class VariablesController extends Controller
             $variables->mois = intval($tabDate['1']);
             $variables->annee = intval($tabDate['0']);
 
-            $variables->save();
             if($variables->save()){
                 return Redirect::back()->withSuccess("Variables enregistré avec succès.");
             }
@@ -66,7 +66,6 @@ class VariablesController extends Controller
             $variables->mois = intval($tabDate['1']);
             $variables->annee = intval($tabDate['0']);
 
-            $variables->save();
             if($variables->save()){
                 return Redirect::back()->withSuccess("Variables enregistré avec succès.");
             }
@@ -97,7 +96,6 @@ class VariablesController extends Controller
             $variables->mois = intval($tabDate['1']);
             $variables->annee = intval($tabDate['0']);
 
-            $variables->save();
             if($variables->save()){
                 return Redirect::back()->withSuccess("Variables, Heures supplémentataire enregistré avec succès.");
             }
@@ -108,7 +106,9 @@ class VariablesController extends Controller
 
     public function listevariables_manuelle(){
         $variableM = Variables::Where('cause', 1)->orderBy('id', 'DESC')->get();
-        return view("variables.listevariables_manuelle", compact('variableM'));
+        $matricules = $variableM->flatMap(fn($vari) => unserialize($vari->travailleurid))->unique();
+        $travailleursByMatricule = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
+        return view("variables.listevariables_manuelle", compact('variableM', 'travailleursByMatricule'));
     }
 
     public function listevariables_heure_supp(){
@@ -118,9 +118,12 @@ class VariablesController extends Controller
 
     public function listevariables_automatique(){
                 $variableHS = Variables::Where('cause', 2)->orderBy('id', 'DESC')->get();
-                $tenues = \App\Tenues::orderBy('id', 'DESC')->get();
-                return view("variables.listevariables_automatique", compact('variableHS', 'tenues'));
+                return view("variables.listevariables_automatique", compact('variableHS'));
     }
 
+    public function listevariables_autres_variables(){
+        $data_travailleur = Travailleur::where('etapeid', '!=', 3)->where('statutid', '!=', 4)->orderBy('id', 'DESC')->get();
+        return view('variables.autres_variables', compact('data_travailleur'));
+    }
 
 }

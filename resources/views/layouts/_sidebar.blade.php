@@ -7,6 +7,7 @@
                precarites: false,
                variables: false,
                autorisations: false,
+               conges: false,
                sanctions: false,
                tenues: false,
                sante: false,
@@ -171,6 +172,28 @@
                     <a href="{{ route('calendrier_conges') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-calendar mr-3 w-4"></i>
                         Calendrier
+                    </a>
+                </div>
+            </div>
+
+            {{-- Gestion des Congés Section --}}
+            <div class="pt-2">
+                <button @click="openMenus.conges = !openMenus.conges"
+                        class="w-full flex items-center justify-between px-4 py-2 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors font-medium">
+                    <div class="flex items-center">
+                        <i class="fa fa-suitcase mr-3 w-5"></i>
+                        <span>Gestion des congés</span>
+                    </div>
+                    <i class="fa fa-chevron-down transition-transform duration-300" :class="{'rotate-180': openMenus.conges}"></i>
+                </button>
+                <div x-show="openMenus.conges" x-transition class="ml-4 space-y-1 mt-2">
+                    <a href="{{ route('ajouterConges') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
+                        <i class="fa fa-plus mr-3 w-4"></i>
+                        Ajouter un congé
+                    </a>
+                    <a href="{{ route('listeconges') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
+                        <i class="fa fa-list mr-3 w-4"></i>
+                        Liste des congés
                     </a>
                 </div>
             </div>
@@ -394,6 +417,28 @@
                     <a href="{{ route('calendrier_conges') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-calendar mr-3 w-4"></i>
                         Calendrier
+                    </a>
+                </div>
+            </div>
+
+            {{-- Gestion des Congés Section --}}
+            <div class="pt-2">
+                <button @click="openMenus.conges = !openMenus.conges"
+                        class="w-full flex items-center justify-between px-4 py-2 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors font-medium">
+                    <div class="flex items-center">
+                        <i class="fa fa-suitcase mr-3 w-5"></i>
+                        <span>Gestion des congés</span>
+                    </div>
+                    <i class="fa fa-chevron-down transition-transform duration-300" :class="{'rotate-180': openMenus.conges}"></i>
+                </button>
+                <div x-show="openMenus.conges" x-transition class="ml-4 space-y-1 mt-2">
+                    <a href="{{ route('ajouterConges') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
+                        <i class="fa fa-plus mr-3 w-4"></i>
+                        Ajouter un congé
+                    </a>
+                    <a href="{{ route('listeconges') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
+                        <i class="fa fa-list mr-3 w-4"></i>
+                        Liste des congés
                     </a>
                 </div>
             </div>

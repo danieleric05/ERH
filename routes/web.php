@@ -11,6 +11,7 @@ use App\Http\Controllers\VariablesController;
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\OffreEmploiController;
 use App\Http\Controllers\CandidatureController;
+use App\Http\Controllers\CongesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -339,13 +340,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get("/liste-autorisations", [EmployerController::class, 'listeautorisations'])->name("listeautorisations");
     Route::get("/liste-missions", [EmployerController::class, 'listemissions'])->name("listemissions");
     Route::get("/calenajouter-ha01drier-calendrier", [EmployerController::class, 'calendrier_conges'])->name("calendrier_conges");
-    Route::get("/calenajouter-ha01drier-calendrier", [EmployerController::class, 'calendrier_conges'])->name("calendrier_conges");
 
     /** CONGES */
-    Route::get("/ajouter-conges", function () {
-        return view("menu.conges.ajouter");
-    });
-    Route::get("/liste-conges", [RecruController::class, 'listeconges'])->name("listeconges");
+    Route::get("/ajouter-conges", [CongesController::class, 'ajouter'])->name("ajouterConges");
+    Route::post("post_conges", [CongesController::class, 'post_conges']);
+    Route::get("/liste-conges", [CongesController::class, 'liste'])->name("listeconges");
+    Route::get("/valider-conge/{id}", [CongesController::class, 'valider'])->name("validerConge");
+    Route::get("/refuser-conge/{id}", [CongesController::class, 'refuser'])->name("refuserConge");
 
     /** ========================================
      *  ARCHIVÉ - PRECARITE
@@ -495,9 +496,6 @@ Route::middleware(['auth'])->group(function () {
         "post_historiques_sante",
         [SanteController::class, 'post_historiques_sante'],
     );
-    Route::post("add/santes", [SanteController::class, 'addsantes']);
-    Route::post("update/santes/updatesantes", [SanteController::class, 'updatesantes']);
-    Route::get("edit/santes/data", [SanteController::class, 'editsantes']);
     Route::get("/ajouter-consultation", function () {
         return view("menu.sante.consultation");
     });
@@ -536,11 +534,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get("/stock-tenues", [EmployerController::class, 'stock_tenues'])->name("stock_tenues");
     Route::get("/approvisionner-stock-tenues", [EmployerController::class, 'appro_stock'])->name("appro_stock"); */
 
-    Route::get("unites", [ConfigController::class, 'index_unite'])->name("unites");
-    Route::get("unites/{id}", [ConfigController::class, 'show_unite'])->name(
-        "unites.show",
-    );
-
     Route::get("departements", [ConfigController::class, 'index'])->name("departements");
     Route::post(
         "add/departements/adddepartements",
@@ -558,15 +551,8 @@ Route::middleware(['auth'])->group(function () {
         "delete/departements/data",
         [ConfigController::class, 'deletedepartements'],
     );
-    Route::get("departements/{id}", [ConfigController::class, 'show'])->name(
-        "departements.show",
-    );
-
     /******************************* EQUIPE *******************************************/
     Route::get("equipes", [ConfigController::class, 'index_equipes'])->name("equipes");
-    Route::get("equipes/{id}", [ConfigController::class, 'show_equipes'])->name(
-        "equipes.show",
-    );
     Route::post("add/equipes/addequipes", [ConfigController::class, 'addequipes']);
     Route::post(
         "update/equipes/updateequipes",
@@ -578,9 +564,6 @@ Route::middleware(['auth'])->group(function () {
     /******************************* UNITES *******************************************/
 
     Route::get("unites", [ConfigController::class, 'index_unites'])->name("unites");
-    Route::get("unites/{id}", [ConfigController::class, 'show_unites'])->name(
-        "unites.show",
-    );
     Route::post("add/unites", [ConfigController::class, 'addunites']);
     Route::post("update/unites/updateunites", [ConfigController::class, 'updateunites']);
     Route::get("edit/unites/data", [ConfigController::class, 'editunitessurl']);
@@ -590,9 +573,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get("fonctions", [ConfigController::class, 'index_fonction'])->name(
         "fonctions",
-    );
-    Route::get("fonctions/{id}", [ConfigController::class, 'show_fonctions'])->name(
-        "fonctions.show",
     );
     Route::post("add/fonctions/fonctions", [ConfigController::class, 'addfonctions']);
     Route::post(
@@ -605,9 +585,6 @@ Route::middleware(['auth'])->group(function () {
     /******************************* NIVEAU ETUDE *******************************************/
     Route::get("categories", [ConfigController::class, 'index_categories'])->name(
         "categories",
-    );
-    Route::get("categories/{id}", [ConfigController::class, 'show_categories'])->name(
-        "categories.show",
     );
 
     Route::post(
@@ -624,9 +601,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get("niveauEtude", [ConfigController::class, 'index_niveauEtude'])->name(
         "niveauEtude",
     );
-    Route::get("niveauEtude/{id}", [ConfigController::class, 'show_niveauEtude'])->name(
-        "niveauEtude.show",
-    );
 
     Route::post(
         "add/niveauEtude/addniveauEtude",
@@ -642,7 +616,6 @@ Route::middleware(['auth'])->group(function () {
     /******************************* PAYS *******************************************/
 
     Route::get("pays", [ConfigController::class, 'index_pays'])->name("pays");
-    Route::get("pays/{id}", [ConfigController::class, 'show_pays'])->name("pays.show");
     Route::post("add/pays/addpays", [ConfigController::class, 'addpays']);
     Route::post("update/pays/updatepays", [ConfigController::class, 'updatepays']);
     Route::get("edit/pays/data", [ConfigController::class, 'editpaysurl']);
@@ -663,7 +636,6 @@ Route::middleware(['auth'])->group(function () {
         [EmployerController::class, 'delete_photo_travailleur']
     )->name('delete_photo_travailleur');
     Route::post("edit_travailleur/{id}", [EmployerController::class, 'edit_travailleur']);
-    Route::get("/edit-travailleur/{id}", [EmployerController::class, 'edittravailleur'])->name("edittravailleur");
     Route::get("/details-contrat-journalier/{id}", [EmployerController::class, 'lientelechargerContrat'])->name("lientelechargerContrat");
     Route::get("/telecharger-contrat-journalier/{id}", [EmployerController::class, 'telechargerContratJournalier'])->name("telechargerContratJournalier");
     Route::get("/telecharger-contrat-cdd/{id}", [EmployerController::class, 'telechargerContratCDD'])->name("telechargerContratCDD");

@@ -66,7 +66,7 @@
                 <tbody>
                 @forelse($listeAT ?? [] as $listedata)
                     @php
-                        $travailleur = \App\Travailleur::where('id', $listedata->travailleurid)->first();
+                        $travailleur = $travailleursById->get($listedata->travailleurid);
                     @endphp
                     <tr class="border-b hover:bg-slate-50 transition">
                         <td class="px-6 py-4 text-text-primary text-sm">

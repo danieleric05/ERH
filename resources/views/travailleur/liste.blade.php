@@ -73,7 +73,7 @@
                 <tbody>
                 @forelse($data_travailleurdeux ?? [] as $listedata)
                     @php
-                        $equipe = \App\Equipes::where('id', $listedata->equipeid)->first();
+                        $equipe = $equipesById->get($listedata->equipeid);
                     @endphp
                     <tr class="border-b hover:bg-slate-50 transition">
                         <td class="px-6 py-4">

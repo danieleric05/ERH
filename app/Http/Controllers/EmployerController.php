@@ -25,7 +25,6 @@ use App\Variables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use phpDocumentor\Reflection\Types\Null_;
 use PDF;
@@ -42,27 +41,36 @@ class EmployerController extends Controller
 
         foreach ($listesante as $sante) {
 
-            $debut = Travailleur::where('id', $sante->travailleurid)->first()->date_debut_contrat;
-            $fin = Travailleur::where('id', $sante->travailleurid)->first()->date_fin_contrat;
+            $travailleur = Travailleur::find($sante->travailleurid);
+
+            if (!$travailleur) {
+                continue;
+            }
 
             $travail = ActionsCDC::find($sante->id);
-            $travail->debut_contrat = $debut;
-            $travail->fin_contrat = $fin;
+            $travail->debut_contrat = $travailleur->date_debut_contrat;
+            $travail->fin_contrat = $travailleur->date_fin_contrat;
             $travail->save();
         }
 
-        dd('okkkkkkkkkkkk');
-
-
-        $data_ArticleRecu = \App\ArticleRecu::orderBy('id', 'DESC')->get();
-        return view("tenues.appro_stock", compact('tenues_nouvelle', 'tenues_ancienne', 'data_ArticleRecu'));
+        return Redirect::back()->withSuccess("Détection des matricules effectuée avec succès.");
     }
 
     public function post_gestion_tenue(Request $request)
     {
 
-        $matricule = \App\Travailleur::where('id', $request->travailleurid)->first()->matricule;
+        $travailleur = \App\Travailleur::find($request->travailleurid);
+
+        if (!$travailleur) {
+            return Redirect::back()->withErrors("Le travailleur sélectionné est introuvable.");
+        }
+
+        $matricule = $travailleur->matricule;
         $article = ArticleRecu::where('id', strtoupper($request->tenuerecu))->first();
+
+        if (!$article) {
+            return Redirect::back()->withErrors("L'article sélectionné est introuvable.");
+        }
 
         if ($article->quantite_en_stock > 0) {
 
@@ -87,12 +95,10 @@ class EmployerController extends Controller
                 $tenue->userid = Auth::user()->id;
                 $tenue->mois = date('m');
                 $tenue->annee = date('Y');
-                $tenue->save();
                 if ($tenue->save()) {
 
                     $articleUpda = ArticleRecu::find($article->id);
                     $articleUpda->quantite_en_stock -= intval(1);
-                    $articleUpda->save();
                     if ($articleUpda->save()) {
                         return Redirect::back()->withSuccess("La tenue " . strtoupper($article->label) . " du travailleur a été enregistré avec succès ");
                     }
@@ -120,8 +126,9 @@ class EmployerController extends Controller
 
                 $type = $request->variables_type;
                 $variables = Variables::where('debut', '>=', $request->beginn)->where('debut', '<=', $request->endd)->where('type_variable', 2)->get();
+                $travailleursByMatricule = Travailleur::whereIn('matricule', $recherches->pluck('matricule'))->get()->keyBy('matricule');
 
-                return view('precarite.historique', compact('recherches', 'variables', 'type', 'code'));
+                return view('precarite.historique', compact('recherches', 'variables', 'type', 'code', 'travailleursByMatricule'));
             } elseif ($request->variables_type == 2) {
                 $term = 'E';
                 $recherches = Precarites::where('dateha', '>=', $request->beginn)->where('dateha', '<=', $request->endd)->where('matricule', 'like', '%' . $term . '%')->get();
@@ -132,8 +139,9 @@ class EmployerController extends Controller
 
                 $type = $request->variables_type;
                 $variables = Variables::where('debut', '>=', $request->beginn)->where('debut', '<=', $request->endd)->where('type_variable', 2)->get();
+                $travailleursByMatricule = Travailleur::whereIn('matricule', $recherches->pluck('matricule'))->get()->keyBy('matricule');
 
-                return view('precarite.historique', compact('recherches', 'variables', 'type', 'code'));
+                return view('precarite.historique', compact('recherches', 'variables', 'type', 'code', 'travailleursByMatricule'));
             }
         } else {
             return Redirect::back()->withErrors("Veuillez selectionner les champs.");
@@ -246,15 +254,15 @@ class EmployerController extends Controller
     public function listemissions()
     {
         $liste_mission = Autorisations::where('motif_absence', 6)->orderBy('id', 'DESC')->get();
-        $tenues = Tenues::orderBy('id', 'DESC')->get();
-        return view("autorisations.liste_mission", compact('liste_mission', 'tenues'));
+        $travailleursById = Travailleur::whereIn('id', $liste_mission->pluck('demandeurid'))->get()->keyBy('id');
+        return view("autorisations.liste_mission", compact('liste_mission', 'travailleursById'));
     }
 
     public function listeautorisations()
     {
         $liste_auto = Autorisations::where('motif_absence', '!=', 6)->orderBy('id', 'DESC')->get();
-        $tenues = Tenues::orderBy('id', 'DESC')->get();
-        return view("autorisations.liste_autorisations", compact('liste_auto', 'tenues'));
+        $travailleursById = Travailleur::whereIn('id', $liste_auto->pluck('demandeurid'))->get()->keyBy('id');
+        return view("autorisations.liste_autorisations", compact('liste_auto', 'travailleursById'));
     }
 
     public function listevariables_manuelle()
@@ -266,15 +274,17 @@ class EmployerController extends Controller
     public function listeprecarites()
     {
         $Precarites = Precarites::where('statutid', 3)->orderBy('id', 'DESC')->get();
-        $tenues = Tenues::orderBy('id', 'DESC')->get();
-        return view("precarite.listeprecarites", compact('Precarites', 'tenues'));
+        $travailleursByMatricule = Travailleur::whereIn('matricule', $Precarites->pluck('matricule'))->get()->keyBy('matricule');
+        return view("precarite.listeprecarites", compact('Precarites', 'travailleursByMatricule'));
     }
 
     public function historiques_variables()
     {
         $code = '';
         $recherches  = Variables::where('cause', 1)->where('debut', date('Y-m-d'))->orderBy('id', 'DESC')->get();
-        return view("variables.historique", compact('departements', 'recherches', 'code'));
+        $matricules = $recherches->flatMap(fn($rech) => unserialize($rech->travailleurid))->unique();
+        $travailleursByMatricule = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
+        return view("variables.historique", compact('recherches', 'code', 'travailleursByMatricule'));
     }
 
     public function historique_ha01()
@@ -282,7 +292,8 @@ class EmployerController extends Controller
         $code = '';
         $recherches  = Precarites::where('dateha', date('Y-m-d'))->orderBy('id', 'DESC')->get();
         $variables  = Variables::where('debut', date('Y-m-d'))->orderBy('id', 'DESC')->get();
-        return view("precarite.historique", compact('recherches', 'variables', 'code'));
+        $travailleursByMatricule = Travailleur::whereIn('matricule', $recherches->pluck('matricule'))->get()->keyBy('matricule');
+        return view("precarite.historique", compact('recherches', 'variables', 'code', 'travailleursByMatricule'));
     }
 
     public function listevariables_heure_supp()
@@ -295,8 +306,12 @@ class EmployerController extends Controller
     {
 
         $tenues = Tenues::orderBy('id', 'DESC')->get();
-        $departements = Departement::orderBy('id', 'DESC')->get();
-        return view("tenues.liste", compact('departements', 'tenues'));
+
+        $travailleursById = Travailleur::whereIn('id', $tenues->pluck('travailleurid'))->get()->keyBy('id');
+        $servicesById = \App\Services_tenue::whereIn('id', $tenues->pluck('services'))->get()->keyBy('id');
+        $articlesById = ArticleRecu::whereIn('id', $tenues->pluck('tenuerecu'))->get()->keyBy('id');
+
+        return view("tenues.liste", compact('tenues', 'travailleursById', 'servicesById', 'articlesById'));
     }
 
     public function stock_tenues()
@@ -328,7 +343,6 @@ class EmployerController extends Controller
             $approvi->date_recep = $request->date_reception;
             $approvi->articleid = $request->tenuerecu;
             $approvi->userid = Auth::user()->id;
-            $approvi->save();
             if ($approvi->save()) {
 
                 $article = ArticleRecu::find($id_article->id);
@@ -339,7 +353,6 @@ class EmployerController extends Controller
                 $article->date_reception = $request->date_reception;
                 $article->statutid = 1;
                 $article->userid = Auth::user()->id;
-                $article->save();
                 if ($article->save()) {
                     return Redirect::back()->withSuccess("L'approvisionnement des " . strtoupper($id_article->label) . " a été effectué avec succès, disponible en stock : " . $article->quantite_en_stock . "");
                 }
@@ -496,7 +509,6 @@ class EmployerController extends Controller
             $travail->ip = $_SERVER['REMOTE_ADDR'];
             $travail->mois = date('m');
             $travail->annee = date('Y');
-            $travail->save();
 
             if ($travail->save()) {
 
@@ -513,7 +525,6 @@ class EmployerController extends Controller
                     $actions->travailleur_mat = $travail->matricule;
                     $actions->userid = Auth::user()->id;
                     $actions->actionid = 1; //1: embauché(contrat normal)
-                    $actions->save();
 
                     if ($actions->save() == true) {
 
@@ -853,7 +864,6 @@ class EmployerController extends Controller
         $travail->etapeid = 2; // fin enregistrement contrat telecharger
         $travail->inscrit_le = date('Y-m-d H-i-s');
         $travail->ip = $_SERVER['REMOTE_ADDR'];
-        $travail->save();
 
         if ($travail->save()) {
 
@@ -872,14 +882,12 @@ class EmployerController extends Controller
         if ($editTenue->etat == 1) {
             $editTenue->etat = 2; // etat mauvais
             $editTenue->userid = Auth::user()?->id; // etat
-            $editTenue->save();
             if ($editTenue->save()) {
                 return Redirect::back()->withErrors("Le statut de la tenue du travailleur a été modifié avec succès.");
             }
         } elseif ($editTenue->etat == 2) {
             $editTenue->etat = 1; // etat bon
             $editTenue->userid = Auth::user()?->id; // etat
-            $editTenue->save();
             if ($editTenue->save()) {
                 return Redirect::back()->withSuccess("Le statut de la tenue du travailleur a été modifié avec succès.");
             }

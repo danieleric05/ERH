@@ -101,7 +101,7 @@
                                     <div class="flex flex-wrap gap-1">
                                         @foreach(unserialize($vari->travailleurid) as $matricule)
                                             @php
-                                                $travailleur = \App\Travailleur::where('matricule', $matricule)->first();
+                                                $travailleur = $travailleursByMatricule->get($matricule);
                                             @endphp
                                             @if($travailleur)
                                                 <span title="{{ $travailleur->nom }} {{ $travailleur->prenom }}" class="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 rounded-full">

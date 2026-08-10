@@ -87,9 +87,9 @@
                     <tbody>
                         @forelse($listeSante ?? [] as $listedata)
                             @php
-                                $infirmier = \App\User::where('id', $listedata->userid)->first();
-                                $travailleur = \App\Travailleur::where('id', $listedata->travailleurid)->first();
-                                $receptionnaire = $listedata->recu_par ? \App\User::where('id', $listedata->recu_par)->first() : null;
+                                $infirmier = $usersById->get($listedata->userid);
+                                $travailleur = $travailleursById->get($listedata->travailleurid);
+                                $receptionnaire = $listedata->recu_par ? $usersById->get($listedata->recu_par) : null;
                             @endphp
                             <tr class="border-b hover:bg-slate-50 transition">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary">

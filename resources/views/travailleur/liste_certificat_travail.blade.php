@@ -91,7 +91,7 @@
                         </td>
                         <td class="px-6 py-4 text-text-secondary text-sm">
                             @php
-                                $equipe = \App\Equipes::where('id', $listedata->equipeid)->first();
+                                $equipe = $equipesById->get($listedata->equipeid);
                             @endphp
                             {{ $equipe?->label ?? '-' }}
                         </td>

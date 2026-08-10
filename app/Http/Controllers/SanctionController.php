@@ -43,9 +43,8 @@ class SanctionController extends Controller
             $variables->mois = intval($tabDate['1']);
             $variables->annee = intval($tabDate['0']);
 
-            $variables->save();
             if($variables->save()){
-				
+
 				return Redirect::route('techarger_sanctions', $variables->id)->withSuccess("La sanction a été enregistré avec succès, Merci de télécharger le fichier PDF ");
 
             }
@@ -108,7 +107,6 @@ class SanctionController extends Controller
             $variables->mois = intval($tabDate['1']);
             $variables->annee = intval($tabDate['0']);
 
-            $variables->save();
             if($variables->save()){
                 return Redirect::back()->withSuccess("L'autorisation a été enregistré avec succès.");
             }
@@ -141,7 +139,6 @@ class SanctionController extends Controller
                     $update_H0A1->variable += intval($nb_jour);
                     $update_H0A1->userid = Auth::user()->id;
                     $update_H0A1->updated_at = Carbon::now();
-                    $update_H0A1->save();
 
                     if($update_H0A1->save()){
 
@@ -149,7 +146,6 @@ class SanctionController extends Controller
                         $update_Santes->statutid = 3;
                         $update_Santes->userid = Auth::user()->id;
                         $update_Santes->updated_at = Carbon::now();
-                        $update_Santes->save();
 
                         if( $update_Santes->save() ){
                             return Redirect::back()->withSuccess("La variable a été ajouté avec succès.");
@@ -202,12 +198,10 @@ class SanctionController extends Controller
 
                     if($mat == $all->matricule){
 
-                        $update_H0A1 = HAO1::find($all->id);
-                        //$update_H0A1 = new HAO1();
-                        $update_H0A1->variable += intval($nb_jour);
-                        $update_H0A1->userid = Auth::user()->id;
-                        $update_H0A1->updated_at = Carbon::now();
-                        $update_H0A1->save();
+                        $all->variable += intval($nb_jour);
+                        $all->userid = Auth::user()->id;
+                        $all->updated_at = Carbon::now();
+                        $all->save();
 
                     }
 
@@ -219,7 +213,6 @@ class SanctionController extends Controller
             $update_Sanc->statutid = 2;
             $update_Sanc->userid = Auth::user()->id;
             $update_Sanc->updated_at = Carbon::now();
-            $update_Sanc->save();
 
             if($update_Sanc->save() == true){
                 return Redirect::back()->withSuccess("La sanction a été ajouté au variable avec succès.");
@@ -227,7 +220,7 @@ class SanctionController extends Controller
 
         }
 
-        return view('sanctions.liste', compact('Sanctions'));
+        return Redirect::back()->withErrors("Sanction introuvable.");
     }
 
 
@@ -251,8 +244,12 @@ class SanctionController extends Controller
 
                 if($demandeurid){
 
-                    $hao1_mat_first = HAO1::where('matricule', $demandeurid->matricule)->first();
-                    $update_H0A1 = HAO1::find($hao1_mat_first->id);
+                    $update_H0A1 = HAO1::where('matricule', $demandeurid->matricule)->first();
+
+                    if (!$update_H0A1) {
+                        return Redirect::back()->withErrors("Impossible, le HA01 du demandeur n'a pas été importé.");
+                    }
+
                     $update_H0A1->variable += intval($nb_jour);
                     $update_H0A1->userid = Auth::user()->id;
                     $update_H0A1->updated_at = Carbon::now();
@@ -270,7 +267,6 @@ class SanctionController extends Controller
             $update_Auto->statutid = 3; //
             $update_Auto->userid = Auth::user()->id;
             $update_Auto->updated_at = Carbon::now();
-            $update_Auto->save();
 
             if($update_Auto->save() == true){
                 return Redirect::back()->withSuccess("La sanction a été ajouté au variable avec succès.");
@@ -278,7 +274,7 @@ class SanctionController extends Controller
 
         }
 
-        return view('sanctions.liste', compact('Sanctions'));
+        return Redirect::back()->withErrors("Autorisation introuvable.");
 
     }
 
@@ -298,8 +294,12 @@ class SanctionController extends Controller
 
                 if($demandeurid){
 
-                    $hao1_mat_first = HAO1::where('matricule', $demandeurid->matricule)->first();
-                    $update_H0A1 = HAO1::find($hao1_mat_first->id);
+                    $update_H0A1 = HAO1::where('matricule', $demandeurid->matricule)->first();
+
+                    if (!$update_H0A1) {
+                        return Redirect::back()->withErrors("Impossible, le HA01 du demandeur n'a pas été importé.");
+                    }
+
                     $update_H0A1->variable = intval($nb_jour);
                     $update_H0A1->userid = Auth::user()->id;
                     $update_H0A1->updated_at = Carbon::now();
@@ -317,7 +317,6 @@ class SanctionController extends Controller
             $update_Auto->statutid = 3; //
             $update_Auto->userid = Auth::user()->id;
             $update_Auto->updated_at = Carbon::now();
-            $update_Auto->save();
 
             if($update_Auto->save() == true){
                 return Redirect::back()->withSuccess("La sanction a été ajouté au variable avec succès.");
@@ -325,6 +324,6 @@ class SanctionController extends Controller
 
         }
 
-        return view('sanctions.liste', compact('Sanctions'));
+        return Redirect::back()->withErrors("Mission introuvable.");
     }
 }

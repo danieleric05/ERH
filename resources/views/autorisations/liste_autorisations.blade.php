@@ -70,7 +70,7 @@
                 <tbody>
                 @forelse($liste_auto ?? [] as $auto)
                     @php
-                        $trava = \App\Travailleur::where('id', $auto->demandeurid)->first();
+                        $trava = $travailleursById->get($auto->demandeurid);
                         $motif_labels = [
                             1 => 'Maladie',
                             2 => 'Convenance personnelle',
