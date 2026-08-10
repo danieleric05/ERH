@@ -12,8 +12,11 @@
 */
 
 $app = new Illuminate\Foundation\Application(
-    realpath(__DIR__.'/../')
+    realpath(__DIR__ . '/../')
 );
+
+// Le dossier public est situé au niveau supérieur de l'application Laravel.
+//$app->usePublicPath(dirname($app->basePath()));
 
 /*
 |--------------------------------------------------------------------------
