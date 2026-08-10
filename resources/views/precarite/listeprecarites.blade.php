@@ -44,7 +44,7 @@
                                     <td><?= $i++ ?></td>
                                     <td class="text-center"><?= $rech->matricule ?></td>
                                     @if($rech->matricule)
-                                    <td>{{ $trava = \App\Travailleur::where('matricule', $rech->matricule )->first()->nom }} {{ $trava = \App\Travailleur::where('matricule', $rech->matricule )->first()->prenom }}</td>
+                                    <td>{{ optional($travailleursByMatricule->get($rech->matricule))->nom }} {{ optional($travailleursByMatricule->get($rech->matricule))->prenom }}</td>
                                     @endif
                                     <td class="text-center"><?= $rech->valeur ?></td>
                                     <td class="text-center" >

@@ -49,7 +49,7 @@
                                 <tr>
                                     <td>{{ $listedata->id }}</td>
                                     <td>{{ $listedata->label }}</td>
-                                    <td>{{ $label = \App\Unites::where('id', $listedata->uniteid)->first()->label }}</td>
+                                    <td>{{ optional($unitesById->get($listedata->uniteid))->label }}</td>
                                     <td class="actions text-center">
                                         <a href="{{ url('edit/departements/data') }}" data-id="{{ $listedata->id }}" id="edit" class="btn btn-sm btn-icon btn-pure btn-dark on-default button-remove" data-toggle="tooltip" data-original-title="Remove" aria-describedby="tooltip270584">
                                             <i class="icon-pencil" aria-hidden="true"></i>

@@ -42,9 +42,10 @@
 
                             <tbody>
                             @foreach($listeAT as $listedata)
+                                @php($travailleur = $travailleursById->get($listedata->travailleurid))
                                 <tr>
 
-                                    <td title="{{ $matr = \App\Travailleur::where('id', $listedata->travailleurid)->first()->matricule }}">{{ $travail = \App\Travailleur::where('id', $listedata->travailleurid)->first()->nom }} {{ $prenom = \App\Travailleur::where('id', $listedata->travailleurid)->first()->prenom }}</td>
+                                    <td title="{{ optional($travailleur)->matricule }}">{{ optional($travailleur)->nom }} {{ optional($travailleur)->prenom }}</td>
                                     <td>{{ $listedata->cause }}</td>
                                     <td>{{ $listedata->prescription }}</td>
                                     <td>

@@ -52,15 +52,16 @@
 
                             <tbody>
                             @foreach($listeSante as $listedata)
+                                @php($travailleur = $travailleursById->get($listedata->travailleurid))
                                 <tr>
 
                                     <td>
-                                        {{ $nom = \App\User::where('id', $listedata->userid)->first()->name }}
+                                        {{ optional($usersById->get($listedata->userid))->name }}
                                     </td>
-                                    <td title="{{ $matr = \App\Travailleur::where('id', $listedata->travailleurid)->first()->matricule }}">
-                                        {{ $travail = \App\Travailleur::where('id', $listedata->travailleurid)->first()->matricule }}
+                                    <td title="{{ optional($travailleur)->matricule }}">
+                                        {{ optional($travailleur)->matricule }}
                                     </td>
-                                    <td title="{{ $matr = \App\Travailleur::where('id', $listedata->travailleurid)->first()->matricule }}">{{ $travail = \App\Travailleur::where('id', $listedata->travailleurid)->first()->nom }} {{ $prenom = \App\Travailleur::where('id', $listedata->travailleurid)->first()->prenom }}</td>
+                                    <td title="{{ optional($travailleur)->matricule }}">{{ optional($travailleur)->nom }} {{ optional($travailleur)->prenom }}</td>
                                     @if( (Auth::user()->idrole == 4))
                                     <td>{{ $listedata->consultation }}</td>
                                     <td>{{ $listedata->prescription }}</td>
@@ -84,7 +85,7 @@
                                             <span class="badge badge-info">NON RECU PAR DRH</span>
                                         @endif
                                         @if( ($listedata->statutid == 2) && ($listedata->arret_travail == 1) )
-                                            <span class="badge badge-dark">RECU PAR {{ $nom = \App\User::where('id', $listedata->recu_par)->first()->name }}</span>
+                                            <span class="badge badge-dark">RECU PAR {{ optional($usersById->get($listedata->recu_par))->name }}</span>
                                         @endif
                                         @if( ($listedata->statutid == 3) && ($listedata->arret_travail == 1) )
                                             <span class="badge badge-dark">RECU PAR DRH && <br/> Ajouté aux variables</span>

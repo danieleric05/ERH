@@ -127,8 +127,9 @@ class EmployerController extends Controller
 
                 $type = $request->variables_type;
                 $variables = Variables::where('debut', '>=', $request->beginn)->where('debut', '<=', $request->endd)->where('type_variable', 2)->get();
+                $travailleursByMatricule = Travailleur::whereIn('matricule', $recherches->pluck('matricule'))->get()->keyBy('matricule');
 
-                return view('precarite.historique', compact('recherches', 'variables', 'type', 'code'));
+                return view('precarite.historique', compact('recherches', 'variables', 'type', 'code', 'travailleursByMatricule'));
 
             }elseif ( $request->variables_type == 2 ){
                $term = 'E';
@@ -139,8 +140,9 @@ class EmployerController extends Controller
 
                $type = $request->variables_type;
                $variables = Variables::where('debut', '>=', $request->beginn)->where('debut', '<=', $request->endd)->where('type_variable', 2)->get();
+               $travailleursByMatricule = Travailleur::whereIn('matricule', $recherches->pluck('matricule'))->get()->keyBy('matricule');
 
-               return view('precarite.historique', compact('recherches', 'variables', 'type', 'code'));
+               return view('precarite.historique', compact('recherches', 'variables', 'type', 'code', 'travailleursByMatricule'));
 
            }
 
@@ -271,12 +273,14 @@ class EmployerController extends Controller
 
     public function listemissions(){
         $liste_mission = Autorisations::where('motif_absence', 6)->orderBy('id', 'DESC')->get();
-        return view("autorisations.liste_mission", compact('liste_mission', 'tenues'));
+        $travailleursById = Travailleur::whereIn('id', $liste_mission->pluck('demandeurid'))->get()->keyBy('id');
+        return view("autorisations.liste_mission", compact('liste_mission', 'travailleursById'));
     }
 
     public function listeautorisations(){
         $liste_auto = Autorisations::where('motif_absence', '!=', 6)->orderBy('id', 'DESC')->get();
-        return view("autorisations.liste_autorisations", compact('liste_auto', 'tenues'));
+        $travailleursById = Travailleur::whereIn('id', $liste_auto->pluck('demandeurid'))->get()->keyBy('id');
+        return view("autorisations.liste_autorisations", compact('liste_auto', 'travailleursById'));
     }
 
     public function listevariables_manuelle(){
@@ -286,20 +290,24 @@ class EmployerController extends Controller
 
     public function listeprecarites(){
         $Precarites = Precarites::where('statutid', 3)->orderBy('id', 'DESC')->get();
-        return view("precarite.listeprecarites", compact('Precarites', 'tenues'));
+        $travailleursByMatricule = Travailleur::whereIn('matricule', $Precarites->pluck('matricule'))->get()->keyBy('matricule');
+        return view("precarite.listeprecarites", compact('Precarites', 'travailleursByMatricule'));
     }
 
     public function historiques_variables(){
         $code = '';
         $recherches  = Variables::where('cause', 1)->where('debut', date('Y-m-d'))->orderBy('id', 'DESC')->get();
-        return view("variables.historique", compact('departements', 'recherches', 'code'));
+        $matricules = $recherches->flatMap(fn($rech) => unserialize($rech->travailleurid))->unique();
+        $travailleursByMatricule = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
+        return view("variables.historique", compact('recherches', 'code', 'travailleursByMatricule'));
     }
 
     public function historique_ha01(){
         $code = '';
         $recherches  = Precarites::where('dateha', date('Y-m-d'))->orderBy('id', 'DESC')->get();
         $variables  = Variables::where('debut', date('Y-m-d'))->orderBy('id', 'DESC')->get();
-        return view("precarite.historique", compact('recherches', 'variables', 'code'));
+        $travailleursByMatricule = Travailleur::whereIn('matricule', $recherches->pluck('matricule'))->get()->keyBy('matricule');
+        return view("precarite.historique", compact('recherches', 'variables', 'code', 'travailleursByMatricule'));
     }
 
     public function listevariables_heure_supp(){
@@ -311,7 +319,11 @@ class EmployerController extends Controller
 
         $tenues = Tenues::orderBy('id', 'DESC')->get();
 
-        return view("tenues.liste", compact('departements', 'tenues'));
+        $travailleursById = Travailleur::whereIn('id', $tenues->pluck('travailleurid'))->get()->keyBy('id');
+        $servicesById = \App\Services_tenue::whereIn('id', $tenues->pluck('services'))->get()->keyBy('id');
+        $articlesById = ArticleRecu::whereIn('id', $tenues->pluck('tenuerecu'))->get()->keyBy('id');
+
+        return view("tenues.liste", compact('tenues', 'travailleursById', 'servicesById', 'articlesById'));
 
     }
 

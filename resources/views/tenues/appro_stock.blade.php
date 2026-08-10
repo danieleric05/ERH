@@ -122,7 +122,7 @@
 							 @foreach($data_ApproTenues as $tenues)
                                 <tr>
 
-                                    <td>{{ $id_article = App\ArticleRecu::where('id', $tenues->articleid )->first()->label }}</td>
+                                    <td>{{ $id_article = optional(App\ArticleRecu::where('id', $tenues->articleid )->first())->label }}</td>
                                     <td>{{ $tenues->quantite }}</td>
                                     <td>{{ $tenues->fournisseur }}</td>
 									<td class="text-center">{{ $tenues->date_recep }}</td>

@@ -46,8 +46,8 @@
                              <tr>
                                  <td>
                                      @foreach( unserialize($vari->employer_hs) as $servaiable )
-                                         <span title="{{ $trava = \App\Travailleur::where('id', $servaiable )->first()->nom }} {{ $trava = \App\Travailleur::where('id', $servaiable )->first()->prenom }}" class="badge badge-dark" style="font-weight: bold">
-                                            {{ $trava = \App\Travailleur::where('id', $servaiable )->first()->matricule }}
+                                         <span title="{{ optional($travailleursById->get($servaiable))->nom }} {{ optional($travailleursById->get($servaiable))->prenom }}" class="badge badge-dark" style="font-weight: bold">
+                                            {{ optional($travailleursById->get($servaiable))->matricule }}
                                         </span> <br/>
                                      @endforeach
                                  </td>

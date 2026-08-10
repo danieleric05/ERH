@@ -100,7 +100,7 @@
                                     <td>{{ $listedata->label }}</td>
                                     <td>**********</td>
                                     @if($listedata->uniteid)
-                                      <td>{{ $label = \App\Unites::where('id', $listedata->uniteid)->first()->label }}</td>
+                                      <td>{{ $label = optional(\App\Unites::where('id', $listedata->uniteid)->first())->label }}</td>
                                     @endif
                                     @if(!$listedata->uniteid)
                                     <td></td>

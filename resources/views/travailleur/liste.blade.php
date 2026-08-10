@@ -65,7 +65,7 @@
                                     <td>{{ $listedata->nom }}</td>
                                     <td>{{ $listedata->prenom }}</td>
                                     <td style="color: black; font-weight: bold">
-                                        {{ $equipe = \App\Equipes::where('id', $listedata->equipeid)->first()->label }}
+                                        {{ optional($equipesById->get($listedata->equipeid))->label }}
                                     </td>
                                     <td>{{ $listedata->date_debut_contrat }}</td>
                                     <td style="color: red; font-weight: bold">{{ $listedata->date_fin_contrat }}</td>

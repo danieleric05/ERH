@@ -203,12 +203,18 @@ class SanteController extends Controller
 
     public function listesconsultation(){
         $listeSante = Santes::where('id', Auth::user()->id)->orderBy('id', 'DESC')->get();
-        return view("sante.liste", compact('listeSante', 'equipes'));
+
+        $userIds = $listeSante->pluck('userid')->merge($listeSante->pluck('recu_par'))->unique();
+        $usersById = \App\User::whereIn('id', $userIds)->get()->keyBy('id');
+        $travailleursById = Travailleur::whereIn('id', $listeSante->pluck('travailleurid'))->get()->keyBy('id');
+
+        return view("sante.liste", compact('listeSante', 'usersById', 'travailleursById'));
     }
 
     public function listesaccident(){
         $listeAT = AccidentTravail::orderBy('id', 'DESC')->get();
-        return view("sante.accident_travail.liste", compact('listeAT', 'equipes'));
+        $travailleursById = Travailleur::whereIn('id', $listeAT->pluck('travailleurid'))->get()->keyBy('id');
+        return view("sante.accident_travail.liste", compact('listeAT', 'travailleursById'));
     }
 
     public function accident_travail_traiter($id){

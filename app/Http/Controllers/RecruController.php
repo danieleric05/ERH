@@ -31,7 +31,8 @@ class RecruController extends Controller
     public function listetravailleurs(){
         //$termJ = 'J';
         $data_travailleurdeux = Travailleur::where('statutid', 1)->orderBy('id', 'DESC')->get();
-        return view('travailleur.liste', compact('data_travailleurdeux'));
+        $equipesById = Equipes::whereIn('id', $data_travailleurdeux->pluck('equipeid'))->get()->keyBy('id');
+        return view('travailleur.liste', compact('data_travailleurdeux', 'equipesById'));
     }
 
     public function liste_tous_travailleurs(){
@@ -66,7 +67,8 @@ class RecruController extends Controller
 
     public function liste_certificat_travail(){
         $data_certificat_travail = Travailleur::where('etapeid', '!=' ,3)->where('etapeid',4)->orderBy('id', 'DESC')->get();
-        return view('travailleur.liste_certificat_travail', compact('data_certificat_travail'));
+        $equipesById = Equipes::whereIn('id', $data_certificat_travail->pluck('equipeid'))->get()->keyBy('id');
+        return view('travailleur.liste_certificat_travail', compact('data_certificat_travail', 'equipesById'));
     }
 
     public function historique(){
@@ -925,7 +927,10 @@ class RecruController extends Controller
                     ->where('cause', 1)
                     ->get();
 
-                return view('variables.historique', compact('recherches', 'code'));
+                $matricules = $recherches->flatMap(fn($rech) => unserialize($rech->travailleurid))->unique();
+                $travailleursByMatricule = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
+
+                return view('variables.historique', compact('recherches', 'code', 'travailleursByMatricule'));
 
             }else{
 
@@ -939,7 +944,10 @@ class RecruController extends Controller
                     ->where('type_variable', $request->variablesid)
                     ->get();
 
-                return view('variables.historique', compact('recherches', 'code'));
+                $matricules = $recherches->flatMap(fn($rech) => unserialize($rech->travailleurid))->unique();
+                $travailleursByMatricule = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
+
+                return view('variables.historique', compact('recherches', 'code', 'travailleursByMatricule'));
 
 
             }

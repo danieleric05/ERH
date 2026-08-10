@@ -63,14 +63,12 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
             return view('travailleur.liste_embauches', compact('data_journalier', 'data_pays', 'data_unites', 'data_equipes', 'data_departements'));
         });
         Route::get('/ajouter-autres-travailleur', function () {
-            $termJ = 'J';
             $data_unites = \App\Unites::get();
             $data_equipes = \App\Equipes::get();
             $data_fonctions = \App\Fonction::get();
             $data_departements = \App\Departement::get();
             $data_pays = \App\Pays::get();
-            $mat_journalier = \App\Travailleur::where('matricule', 'like', '%' . $termJ . '%')->get()->limit(10);
-            return view('travailleur.addautres', compact('data_journalier', 'data_fonctions', 'data_pays', 'data_unites', 'data_equipes', 'data_departements'));
+            return view('travailleur.addautres', compact('data_fonctions', 'data_pays', 'data_unites', 'data_equipes', 'data_departements'));
         });
         Route::get('/ajouter-travailleur-etape-un', function () {
             $termJ = 'J';
@@ -80,17 +78,21 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
             $data_departements = \App\Departement::get();
             $data_pays = \App\Pays::get();
             $data_journalier = \App\Travailleur::where('matricule', 'like', '%' . $termJ . '%')->latest('id')->first();
-			
-			$mat_journalier = \App\Travailleur::where('matricule', 'like', '%' . $termJ . '%')->orderBy('id', 'DESC')->limit(10)->get();
-			
-			foreach($mat_journalier as $jour){
-				if($data_journalier->matricule < $jour->matricule){
-					$maj_big = substr($jour->matricule, 4);
-				}else{
-					$maj_big = substr($data_journalier->matricule, 4);
+
+			$maj_big = null;
+
+			if ($data_journalier) {
+				$mat_journalier = \App\Travailleur::where('matricule', 'like', '%' . $termJ . '%')->orderBy('id', 'DESC')->limit(10)->get();
+
+				foreach($mat_journalier as $jour){
+					if($data_journalier->matricule < $jour->matricule){
+						$maj_big = substr($jour->matricule, 4);
+					}else{
+						$maj_big = substr($data_journalier->matricule, 4);
+					}
 				}
 			}
-			
+
             return view('travailleur.add', compact('data_journalier', 'maj_big', 'data_typecontrat', 'data_pays', 'data_unites', 'data_equipes', 'data_departements'));
         });
         Route::get('/ajouter-travailleur-etape-deux/{slug}', 'EmployerController@etapedeuxtravailleur');
@@ -134,7 +136,6 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
         Route::get('/liste-autorisations',['as'=>'listeautorisations', 'uses'=>'EmployerController@listeautorisations']);
         Route::get('/liste-missions',['as'=>'listemissions', 'uses'=>'EmployerController@listemissions']);
         Route::get('/calenajouter-ha01drier-calendrier',['as'=>'calendrier_conges', 'uses'=>'EmployerController@calendrier_conges']);
-        Route::get('/calenajouter-ha01drier-calendrier',['as'=>'calendrier_conges', 'uses'=>'EmployerController@calendrier_conges']);
 
         /** CONGES */
         Route::get('/ajouter-conges', function () { return view('menu.conges.ajouter'); });
@@ -145,7 +146,7 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
             $code = '';
             $data_hao1 = \App\HAO1::orderBy('id', 'DESC')->get();
             $verif_traitement_ha01 = \App\HAO1::where('statutid', 2)->count();
-            return view('precarite.add', compact('data_hao1', 'verif_traitement_ha01', $code));
+            return view('precarite.add', compact('data_hao1', 'verif_traitement_ha01', 'code'));
         });
         Route::get('/historique-ha01',['as'=>'historique_ha01', 'uses'=>'EmployerController@historique_ha01']);
         Route::get('/finaliser-ha01',['as'=>'finaliser_ha01', 'uses'=>'EmployerController@finaliser_ha01']);
@@ -158,7 +159,7 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
 
     /** VARIABLES */
         Route::get('/variables', function () {
-            return view('variables.variables', compact('data_travailleur'));
+            return view('variables.variables');
         });
         Route::get('/ajouter-variable', function () {
             $data_travailleur = \App\Travailleur::where('etapeid', '!=' ,3)->orderBy('id', 'DESC')->get();
@@ -242,9 +243,6 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
         Route::get('/stock-tenues',['as'=>'stock_tenues', 'uses'=>'EmployerController@stock_tenues']);
         Route::get('/approvisionner-stock-tenues',['as'=>'appro_stock', 'uses'=>'EmployerController@appro_stock']);
 
-        Route::get('unites', 'ConfigController@index_unite')->name('unites');
-        Route::get('unites/{id}', 'ConfigController@show_unite')->name('unites.show');
-
         Route::get('departements', 'ConfigController@index')->name('departements');
         Route::post('add/departements/adddepartements', 'ConfigController@adddepartements');
         Route::post('update/departements/updatedepartements', 'ConfigController@updatedepartements');
@@ -288,7 +286,7 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
         Route::get('delete/categories/data', 'ConfigController@deletecategories');
 
         Route::get('niveauEtude', 'ConfigController@index_niveauEtude')->name('niveauEtude');
-        Route::get('niveauEtude/{id}', 'ConfigController@show_niveauEtude')->name('fonctions.show');
+        Route::get('niveauEtude/{id}', 'ConfigController@show_niveauEtude')->name('niveauEtude.show');
 
         Route::post('add/niveauEtude/addniveauEtude', 'ConfigController@addniveauEtude');
         Route::post('update/niveauEtude/updateniveauEtude', 'ConfigController@updateniveauEtude');

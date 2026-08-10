@@ -21,7 +21,8 @@ class ConfigController extends Controller
     public function index(){
         $unites = Unites::orderBy('id', 'DESC')->get();
         $data_departement = Departement::orderBy('id', 'DESC')->get();
-        return view('configuration.departement.add', compact('unites', 'data_departement'));
+        $unitesById = $unites->keyBy('id');
+        return view('configuration.departement.add', compact('unites', 'data_departement', 'unitesById'));
     }
 
     public function adddepartements(Request $get){

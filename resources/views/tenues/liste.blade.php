@@ -57,16 +57,17 @@
                             @foreach($tenues as $listedata)
                                 <tr>
 
+                                    @php($travailleur = $travailleursById->get($listedata->travailleurid))
                                     <td>
-                                        {{ $prenom = \App\Travailleur::where('id', $listedata->travailleurid)->first()->matricule }}
+                                        {{ optional($travailleur)->matricule }}
                                     </td>
-                                    <td title="MATRICULE : {{ $matr = \App\Travailleur::where('id', $listedata->travailleurid)->first()->matricule }}">{{ $travail = \App\Travailleur::where('id', $listedata->travailleurid)->first()->nom }} {{ $prenom = \App\Travailleur::where('id', $listedata->travailleurid)->first()->prenom }}</td>
-                                    <td>{{ $travail = \App\Services_tenue::where('id', $listedata->services)->first()->label }}</td>
+                                    <td title="MATRICULE : {{ optional($travailleur)->matricule }}">{{ optional($travailleur)->nom }} {{ optional($travailleur)->prenom }}</td>
+                                    <td>{{ optional($servicesById->get($listedata->services))->label }}</td>
 
                                     <td title=" Date et heure de reception : {{ $listedata->created_at }}">{{ $listedata->datereception }}</td>
 
                                     <td class="text-center"  title="Détail tenue : {{ $listedata->detail_tenue }} ; Détail chaussure : {{ $listedata->detail_chaussure }}">
-                                        <span class="badge badge-primary" style="font-weight: bold;">{{ $matr = \App\ArticleRecu::where('id', $listedata->tenuerecu)->first()->label }}</span>
+                                        <span class="badge badge-primary" style="font-weight: bold;">{{ optional($articlesById->get($listedata->tenuerecu))->label }}</span>
                                     </td>
 
                                     <td class="text-center">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AutresVariables;
+use App\Travailleur;
 use App\Variables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -105,12 +106,16 @@ class VariablesController extends Controller
 
     public function listevariables_manuelle(){
         $variableM = Variables::Where('cause', 1)->orderBy('id', 'DESC')->get();
-        return view("variables.listevariables_manuelle", compact('variableM'));
+        $matricules = $variableM->flatMap(fn($vari) => unserialize($vari->travailleurid))->unique();
+        $travailleursByMatricule = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
+        return view("variables.listevariables_manuelle", compact('variableM', 'travailleursByMatricule'));
     }
 
     public function listevariables_heure_supp(){
         $variableHS = Variables::Where('cause', 2)->orderBy('id', 'DESC')->get();
-        return view("variables.liste_heure_sup", compact('variableHS'));
+        $ids = $variableHS->flatMap(fn($vari) => unserialize($vari->employer_hs))->unique();
+        $travailleursById = Travailleur::whereIn('id', $ids)->get()->keyBy('id');
+        return view("variables.liste_heure_sup", compact('variableHS', 'travailleursById'));
     }
 
     public function listevariables_automatique(){

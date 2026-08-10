@@ -127,7 +127,7 @@
                 <br/>
                 <?php $tabDate = explode("-", $travailleur->date_naissance); ?>
                 <?php $tabDateP = explode("-", $travailleur->pieceidentite_livrele); ?>
-                2) <b> @if($travailleur->civilite == 'Monsieur') M. @endif @if($travailleur->civilite == 'Mademoiselle') Mlle. @endif @if($travailleur->civilite == 'Madame') Mme. @endif  <?= $travailleur->nom.' '.$travailleur->prenom.''.$travailleur->prenom_suite ?></b>  demeurant à  <b><?php echo $comm = \App\Commune::where('id', $travailleur->communeid)->first()->label; ?></b> <br/>
+                2) <b> @if($travailleur->civilite == 'Monsieur') M. @endif @if($travailleur->civilite == 'Mademoiselle') Mlle. @endif @if($travailleur->civilite == 'Madame') Mme. @endif  <?= $travailleur->nom.' '.$travailleur->prenom.''.$travailleur->prenom_suite ?></b>  demeurant à  <b><?php echo $comm = optional(\App\Commune::where('id', $travailleur->communeid)->first())->label; ?></b> <br/>
                 Situation matrimoniale     …<b>{{ ucfirst(strtolower($travailleur->situation_mat)) }}</b>…    Nom du (de la) conjoint (e)…………. <br/>
                 @if($travailleur->nationaliteid)
                     De nationalité    <b>IVOIRIENNE</b> <br/>
@@ -160,7 +160,7 @@
 
                         </b> par ONI <br/>
 
-            Catégorie Professionnelle : @if($travailleur->categorieid)<b>{{ $catego = \App\Categories::where('id', $travailleur->categorieid)->first()->label }}</b> @endif<br/>
+            Catégorie Professionnelle : @if($travailleur->categorieid)<b>{{ $catego = optional(\App\Categories::where('id', $travailleur->categorieid)->first())->label }}</b> @endif<br/>
 
             Matricule : <b> <?= strtoupper($travailleur->matricule) ?> </b> <br/>
                 N°CNPS : <?= $travailleur->numero_securite ?> <br/>
@@ -184,8 +184,8 @@
                 Direction de PLASTICA et par ses supérieurs hiérarchiques.<br/><br/>
             <b style="color: black; font-weight: bold"><u style="color: black">Article 2</u> : De l’activité du Travailleur</b>
                 <br/><br/>
-                Fonction : <b>{{ $fonction = \App\Fonction::where('id', $travailleur->fonction_entrepriseid )->first()->label }}</b><br/>
-                Unité de rattachement : <b>{{ $unite = \App\Equipes::where('id', $travailleur->equipeid )->first()->label }}</b><br/>
+                Fonction : <b>{{ $fonction = optional(\App\Fonction::where('id', $travailleur->fonction_entrepriseid )->first())->label }}</b><br/>
+                Unité de rattachement : <b>{{ $unite = optional(\App\Equipes::where('id', $travailleur->equipeid )->first())->label }}</b><br/>
                 (Avant éventuelles affectations pour nécessités de service)
                 <br/>
                 <br/>

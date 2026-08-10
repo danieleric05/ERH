@@ -127,7 +127,7 @@
                 <br/>
                 <?php $tabDate = explode("-", $travailleur->date_naissance); ?>
                 <?php $tabDateP = explode("-", $travailleur->pieceidentite_livrele); ?>
-                2) <b> @if($travailleur->civilite ==  'Monsieur') M. @endif @if($travailleur->civilite == 'Mademoiselle') Mlle. @endif @if($travailleur->civilite == 'Madame') Mme. @endif  <?= $travailleur->nom.' '.$travailleur->prenom.''.$travailleur->prenom_suite ?></b>  demeurant &agrave;  <b><?php echo $comm = \App\Commune::where('id', $travailleur->communeid)->first()->label; ?></b> <br/>
+                2) <b> @if($travailleur->civilite ==  'Monsieur') M. @endif @if($travailleur->civilite == 'Mademoiselle') Mlle. @endif @if($travailleur->civilite == 'Madame') Mme. @endif  <?= $travailleur->nom.' '.$travailleur->prenom.''.$travailleur->prenom_suite ?></b>  demeurant &agrave;  <b><?php echo $comm = optional(\App\Commune::where('id', $travailleur->communeid)->first())->label; ?></b> <br/>
                  Situation matrimoniale     &hellip;<b>{{ ucfirst(strtolower($travailleur->situation_mat)) }}</b>&hellip;    Nom du (de la) conjoint (e)&hellip;&hellip;. <br/>
                 @if($travailleur->nationaliteid)
                     De nationalit&eacute;    <b>{{ \App\Pays::where('id', $travailleur->nationaliteid)->value('nationalite') ?? \App\Pays::where('id', $travailleur->nationaliteid)->value('label') }}</b> <br/>
@@ -159,7 +159,7 @@
 
                         </b> par ONI <br/>
 
-            Cat&eacute;gorie Professionnelle : @if($travailleur->categorieid)<b>{{ $catego = \App\Categories::where('id', $travailleur->categorieid)->first()->label }}</b> @endif<br/>
+            Cat&eacute;gorie Professionnelle : @if($travailleur->categorieid)<b>{{ $catego = optional(\App\Categories::where('id', $travailleur->categorieid)->first())->label }}</b> @endif<br/>
 
             Matricule : <b> <?= strtoupper($travailleur->matricule) ?> </b> <br/>
                 N&deg;CNPS : <?= $travailleur->numero_securite ?> <br/>
@@ -183,8 +183,8 @@
                 Direction de PLASTICA CI et par ses sup&eacute;rieurs hi&eacute;rarchiques.<br/><br/>
             <b style="color: black; font-weight: bold"><u style="color: black">Article 2</u> : De l&apos;activit&eacute; du Travailleur</b>
                 <br/><br/>
-                Fonction : <b>{{ $fonction = \App\Fonction::where('id', $travailleur->fonction_entrepriseid )->first()->label }}</b><br/>
-                Unit&eacute; de rattachement : <b>{{ $unite = \App\Equipes::where('id', $travailleur->equipeid )->first()->label }}</b><br/><br/>
+                Fonction : <b>{{ $fonction = optional(\App\Fonction::where('id', $travailleur->fonction_entrepriseid )->first())->label }}</b><br/>
+                Unit&eacute; de rattachement : <b>{{ $unite = optional(\App\Equipes::where('id', $travailleur->equipeid )->first())->label }}</b><br/><br/>
                 (Avant &eacute;ventuelles affectations pour n&eacute;cessit&eacute;s de service)
                 <br/>
                 <br/>

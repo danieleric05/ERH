@@ -48,8 +48,8 @@
                 <?php $tabDateFin = explode("-", $travailleur->date_fin_contrat); ?>
                 A été  employé dans notre entreprise du <?=$tabDateDebut['2']?>/<?=$tabDateDebut['1']?>/<?=$tabDateDebut['0']?> AU <?=$tabDateFin['2']?>/<?=$tabDateFin['1']?>/<?=$tabDateFin['0']?><br><br>
 
-                En qualité	: @if($travailleur->fonction_entrepriseid) <b>{{ $fonction = \App\Fonction::where('id', $travailleur->fonction_entrepriseid )->first()->label }}</b>@endif <br>
-                Catégorie 	: {{ $categorie = \App\Categories::where('id', $travailleur->categorieid )->first()->label }}<br><br>
+                En qualité	: @if($travailleur->fonction_entrepriseid) <b>{{ $fonction = optional(\App\Fonction::where('id', $travailleur->fonction_entrepriseid )->first())->label }}</b>@endif <br>
+                Catégorie 	: {{ $categorie = optional(\App\Categories::where('id', $travailleur->categorieid )->first())->label }}<br><br>
 
                 Monsieur <b><?= strtoupper($travailleur->nom).' '.strtoupper($travailleur->prenom).''.strtoupper($travailleur->prenom_suite) ?></b> quitte notre entreprise ce jour libre de tout engagement.<br><br>
 

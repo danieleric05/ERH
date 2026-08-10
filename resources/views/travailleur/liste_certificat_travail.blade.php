@@ -59,7 +59,7 @@
                                             {{ $listedata->matricule }}
                                         </a>
                                     </td>
-                                    <td title="{{ $equipe = \App\Equipes::where('id', $listedata->equipeid)->first()->label }}">{{ $listedata->nom.' '.$listedata->prenom }}</td>
+                                    <td title="{{ optional($equipesById->get($listedata->equipeid))->label }}">{{ $listedata->nom.' '.$listedata->prenom }}</td>
 
                                     <td>{{ $listedata->date_debut_contrat }}</td>
                                     <td style="color: red; font-weight: bold">{{ $listedata->date_fin_contrat }}</td>

@@ -55,8 +55,8 @@
                                 <tr>
 
                                     <td title="{{ $auto->commentaire }}">
-                                     <span title="{{ $trava = \App\Travailleur::where('id', $auto->demandeurid )->first()->nom }} {{ $trava = \App\Travailleur::where('id', $auto->demandeurid )->first()->prenom }}" class="badge badge-dark" style="font-weight: bold">
-                                            {{ $trava = \App\Travailleur::where('id', $auto->demandeurid )->first()->matricule }}
+                                     <span title="{{ optional($travailleursById->get($auto->demandeurid))->nom }} {{ optional($travailleursById->get($auto->demandeurid))->prenom }}" class="badge badge-dark" style="font-weight: bold">
+                                            {{ optional($travailleursById->get($auto->demandeurid))->matricule }}
                                       </span>
                                     </td>
 

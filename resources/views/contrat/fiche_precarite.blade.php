@@ -40,12 +40,12 @@
                 <br/>
                 <br/>
 
-                Fonction:	<b>{{ $fonction = \App\Fonction::where('id', $travailleur->fonction_entrepriseid )->first()->label }}</b>
+                Fonction:	<b>{{ $fonction = optional(\App\Fonction::where('id', $travailleur->fonction_entrepriseid )->first())->label }}</b>
                 <br/>
                 <br/>
                 <?php
 
-                $precarite = \App\Precarites::where('matricule', $travailleur->matricule )->first()->valeur;
+                $precarite = optional(\App\Precarites::where('matricule', $travailleur->matricule )->first())->valeur;
 
                 $debut = strtotime($travailleur->date_debut_contrat);
                 $fin = strtotime($travailleur->date_fin_contrat);
