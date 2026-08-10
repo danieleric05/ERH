@@ -294,7 +294,9 @@
                                     <li><a href="{{ url('ajouter-autorisation') }}">Ajouter une autorisation</a></li>
                                     <li><a href="{{ route('listemissions') }}">Liste des missions</a></li>
                                     <li><a href="{{ route('listeautorisations') }}">Liste des autorisations</a></li>
-                                    <li><a href="{{ route('calendrier_conges') }}">Calendrier</a></li>
+                                    <li><a href="{{ route('ajouterConges') }}">Ajouter un congé</a></li>
+                                    <li><a href="{{ route('listeconges') }}">Liste des congés</a></li>
+                                    <li><a href="{{ route('calendrier_conges') }}">Calendrier des congés</a></li>
                                 </ul>
                             </li>
 
@@ -467,7 +469,9 @@
                                     <li><a href="{{ url('ajouter-autorisation') }}">Ajouter une autorisation</a></li>
                                     <li><a href="{{ route('listemissions') }}">Liste des missions</a></li>
                                     <li><a href="{{ route('listeautorisations') }}">Liste des autorisations</a></li>
-                                    <li><a href="{{ route('calendrier_conges') }}">Calendrier</a></li>
+                                    <li><a href="{{ route('ajouterConges') }}">Ajouter un congé</a></li>
+                                    <li><a href="{{ route('listeconges') }}">Liste des congés</a></li>
+                                    <li><a href="{{ route('calendrier_conges') }}">Calendrier des congés</a></li>
                                 </ul>
                             </li>
 

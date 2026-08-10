@@ -135,10 +135,15 @@ Route::group(array('before' => 'Auth', 'middleware' => 'auth'), function() {
         });
         Route::get('/liste-autorisations',['as'=>'listeautorisations', 'uses'=>'EmployerController@listeautorisations']);
         Route::get('/liste-missions',['as'=>'listemissions', 'uses'=>'EmployerController@listemissions']);
-        Route::get('/calenajouter-ha01drier-calendrier',['as'=>'calendrier_conges', 'uses'=>'EmployerController@calendrier_conges']);
 
         /** CONGES */
-        Route::get('/ajouter-conges', function () { return view('menu.conges.ajouter'); });
+        Route::get('/ajouter-conges',['as'=>'ajouterConges', 'uses'=>'CongesController@ajouter']);
+        Route::post('post_conges', 'CongesController@post_conges');
+        Route::get('/liste-conges',['as'=>'listeconges', 'uses'=>'CongesController@liste']);
+        Route::get('/calendrier-conges',['as'=>'calendrier_conges', 'uses'=>'CongesController@calendrier']);
+        Route::get('/conges-evenements',['as'=>'congesEvenements', 'uses'=>'CongesController@evenements']);
+        Route::get('/valider-conge/{id}',['as'=>'validerConge', 'uses'=>'CongesController@valider']);
+        Route::get('/refuser-conge/{id}',['as'=>'refuserConge', 'uses'=>'CongesController@refuser']);
 
         /** ¨PRECARITE */
         Route::get('/ajouter-ha01', function () {

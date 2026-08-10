@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Conges extends Model
 {
-    //
+    protected $table = 'e_conges';
 }
