@@ -52,7 +52,8 @@
                     @include('errors')
 
                     <div class="body">
-                        {!!Form::open (['url'=>['post_login'], 'method'=>'post', 'role'=>'form', 'class'=>'form-auth-small'])!!}
+                        <form action="{{ url('post_login') }}" method="POST" role="form" class="form-auth-small">
+    @csrf
                             <div class="form-group">
                                 <label for="signin-email" class="control-label sr-only">Email</label>
                                 <input type="text" name="pseudo" required class="form-control"  placeholder="Pseudo">
@@ -81,7 +82,7 @@
                                         </a>
                                 </span>
                             </div>
-                        {!!Form::close() !!}
+                        </form>
                     </div>
                 </div>
             </div>

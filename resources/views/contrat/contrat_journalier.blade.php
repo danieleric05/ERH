@@ -109,7 +109,7 @@
 
                 <b><u style="color: black">Entre les soussign&eacute;s</u>,</b>
                         <br/>
-                1) La Soci&eacute;t&eacute; d&eacute;nomm&eacute;e &laquo; PLASTICA &raquo;, Soci&eacute;t&eacute; par Actions Simplifi&eacute;e Unipersonnelle (SASU) au capital social de deux milliards (2.000.000.000) FRANCS CFA,
+                1) La Soci&eacute;t&eacute; d&eacute;nomm&eacute;e &laquo; PLASTICA CI &raquo;, Soci&eacute;t&eacute; par Actions Simplifi&eacute;e Unipersonnelle (SASU) au capital social de deux milliards (2.000.000.000) FRANCS CFA,
 				dont le si&egrave;ge social est fix&eacute; &agrave; ABIDJAN Zone Industrielle de KOUMASSI,
                 05 BoÃ®te Postale  2160 Abidjan 05, immatricul&eacute;e au Registre de Commerce et du Cr&eacute;dit Mobilier d&apos;ABIDJAN
                 sous le num&eacute;ro CI-ABJ-1999-B-249382, d&eacute;clar&eacute;e &agrave; la CNPS sous le num&eacute;ro 82408.
@@ -118,7 +118,7 @@
                 Prise en la personne de son repr&eacute;sentant l&eacute;gal, demeurant es-qualit&eacute; audit si&egrave;ge,
                 <br/>
                 <br/>
-                La <b style="font-size: 15px"> SASU "PLASTICA" </b> parfois d&eacute;nomm&eacute;e dans le pr&eacute;sent contrat "L&apos;Employeur",
+                La <b style="font-size: 15px"> "PLASTICA CI" </b> parfois d&eacute;nomm&eacute;e dans le pr&eacute;sent contrat "L&apos;Employeur",
                 <br/>
                 <div style="color: black; font-weight: bold" class="text-right"><u style="color: black">D&apos;UNE PART</u></div>
                 <br/>
@@ -178,9 +178,9 @@
                 b) Dispositions de la Convention Collective Interprofessionnelle de la C&ocirc;te d&apos;Ivoire en date du 20 Juillet 1977, ensemble les avenants,
                 annexes et d&eacute;cisions de commissions mixtes qui ont modifi&eacute; et compl&eacute;t&eacute; cette convention ou qui viendraient &agrave; la
                 modifier ou &agrave; la compl&eacute;ter<br/><br/>
-                c) Dispositions du R&egrave;glement Int&eacute;rieur de la SASU PLASTICA dont le Travailleur reconnaÃ®t avoir pris connaissance<br/><br/>
+                c) Dispositions du R&egrave;glement Int&eacute;rieur de la PLASTICA CI dont le Travailleur reconnaÃ®t avoir pris connaissance<br/><br/>
                 d) Consignes techniques d&apos;exploitation et de fabrication de la SASU PLASTICA, telles qu&apos;elles lui seront inculqu&eacute;es par la
-                Direction de PLASTICA et par ses sup&eacute;rieurs hi&eacute;rarchiques.<br/><br/>
+                Direction de PLASTICA CI et par ses sup&eacute;rieurs hi&eacute;rarchiques.<br/><br/>
             <b style="color: black; font-weight: bold"><u style="color: black">Article 2</u> : De l&apos;activit&eacute; du Travailleur</b>
                 <br/><br/>
                 Fonction : <b>{{ $fonction = \App\Fonction::where('id', $travailleur->fonction_entrepriseid )->first()->label }}</b><br/>
@@ -223,7 +223,7 @@
             <b style="color: black; font-weight: bold"><u>Article 6</u> :   Rupture du contrat</b>
                 <br/><br/>
                 Le pr&eacute;sent contrat peut Ãªtre r&eacute;sili&eacute; &agrave; la fin de chaque journ&eacute;e par l&apos;une ou l&apos;autre des parties, ou d&apos;un commun accord, ou encore en cas de force majeure, de faute grave ou de faute lourde commise par  l&lsquo;une des parties, au regard des dispositions du Code du Travail,
-            du Code P&eacute;nal, de la Convention Collective, du R&egrave;glement Int&eacute;rieur de la <span style="font-size: 16px"> SASU PLASTICA</span> ou des Consignes de travail et d&apos;exploitation de l&apos;entreprise.
+            du Code P&eacute;nal, de la Convention Collective, du R&egrave;glement Int&eacute;rieur de la <span style="font-size: 16px"> PLASTICA CI</span> ou des Consignes de travail et d&apos;exploitation de l&apos;entreprise.
                 <br/><br/>
             <b style="color: black; font-weight: bold"><u>Article 7</u>   Attribution de juridiction</b>
                 <br/>

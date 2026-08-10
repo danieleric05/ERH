@@ -78,8 +78,6 @@ class HomeController extends Controller
 
         $change->derniere_cnx = new \DateTime();
 
-        $change->save();
-
         if($change->save() == true) {
 
             Auth::logout();

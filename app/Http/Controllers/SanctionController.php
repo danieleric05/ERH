@@ -43,9 +43,8 @@ class SanctionController extends Controller
             $variables->mois = intval($tabDate['1']);
             $variables->annee = intval($tabDate['0']);
 
-            $variables->save();
             if($variables->save()){
-				
+
 				return Redirect::route('techarger_sanctions', $variables->id)->withSuccess("La sanction a été enregistré avec succès, Merci de télécharger le fichier PDF ");
 
             }
@@ -108,7 +107,6 @@ class SanctionController extends Controller
             $variables->mois = intval($tabDate['1']);
             $variables->annee = intval($tabDate['0']);
 
-            $variables->save();
             if($variables->save()){
                 return Redirect::back()->withSuccess("L'autorisation a été enregistré avec succès.");
             }
@@ -141,7 +139,6 @@ class SanctionController extends Controller
                     $update_H0A1->variable += intval($nb_jour);
                     $update_H0A1->userid = Auth::user()->id;
                     $update_H0A1->updated_at = Carbon::now();
-                    $update_H0A1->save();
 
                     if($update_H0A1->save()){
 
@@ -149,7 +146,6 @@ class SanctionController extends Controller
                         $update_Santes->statutid = 3;
                         $update_Santes->userid = Auth::user()->id;
                         $update_Santes->updated_at = Carbon::now();
-                        $update_Santes->save();
 
                         if( $update_Santes->save() ){
                             return Redirect::back()->withSuccess("La variable a été ajouté avec succès.");
@@ -208,7 +204,6 @@ class SanctionController extends Controller
             $update_Sanc->statutid = 2;
             $update_Sanc->userid = Auth::user()->id;
             $update_Sanc->updated_at = Carbon::now();
-            $update_Sanc->save();
 
             if($update_Sanc->save() == true){
                 return Redirect::back()->withSuccess("La sanction a été ajouté au variable avec succès.");
@@ -259,7 +254,6 @@ class SanctionController extends Controller
             $update_Auto->statutid = 3; //
             $update_Auto->userid = Auth::user()->id;
             $update_Auto->updated_at = Carbon::now();
-            $update_Auto->save();
 
             if($update_Auto->save() == true){
                 return Redirect::back()->withSuccess("La sanction a été ajouté au variable avec succès.");
@@ -306,7 +300,6 @@ class SanctionController extends Controller
             $update_Auto->statutid = 3; //
             $update_Auto->userid = Auth::user()->id;
             $update_Auto->updated_at = Carbon::now();
-            $update_Auto->save();
 
             if($update_Auto->save() == true){
                 return Redirect::back()->withSuccess("La sanction a été ajouté au variable avec succès.");

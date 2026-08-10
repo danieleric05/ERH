@@ -25,7 +25,6 @@ use App\Variables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use phpDocumentor\Reflection\Types\Null_;
 use PDF;
@@ -38,30 +37,39 @@ class EmployerController extends Controller
 	public function detect_matricul(){
 
         $listesante = ActionsCDC::where('debut_contrat', '=' ,NULL)->where('fin_contrat', '=' ,NULL)->get();
-        
+
         foreach ($listesante as $sante){
-			
-			$debut = Travailleur::where('id', $sante->travailleurid)->first()->date_debut_contrat;
-			$fin = Travailleur::where('id', $sante->travailleurid)->first()->date_fin_contrat;
+
+			$travailleur = Travailleur::find($sante->travailleurid);
+
+			if (!$travailleur) {
+				continue;
+			}
 
             $travail = ActionsCDC::find($sante->id);
-            $travail->debut_contrat = $debut;
-            $travail->fin_contrat = $fin;
+            $travail->debut_contrat = $travailleur->date_debut_contrat;
+            $travail->fin_contrat = $travailleur->date_fin_contrat;
             $travail->save();
 
         }
 
-        dd('okkkkkkkkkkkk');
-
-
-        $data_ArticleRecu = \App\ArticleRecu::orderBy('id', 'DESC')->get();
-        return view("tenues.appro_stock", compact('tenues_nouvelle', 'tenues_ancienne', 'data_ArticleRecu'));
+        return Redirect::back()->withSuccess("Détection des matricules effectuée avec succès.");
     }
 	
     public function post_gestion_tenue(Request $request){
 
-		$matricule = \App\Travailleur::where('id', $request->travailleurid)->first()->matricule;
+		$travailleur = \App\Travailleur::find($request->travailleurid);
+
+		if (!$travailleur) {
+		    return Redirect::back()->withErrors("Le travailleur sélectionné est introuvable.");
+		}
+
+		$matricule = $travailleur->matricule;
         $article = ArticleRecu::where('id', strtoupper($request->tenuerecu))->first();
+
+        if (!$article) {
+            return Redirect::back()->withErrors("L'article sélectionné est introuvable.");
+        }
 
         if($article->quantite_en_stock > 0){
 
@@ -86,12 +94,10 @@ class EmployerController extends Controller
                 $tenue->userid = Auth::user()->id;
                 $tenue->mois = date('m');
                 $tenue->annee = date('Y');
-                $tenue->save();
                 if($tenue->save()){
 
                     $articleUpda = ArticleRecu::find($article->id);
                     $articleUpda->quantite_en_stock -= intval(1);
-                    $articleUpda->save();
                     if($articleUpda->save()){
                         return Redirect::back()->withSuccess("La tenue ".strtoupper($article->label)." du travailleur a été enregistré avec succès ");
                     }
@@ -147,7 +153,7 @@ class EmployerController extends Controller
 
     public function post_precarite_ho(Request $request){
 
-        if(Input::hasFile('fichiers')){
+        if ($request->hasFile('fichiers')) {
 
                 /*$verif_traitement = HAO1::where('statutid', 1)->get();
                     if(!isset($verif_traitement)){
@@ -335,9 +341,8 @@ class EmployerController extends Controller
             $approvi->date_recep = $request->date_reception;
             $approvi->articleid = $request->tenuerecu;
             $approvi->userid = Auth::user()->id;
-			$approvi->save();
             if($approvi->save()){
-                
+
 				$article = ArticleRecu::find($id_article->id);
 				$article->quantite_en_stock += intval($request->quantite);
 				if($request->fournisseur){
@@ -346,7 +351,6 @@ class EmployerController extends Controller
 				$article->date_reception = $request->date_reception;
 				$article->statutid = 1;
 				$article->userid = Auth::user()->id;
-				$article->save();
 				if($article->save()){
 					return Redirect::back()->withSuccess("L'approvisionnement des ".strtoupper($id_article->label)." a été effectué avec succès, disponible en stock : ".$article->quantite_en_stock."");
 				}
@@ -507,7 +511,6 @@ class EmployerController extends Controller
             $travail->ip = $_SERVER['REMOTE_ADDR'];
             $travail->mois = date('m');
             $travail->annee = date('Y');
-            $travail->save();
 
             if($travail->save()){
 
@@ -524,8 +527,7 @@ class EmployerController extends Controller
                         $actions->travailleur_mat = $travail->matricule;
                         $actions->userid = Auth::user()->id;
                         $actions->actionid = 1;//1: embauché(contrat normal)
-                        $actions->save();
-						
+
 						if( $actions->save() == true ){
 							
 							$unite = new HistoriqueUnite();;
@@ -633,7 +635,6 @@ class EmployerController extends Controller
             $travail->ip = $_SERVER['REMOTE_ADDR'];
             $travail->mois = date('m');
             $travail->annee = date('Y');
-            $travail->save();
 
             if($travail->save()){
 
@@ -721,7 +722,6 @@ class EmployerController extends Controller
             $travail->etapeid = 2; // fin enregistrement contrat telecharger
             $travail->inscrit_le = date('Y-m-d H-i-s');
             $travail->ip = $_SERVER['REMOTE_ADDR'];
-            $travail->save();
 
             if($travail->save()) {
 
@@ -802,7 +802,6 @@ class EmployerController extends Controller
             $travail->etapeid = 2; // fin enregistrement contrat telecharger
             $travail->inscrit_le = date('Y-m-d H-i-s');
             $travail->ip = $_SERVER['REMOTE_ADDR'];
-            $travail->save();
 
             if($travail->save()) {
 
@@ -820,14 +819,12 @@ class EmployerController extends Controller
         if($editTenue->etat == 1){
             $editTenue->etat = 2; // etat mauvais
             $editTenue->userid = Auth::user()->id; // etat
-            $editTenue->save();
             if($editTenue->save()){
                 return Redirect::back()->withErrors("Le statut de la tenue du travailleur a été modifié avec succès.");
             }
         }elseif($editTenue->etat == 2){
             $editTenue->etat = 1; // etat bon
             $editTenue->userid = Auth::user()->id; // etat
-            $editTenue->save();
             if($editTenue->save()){
                 return Redirect::back()->withSuccess("Le statut de la tenue du travailleur a été modifié avec succès.");
             }

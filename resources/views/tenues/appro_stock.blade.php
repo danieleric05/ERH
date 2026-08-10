@@ -27,7 +27,8 @@
 
             <div class="card">
 
-                {!!Form::open (['url'=>['post_appro_stock'], 'method'=>'post', 'role'=>'form'])!!}
+                <form action="{{ url('post_appro_stock') }}" method="POST" role="form">
+    @csrf
 
                 <div class="body">
 
@@ -94,7 +95,7 @@
                     </div>
                 </div>
 
-                {!!Form::close() !!}
+                </form>
 
             </div>
         </div>

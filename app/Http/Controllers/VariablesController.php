@@ -33,7 +33,6 @@ class VariablesController extends Controller
             $variables->mois = intval($tabDate['1']);
             $variables->annee = intval($tabDate['0']);
 
-            $variables->save();
             if($variables->save()){
                 return Redirect::back()->withSuccess("Variables enregistré avec succès.");
             }
@@ -66,7 +65,6 @@ class VariablesController extends Controller
             $variables->mois = intval($tabDate['1']);
             $variables->annee = intval($tabDate['0']);
 
-            $variables->save();
             if($variables->save()){
                 return Redirect::back()->withSuccess("Variables enregistré avec succès.");
             }
@@ -97,7 +95,6 @@ class VariablesController extends Controller
             $variables->mois = intval($tabDate['1']);
             $variables->annee = intval($tabDate['0']);
 
-            $variables->save();
             if($variables->save()){
                 return Redirect::back()->withSuccess("Variables, Heures supplémentataire enregistré avec succès.");
             }

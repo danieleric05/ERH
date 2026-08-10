@@ -20,7 +20,8 @@
                         <div class="header">
                             <h2>Etape 2 : Enregistrement</h2>
                         </div>
-                        {!!Form::open (['url'=>['post_edit_travailleur', $edit->id], 'method'=>'post', 'role'=>'form', 'files'=>'true'])!!}
+                        <form action="{{ url('post_edit_travailleur', $edit->id) }}" method="POST" role="form" enctype="multipart/form-data">
+    @csrf
 
                         <div class="body">
                             <div class="row clearfix">
@@ -353,7 +354,7 @@
                             </div>
                         </div>
 
-                        {!!Form::close() !!}
+                        </form>
                     </div>
                 </div>
             </div>

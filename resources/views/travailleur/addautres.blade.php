@@ -24,7 +24,8 @@
                 <div class="header">
                     <h2>Enregistrement</h2>
                 </div>
-                {!!Form::open (['url'=>['post_travailleur_autres'], 'method'=>'post', 'role'=>'form'])!!}
+                <form action="{{ url('post_travailleur_autres') }}" method="POST" role="form">
+    @csrf
                 <div class="body">
                     <div class="row clearfix">
                         <div class="col-lg-4 col-md-6 col-sm-12">
@@ -170,7 +171,7 @@
                     </div>
                 </div>
 
-                {!!Form::close() !!}
+                </form>
             </div>
         </div>
     </div>

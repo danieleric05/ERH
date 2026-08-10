@@ -40,7 +40,6 @@ class ConfigController extends Controller
             $Departements->description = $get->description;
             $Departements->userid = Auth::user()->id;
             $Departements->created_at = Carbon::now();
-            $Departements->save();
 
             if( $Departements->save() == true){
                 return Redirect::back()->withSuccess("Le departement : ".strtoupper($get->label)." a été enregistré avec succès.");
@@ -105,7 +104,6 @@ class ConfigController extends Controller
             $Equipe->label = strtoupper($get->label);
             $Equipe->userid = Auth::user()->id;
             $Equipe->created_at = Carbon::now();
-            $Equipe->save();
 
             if( $Equipe->save() == true){
                 return Redirect::back()->withSuccess("L'unité : ".strtoupper($get->label)." a été enregistré avec succès.");
@@ -145,7 +143,6 @@ class ConfigController extends Controller
             $Equipe->description = $get->description;
             $Equipe->userid = Auth::user()->id;
             $Equipe->created_at = Carbon::now();
-            $Equipe->save();
 
             if( $Equipe->save() == true){
                 return Redirect::back()->withSuccess("L'equipe : ".strtoupper($get->label)." a été enregistré avec succès.");
@@ -213,7 +210,6 @@ class ConfigController extends Controller
                 $Fonctions->label = strtoupper($get->label);
                 $Fonctions->description = $get->description;
                 $Fonctions->userid = Auth::user()->id;
-                $Fonctions->save();
 
                 if( $Fonctions->save() == true){
                     return Redirect::back()->withSuccess("La fonction : ".strtolower($get->label)." a été enregistré avec succès.");

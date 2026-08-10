@@ -5,24 +5,21 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^8.0.2",
         "barryvdh/laravel-dompdf": "^2.2",
-        "fideloper/proxy": "^4.4",
-        "laravel/framework": "8.83.29",
-        "laravel/helpers": "^1.7",
-        "laravel/tinker": "^2.0",
-        "laravelcollective/html": "^6.4",
         "maatwebsite/excel": "^3.1",
-        "ramsey/uuid": "4.7",
-        "spatie/laravel-html": "^3.5",
-        "symfony/mailer": "^6.1"
+        "ramsey/uuid": "4.7"
     },
     "require-dev": {
-        "filp/whoops": "^2.14",
+        "php": "^8.2",
         "fakerphp/faker": "^1.9",
+        "laravel/boost": "^2.5",
+        "laravel/framework": "^11.0",
+        "laravel/tinker": "^2.9",
         "mockery/mockery": "^1.4",
-        "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.5"
+        "nunomaduro/collision": "^8.1",
+        "phpunit/phpunit": "^10.5",
+        "spatie/laravel-html": "^3.13",
+        "symfony/mailer": "^7.0"
     },
     "autoload": {
         "classmap": [

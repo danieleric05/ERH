@@ -27,7 +27,8 @@
 
             <div class="card">
 
-                {!!Form::open (['url'=>['post_variables_manuelle'], 'method'=>'post', 'role'=>'form'])!!}
+                <form action="{{ url('post_variables_manuelle') }}" method="POST" role="form">
+    @csrf
 
                 <div class="body">
                     <div class="row clearfix">
@@ -129,7 +130,7 @@
                     </div>
                 </div>
 
-                {!!Form::close() !!}
+                </form>
 
             </div>
         </div>

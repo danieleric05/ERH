@@ -27,7 +27,8 @@
 
             <div class="card">
 
-                {!!Form::open (['url'=>['post_autorisation'], 'method'=>'post', 'role'=>'form'])!!}
+                <form action="{{ url('post_autorisation') }}" method="POST" role="form">
+    @csrf
 
                 <div class="body">
                     <div class="row clearfix">
@@ -265,7 +266,7 @@
                     </div>
                 </div>
 
-                {!!Form::close() !!}
+                </form>
 
             </div>
         </div>

@@ -25,9 +25,14 @@ class SanteController extends Controller
     public function post_accident_travail(Request $request)
     {
 		
-		$matricule = \App\Travailleur::where('id', $request->travailleurid)->first()->matricule;
-		$journalierAT = \App\Travailleur::where('id', $request->travailleurid)->first();
-		
+		$journalierAT = \App\Travailleur::find($request->travailleurid);
+
+		if (!$journalierAT) {
+		    return Redirect::back()->withErrors("Le travailleur sélectionné est introuvable.");
+		}
+
+		$matricule = $journalierAT->matricule;
+
         $verif = AccidentTravail::Where('travailleurid', $request->travailleurid)->Where('datepub', $request->datepub)->first();
 
         if($verif){
@@ -61,12 +66,15 @@ class SanteController extends Controller
 
             $sante->mois = intval($tabDate['1']);
             $sante->annee = intval($tabDate['0']);
-            $sante->save();
             if($sante->save()){
-				
-					$uniteJ = \App\Unites::where('id', $journalierAT->uniteid)->first()->label;
-					$equipeJ = \App\Equipes::where('id', $journalierAT->equipeid)->first()->label;
-					$fonctionJ = \App\Fonction::where('id', $journalierAT->fonction_entrepriseid)->first()->label;
+
+					$unite = \App\Unites::find($journalierAT->uniteid);
+					$equipe = \App\Equipes::find($journalierAT->equipeid);
+					$fonction = \App\Fonction::find($journalierAT->fonction_entrepriseid);
+
+					$uniteJ = $unite?->label ?? 'Non renseignée';
+					$equipeJ = $equipe?->label ?? 'Non renseignée';
+					$fonctionJ = $fonction?->label ?? 'Non renseignée';
 					// on génère une chaîne de caractères aléatoire qui sera utilisée comme frontière
                     $boundary = "-----=" . md5(uniqid(rand()));
                     $headers  = "From: \"ERH | ACCIDENT DE TRAVAIL \"<infos@plasticaci.com>\n";
@@ -144,7 +152,13 @@ class SanteController extends Controller
 
     public function post_sante(Request $request)
     {
-		$matricule = \App\Travailleur::where('id', $request->travailleurid)->first()->matricule;
+		$travailleur = \App\Travailleur::find($request->travailleurid);
+
+		if (!$travailleur) {
+		    return Redirect::back()->withErrors("Le travailleur sélectionné est introuvable.");
+		}
+
+		$matricule = $travailleur->matricule;
         $verif = Santes::Where('travailleurid', $request->travailleurid)->Where('datepub', $request->datepub)->Where('arret_travail',1)->first();
 
         if($verif){
@@ -175,7 +189,6 @@ class SanteController extends Controller
             $sante->userid = Auth::user()->id;
             $sante->mois = intval($tabDate['1']);
             $sante->annee = intval($tabDate['0']);
-            $sante->save();
             if($sante->save()){
                 return Redirect::back()->withSuccess("Consultation enregistré avec succès.");
             }
@@ -205,7 +218,6 @@ class SanteController extends Controller
 			
 			$accTraiter = AccidentTravail::find($id_article->id);
 			$accTraiter->statutid = 2;
-			$accTraiter->save();
 			if($accTraiter->save() == true){
 				return Redirect::back()->withSuccess("L'accident de travail du matricule : ".strtoupper($id_article->travailleur_mat)." a été traité avec succès");
 			}else{

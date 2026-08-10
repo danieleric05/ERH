@@ -44,7 +44,8 @@
 							?>
 							
                         </div>
-                        {!!Form::open (['url'=>['post_travailleur'], 'method'=>'post', 'role'=>'form'])!!}
+                        <form action="{{ url('post_travailleur') }}" method="POST" role="form">
+    @csrf
                             <div class="body">
                                 <div class="row clearfix">
                                     <div class="col-lg-4 col-md-6 col-sm-12">
@@ -222,7 +223,7 @@
                             </div>
                         </div>
 
-                        {!!Form::close() !!}
+                        </form>
                     </div>
                 </div>
             </div>
