@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\ActionsCDC;
 use App\ArticleRecu;
+use App\Exports\ArrayExport;
+use App\Imports\ArrayImport;
 use App\Autorisations;
 use App\Categories;
 use App\Commune;
@@ -26,7 +28,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use phpDocumentor\Reflection\Types\Null_;
 use PDF;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -173,11 +174,11 @@ class EmployerController extends Controller
 
                 $file = $request->file('fichiers')->getRealPath();
 
-                $data = Excel::load($file)->get();
+                $data = Excel::toArray(new ArrayImport(), $file);
 
                 if ($verif_traitement > 0) {
 
-                    foreach ($data->toArray() as $key => $value) {
+                    foreach ($data as $key => $value) {
                         foreach ($value as $row) {
 
                             foreach ($verif_trait as $verifC) {
@@ -197,8 +198,8 @@ class EmployerController extends Controller
                     return Redirect::back()->withSuccess("Importation des HA01 de la paie effectuée avec succèes.");
                 } elseif ($verif_traitement == 0) {
 
-                    if ($data->count() > 0) {
-                        foreach ($data->toArray() as $key => $value) {
+                    if (count($data[0] ?? []) > 0) {
+                        foreach ($data as $key => $value) {
                             foreach ($value as $row) {
                                 $insert_data[] = array(
                                     'matricule'  => $row['matricule'],
@@ -1271,12 +1272,7 @@ class EmployerController extends Controller
             );
         }
 
-        Excel::create('HA01 de la paie en cour', function ($excel) use ($customer_array) {
-            $excel->setTitle('HA01 de la paie en cour');
-            $excel->sheet('HA01 de la paie en cour', function ($sheet) use ($customer_array) {
-                $sheet->fromArray($customer_array, null, 'A1', false, false);
-            });
-        })->download('xlsx');
+        return Excel::download(new ArrayExport($customer_array, 'HA01 de la paie en cour'), 'ha01_paie_en_cours.xlsx');
     }
 
 
@@ -1305,12 +1301,7 @@ class EmployerController extends Controller
                 }
             }
 
-            Excel::create('HA01 Nb de jours travaillés', function ($excel) use ($customer_array) {
-                $excel->setTitle('HA01 Nb de jours travaillés');
-                $excel->sheet('HA01 Nb de jours travaillés', function ($sheet) use ($customer_array) {
-                    $sheet->fromArray($customer_array, null, 'A1', false, false);
-                });
-            })->download('xlsx');
+            return Excel::download(new ArrayExport($customer_array, 'HA01 Nb de jours travaillés'), 'ha01_nb_jours_travailles.xlsx');
         }
     }
 }

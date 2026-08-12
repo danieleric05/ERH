@@ -115,15 +115,15 @@
                                     <div class="flex items-center justify-center space-x-2">
                                         {{-- Download Contract Button --}}
                                         @if(($listedata->idtype_contrat ?? 0) == 1)
-                                            <a href="{{ route('telechargerContratJournalier', $listedata->id ?? '') }}" class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-slate-100 transition-colors" title="Télécharger contrat journalier">
+                                            <a href="{{ route('telechargerContratJournalier', ['id' => $listedata->id ?? '', 'download' => 'pdf']) }}" class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-slate-100 transition-colors" title="Télécharger contrat journalier">
                                                 <i class="fa fa-file-pdf-o"></i>
                                             </a>
                                         @elseif(($listedata->idtype_contrat ?? 0) == 2)
-                                            <a href="{{ route('telechargerContratCDD', $listedata->id ?? '') }}" class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-slate-100 transition-colors" title="Télécharger contrat CDD">
+                                            <a href="{{ route('telechargerContratCDD', ['id' => $listedata->id ?? '', 'download' => 'pdf']) }}" class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-slate-100 transition-colors" title="Télécharger contrat CDD">
                                                 <i class="fa fa-file-pdf-o"></i>
                                             </a>
                                         @elseif(($listedata->idtype_contrat ?? 0) == 3)
-                                            <a href="{{ route('telechargerContratCDI', $listedata->id ?? '') }}" class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-slate-100 transition-colors" title="Télécharger contrat CDI">
+                                            <a href="{{ route('telechargerContratCDI', ['id' => $listedata->id ?? '', 'download' => 'pdf']) }}" class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-slate-100 transition-colors" title="Télécharger contrat CDI">
                                                 <i class="fa fa-file-pdf-o"></i>
                                             </a>
                                         @endif
