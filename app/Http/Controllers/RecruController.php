@@ -117,6 +117,9 @@ class RecruController extends Controller
     {
         if($code){
 
+            ini_set('memory_limit', '512M');
+            set_time_limit(180);
+
             $tabCodes = explode("+", $code);
 			$debut = $tabCodes['3'];
 			$fin = $tabCodes['4'];
@@ -166,14 +169,9 @@ class RecruController extends Controller
 
                 return Excel::download(new ArrayExport($customer_array, 'Liste des journaliers'), 'liste_des_journaliers.xlsx');
 
-            }elseif( ($tabCodes['0'] == null) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == null) ){
+            }elseif( ($tabCodes['0'] == null) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == 2) ){
 
                 $recherches = Travailleur::where('etapeid', '!=', 3)
-                    //->where('uniteid', '>=', $tabCodes['0'])
-                    /*
-                    ->where('date_debut_contrat', '>=', $tabCodes['0'])
-                    ->where('date_debut_contrat', '<=', $tabCodes['1'])
-                    */
                     ->where('matricule', 'like', '%' . $termE . '%')
                     ->get();
 
@@ -253,8 +251,47 @@ class RecruController extends Controller
 
                 return Excel::download(new ArrayExport($customer_array, 'Liste des journalier par unites'), 'liste_journalier_par_unite.xlsx');
 
+            }elseif(($tabCodes['0'] != null ) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == 1) ){
+
+                $recherches = Travailleur::where('etapeid', '!=', 3)
+                    ->where('uniteid', '>=', $tabCodes['0'])
+                    ->where('matricule', 'like', '%' . $termE . '%')
+                    ->get();
+
+                $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
+                    'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
+                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+
+                foreach($recherches as $customer)
+                {
+					$newDate_debut = date('d/m/Y', strtotime($customer->date_debut_contrat));
+					$newDate_fin = date('d/m/Y', strtotime($customer->date_fin_contrat));
+					$newDate_naiss = date('d/m/Y', strtotime($customer->date_naissance));
+
+                    $customer_array[] = array(
+                        'Matricule'  => $customer->matricule,
+                        'Civilité'  => $customer->civilite,
+                        'Nom'  => $customer->nom,
+                        'Prénom'  => $customer->prenom.''.$customer->prenom_suite,
+                        'Date de naissance'  => $newDate_naiss,
+                        'Téléphone'  => $customer->telephone,
+                        'Numéro de portable'  => $customer->telephone2,
+                        'Numéro de Sécurité Sociale'  => $customer->numero_securite,
+                        'Date de début de contrat'  => $newDate_debut,
+                        'Date de fin de contrat'  => $newDate_fin,
+                        'Code département'  => $customer->departementid,
+                        'Code service'  => $customer->equipeid,
+                        'Code catégorie'  => $customer->categorieid,
+                        'Emploi occupé'  => $customer->fonction_entrepriseid,
+                        'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
+                        'Type de salaire'  => $customer->type_salaire,
+                    );
+                }
+
+                return Excel::download(new ArrayExport($customer_array, 'Liste des embauchés par unites'), 'liste_embauches_par_unite.xlsx');
+
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 3) ){
-				
+
                 $recherches = Travailleur::where('etapeid', '!=', 3)
                     ->where('matricule', 'like', '%' . $termJ . '%')
                     ->where('date_debut_contrat', '>=', $tabCodes['3'])
@@ -270,7 +307,7 @@ class RecruController extends Controller
 					$newDate_debut = date('d/m/Y', strtotime($customer->date_debut_contrat));
 					$newDate_fin = date('d/m/Y', strtotime($customer->date_fin_contrat));
 					$newDate_naiss = date('d/m/Y', strtotime($customer->date_naissance));
-					
+
                     $customer_array[] = array(
                         'Matricule'  => $customer->matricule,
                         'Civilité'  => $customer->civilite,
@@ -293,6 +330,126 @@ class RecruController extends Controller
 
                 return Excel::download(new ArrayExport($customer_array, 'Liste des journalier par unites'), 'liste_journalier_par_unite.xlsx');
 
+            }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == 3) ){
+
+                $recherches = Travailleur::where('etapeid', '!=', 3)
+                    ->where('matricule', 'like', '%' . $termE . '%')
+                    ->where('date_debut_contrat', '>=', $tabCodes['3'])
+                    ->where('date_debut_contrat', '<=', $tabCodes['4'])
+                    ->get();
+
+                $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
+                    'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
+                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+
+                foreach($recherches as $customer)
+                {
+					$newDate_debut = date('d/m/Y', strtotime($customer->date_debut_contrat));
+					$newDate_fin = date('d/m/Y', strtotime($customer->date_fin_contrat));
+					$newDate_naiss = date('d/m/Y', strtotime($customer->date_naissance));
+
+                    $customer_array[] = array(
+                        'Matricule'  => $customer->matricule,
+                        'Civilité'  => $customer->civilite,
+                        'Nom'  => $customer->nom,
+                        'Prénom'  => $customer->prenom.''.$customer->prenom_suite,
+                        'Date de naissance'  => $newDate_naiss,
+                        'Téléphone'  => $customer->telephone,
+                        'Numéro de portable'  => $customer->telephone2,
+                        'Numéro de Sécurité Sociale'  => $customer->numero_securite,
+                        'Date de début de contrat'  => $newDate_debut,
+                        'Date de fin de contrat'  => $newDate_fin,
+                        'Code département'  => $customer->departementid,
+                        'Code service'  => $customer->equipeid,
+                        'Code catégorie'  => $customer->categorieid,
+                        'Emploi occupé'  => $customer->fonction_entrepriseid,
+                        'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
+                        'Type de salaire'  => $customer->type_salaire,
+                    );
+                }
+
+                return Excel::download(new ArrayExport($customer_array, 'Liste des embauchés par periode'), 'liste_embauches_par_periode.xlsx');
+
+            }elseif(($tabCodes['1'] == 2) AND ($tabCodes['2'] == 4) ){
+
+                $recherches = Travailleur::where('etapeid', '!=', 3)
+                    ->where('matricule', 'like', '%' . $termJ . '%')
+                    ->where('date_fin_contrat', '>=', $tabCodes['3'])
+                    ->where('date_fin_contrat', '<=', $tabCodes['4'])
+                    ->get();
+
+                $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
+                    'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
+                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+
+                foreach($recherches as $customer)
+                {
+					$newDate_debut = date('d/m/Y', strtotime($customer->date_debut_contrat));
+					$newDate_fin = date('d/m/Y', strtotime($customer->date_fin_contrat));
+					$newDate_naiss = date('d/m/Y', strtotime($customer->date_naissance));
+
+                    $customer_array[] = array(
+                        'Matricule'  => $customer->matricule,
+                        'Civilité'  => $customer->civilite,
+                        'Nom'  => $customer->nom,
+                        'Prénom'  => $customer->prenom.''.$customer->prenom_suite,
+                        'Date de naissance'  => $newDate_naiss,
+                        'Téléphone'  => $customer->telephone,
+                        'Numéro de portable'  => $customer->telephone2,
+                        'Numéro de Sécurité Sociale'  => $customer->numero_securite,
+                        'Date de début de contrat'  => $newDate_debut,
+                        'Date de fin de contrat'  => $newDate_fin,
+                        'Code département'  => $customer->departementid,
+                        'Code service'  => $customer->equipeid,
+                        'Code catégorie'  => $customer->categorieid,
+                        'Emploi occupé'  => $customer->fonction_entrepriseid,
+                        'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
+                        'Type de salaire'  => $customer->type_salaire,
+                    );
+                }
+
+                return Excel::download(new ArrayExport($customer_array, 'Liste des journaliers en fin de contrat'), 'liste_journaliers_fin_contrat.xlsx');
+
+            }elseif(($tabCodes['1'] == 1) AND ($tabCodes['2'] == 4) ){
+
+                $recherches = Travailleur::where('etapeid', '!=', 3)
+                    ->where('matricule', 'like', '%' . $termE . '%')
+                    ->where('date_fin_contrat', '>=', $tabCodes['3'])
+                    ->where('date_fin_contrat', '<=', $tabCodes['4'])
+                    ->get();
+
+                $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
+                    'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
+                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+
+                foreach($recherches as $customer)
+                {
+					$newDate_debut = date('d/m/Y', strtotime($customer->date_debut_contrat));
+					$newDate_fin = date('d/m/Y', strtotime($customer->date_fin_contrat));
+					$newDate_naiss = date('d/m/Y', strtotime($customer->date_naissance));
+
+                    $customer_array[] = array(
+                        'Matricule'  => $customer->matricule,
+                        'Civilité'  => $customer->civilite,
+                        'Nom'  => $customer->nom,
+                        'Prénom'  => $customer->prenom.''.$customer->prenom_suite,
+                        'Date de naissance'  => $newDate_naiss,
+                        'Téléphone'  => $customer->telephone,
+                        'Numéro de portable'  => $customer->telephone2,
+                        'Numéro de Sécurité Sociale'  => $customer->numero_securite,
+                        'Date de début de contrat'  => $newDate_debut,
+                        'Date de fin de contrat'  => $newDate_fin,
+                        'Code département'  => $customer->departementid,
+                        'Code service'  => $customer->equipeid,
+                        'Code catégorie'  => $customer->categorieid,
+                        'Emploi occupé'  => $customer->fonction_entrepriseid,
+                        'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
+                        'Type de salaire'  => $customer->type_salaire,
+                    );
+                }
+
+                return Excel::download(new ArrayExport($customer_array, 'Liste des embauchés en fin de contrat'), 'liste_embauches_fin_contrat.xlsx');
+
             }
 
         }
@@ -302,6 +459,9 @@ class RecruController extends Controller
     public function excel_download_quinzaine($code)
     {
         if($code){
+
+            ini_set('memory_limit', '512M');
+            set_time_limit(180);
 
             $tabCodes = explode("+", $code);
             //var_dump($tabCodes); die();
@@ -385,10 +545,9 @@ class RecruController extends Controller
 
                 return Excel::download(new ArrayExport($customer_array, 'Liste des journaliers'), 'liste_des_journaliers.xlsx');
 
-            }elseif( ($tabCodes['0'] == null) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == null) ){
-				//var_dump('oklllllllllllll');
+            }elseif( ($tabCodes['0'] == null) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == 2) ){
+
                 $recherches = Travailleur::where('etapeid', '!=', 3)
-                   
                     ->where('matricule', 'like', '%' . $termE . '%')
                     ->get();
 
@@ -511,6 +670,45 @@ class RecruController extends Controller
 
                 return Excel::download(new ArrayExport($customer_array, 'Liste des journalier par unites'), 'liste_journalier_par_unite.xlsx');
 
+            }elseif(($tabCodes['0'] != null ) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == 1) ){
+
+                $recherches = Travailleur::where('etapeid', '!=', 3)
+                    ->where('uniteid', '>=', $tabCodes['0'])
+                    ->where('matricule', 'like', '%' . $termE . '%')
+                    ->get();
+
+                $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
+                    'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
+                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+
+                foreach($recherches as $customer)
+                {
+					$newDate_debut = date('d/m/Y', strtotime($customer->date_debut_contrat));
+					$newDate_fin = date('d/m/Y', strtotime($customer->date_fin_contrat));
+					$newDate_naiss = date('d/m/Y', strtotime($customer->date_naissance));
+
+                    $customer_array[] = array(
+                        'Matricule'  => $customer->matricule,
+                        'Civilité'  => $customer->civilite,
+                        'Nom'  => $customer->nom,
+                        'Prénom'  => $customer->prenom.''.$customer->prenom_suite,
+                        'Date de naissance'  => $newDate_naiss,
+                        'Téléphone'  => $customer->telephone,
+                        'Numéro de portable'  => $customer->telephone2,
+                        'Numéro de Sécurité Sociale'  => $customer->numero_securite,
+                        'Date de début de contrat'  => $newDate_debut,
+                        'Date de fin de contrat'  => $newDate_fin,
+                        'Code département'  => $customer->departementid,
+                        'Code service'  => $customer->equipeid,
+                        'Code catégorie'  => $customer->categorieid,
+                        'Emploi occupé'  => $customer->fonction_entrepriseid,
+                        'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
+                        'Type de salaire'  => $customer->type_salaire,
+                    );
+                }
+
+                return Excel::download(new ArrayExport($customer_array, 'Liste des embauchés par unites'), 'liste_embauches_par_unite.xlsx');
+
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 3) ){
 				//dd('iciooooooooooooooooo');
                 $recherches = Travailleur::where('etapeid', '!=', 3)
@@ -525,21 +723,21 @@ class RecruController extends Controller
 
                 foreach($recherches as $customer)
                 {
-					
+
 					$newDate_debut = date('d/m/Y', strtotime($customer->date_debut_contrat));
 					$newDate_fin = date('d/m/Y', strtotime($customer->date_fin_contrat));
 					$newDate_naiss = date('d/m/Y', strtotime($customer->date_naissance));
-					
+
 					$equipe = Equipes::where('id', $customer->equipeid)->first();
 					$departement = Departement::where('id', $customer->departementid)->first();
 					$fonction = Fonction::where('id', $customer->fonction_entrepriseid)->first();
-					
+
 					if($fonction == null){
 						$fonctions = 'INCONNU';
 					}else{
 						$fonctions = $fonction->label;
 					}
-					
+
                     $customer_array[] = array(
                         'Matricule'  => $customer->matricule,
                         'Civilité'  => $customer->civilite,
@@ -559,8 +757,158 @@ class RecruController extends Controller
                         'Type de salaire'  => $customer->type_salaire,
                     );
                 }
-				
+
                 return Excel::download(new ArrayExport($customer_array, 'Liste des journalier par unites'), 'journalier_par_periode.xlsx');
+
+            }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == 3) ){
+
+                $recherches = Travailleur::where('etapeid', '!=', 3)
+                    ->where('matricule', 'like', '%' . $termE . '%')
+                    ->where('date_debut_contrat', '>=', $tabCodes['3'])
+                    ->where('date_debut_contrat', '<=', $tabCodes['4'])
+                    ->get();
+
+                $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
+                    'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
+                    'Date de fin de contrat', 'Département', 'Service', 'Catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+
+                foreach($recherches as $customer)
+                {
+					$newDate_debut = date('d/m/Y', strtotime($customer->date_debut_contrat));
+					$newDate_fin = date('d/m/Y', strtotime($customer->date_fin_contrat));
+					$newDate_naiss = date('d/m/Y', strtotime($customer->date_naissance));
+
+					$equipe = Equipes::where('id', $customer->equipeid)->first();
+					$departement = Departement::where('id', $customer->departementid)->first();
+					$fonction = Fonction::where('id', $customer->fonction_entrepriseid)->first();
+
+					if($fonction == null){
+						$fonctions = 'INCONNU';
+					}else{
+						$fonctions = $fonction->label;
+					}
+
+                    $customer_array[] = array(
+                        'Matricule'  => $customer->matricule,
+                        'Civilité'  => $customer->civilite,
+                        'Nom'  => $customer->nom,
+                        'Prénom'  => $customer->prenom.''.$customer->prenom_suite,
+                        'Date de naissance'  => $newDate_naiss,
+                        'Téléphone'  => $customer->telephone,
+                        'Numéro de portable'  => $customer->telephone2,
+                        'Numéro de Sécurité Sociale'  => $customer->numero_securite,
+                        'Date de début de contrat'  => $newDate_debut,
+                        'Date de fin de contrat'  => $newDate_fin,
+                        'Département'  => $departement->label,
+                        'Equipe'  => $equipe->label,
+                        'Catégorie'  => $customer->categorieid,
+                        'Emploi occupé'  => $fonctions,
+                        'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
+                        'Type de salaire'  => $customer->type_salaire,
+                    );
+                }
+
+                return Excel::download(new ArrayExport($customer_array, 'Liste des embauchés par periode'), 'embauches_par_periode.xlsx');
+
+            }elseif(($tabCodes['1'] == 2) AND ($tabCodes['2'] == 4) ){
+
+                $recherches = Travailleur::where('etapeid', '!=', 3)
+                    ->where('matricule', 'like', '%' . $termJ . '%')
+                    ->where('date_fin_contrat', '>=', $tabCodes['3'])
+                    ->where('date_fin_contrat', '<=', $tabCodes['4'])
+                    ->get();
+
+                $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
+                    'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
+                    'Date de fin de contrat', 'Département', 'Service', 'Catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+
+                foreach($recherches as $customer)
+                {
+					$newDate_debut = date('d/m/Y', strtotime($customer->date_debut_contrat));
+					$newDate_fin = date('d/m/Y', strtotime($customer->date_fin_contrat));
+					$newDate_naiss = date('d/m/Y', strtotime($customer->date_naissance));
+
+					$equipe = Equipes::where('id', $customer->equipeid)->first();
+					$departement = Departement::where('id', $customer->departementid)->first();
+					$fonction = Fonction::where('id', $customer->fonction_entrepriseid)->first();
+
+					if($fonction == null){
+						$fonctions = 'INCONNU';
+					}else{
+						$fonctions = $fonction->label;
+					}
+
+                    $customer_array[] = array(
+                        'Matricule'  => $customer->matricule,
+                        'Civilité'  => $customer->civilite,
+                        'Nom'  => $customer->nom,
+                        'Prénom'  => $customer->prenom.''.$customer->prenom_suite,
+                        'Date de naissance'  => $newDate_naiss,
+                        'Téléphone'  => $customer->telephone,
+                        'Numéro de portable'  => $customer->telephone2,
+                        'Numéro de Sécurité Sociale'  => $customer->numero_securite,
+                        'Date de début de contrat'  => $newDate_debut,
+                        'Date de fin de contrat'  => $newDate_fin,
+                        'Département'  => $departement->label,
+                        'Equipe'  => $equipe->label,
+                        'Catégorie'  => $customer->categorieid,
+                        'Emploi occupé'  => $fonctions,
+                        'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
+                        'Type de salaire'  => $customer->type_salaire,
+                    );
+                }
+
+                return Excel::download(new ArrayExport($customer_array, 'Liste des journaliers en fin de contrat'), 'journaliers_fin_contrat.xlsx');
+
+            }elseif(($tabCodes['1'] == 1) AND ($tabCodes['2'] == 4) ){
+
+                $recherches = Travailleur::where('etapeid', '!=', 3)
+                    ->where('matricule', 'like', '%' . $termE . '%')
+                    ->where('date_fin_contrat', '>=', $tabCodes['3'])
+                    ->where('date_fin_contrat', '<=', $tabCodes['4'])
+                    ->get();
+
+                $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
+                    'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
+                    'Date de fin de contrat', 'Département', 'Service', 'Catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+
+                foreach($recherches as $customer)
+                {
+					$newDate_debut = date('d/m/Y', strtotime($customer->date_debut_contrat));
+					$newDate_fin = date('d/m/Y', strtotime($customer->date_fin_contrat));
+					$newDate_naiss = date('d/m/Y', strtotime($customer->date_naissance));
+
+					$equipe = Equipes::where('id', $customer->equipeid)->first();
+					$departement = Departement::where('id', $customer->departementid)->first();
+					$fonction = Fonction::where('id', $customer->fonction_entrepriseid)->first();
+
+					if($fonction == null){
+						$fonctions = 'INCONNU';
+					}else{
+						$fonctions = $fonction->label;
+					}
+
+                    $customer_array[] = array(
+                        'Matricule'  => $customer->matricule,
+                        'Civilité'  => $customer->civilite,
+                        'Nom'  => $customer->nom,
+                        'Prénom'  => $customer->prenom.''.$customer->prenom_suite,
+                        'Date de naissance'  => $newDate_naiss,
+                        'Téléphone'  => $customer->telephone,
+                        'Numéro de portable'  => $customer->telephone2,
+                        'Numéro de Sécurité Sociale'  => $customer->numero_securite,
+                        'Date de début de contrat'  => $newDate_debut,
+                        'Date de fin de contrat'  => $newDate_fin,
+                        'Département'  => $departement->label,
+                        'Equipe'  => $equipe->label,
+                        'Catégorie'  => $customer->categorieid,
+                        'Emploi occupé'  => $fonctions,
+                        'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
+                        'Type de salaire'  => $customer->type_salaire,
+                    );
+                }
+
+                return Excel::download(new ArrayExport($customer_array, 'Liste des embauchés en fin de contrat'), 'embauches_fin_contrat.xlsx');
 
             }
 
