@@ -74,7 +74,12 @@
                         <li class="dropdown">
                             <a href="javascript:void(0);" class="dropdown-toggle icon-menu" data-toggle="dropdown"><i class="icon-equalizer"></i></a>
                         </li>-->
-                        <li><a href="{{ route('logoutUser', Auth::user()->id) }}" class="icon-menu"><i class="icon-login"></i></a></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                                @csrf
+                                <button type="submit" class="icon-menu" style="background:none;border:none;padding:0;"><i class="icon-login"></i></button>
+                            </form>
+                        </li>
                     </ul>
                 </div>
             </div>

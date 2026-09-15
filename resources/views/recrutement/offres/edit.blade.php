@@ -1,4 +1,4 @@
-@extends('erhform')
+@extends('layouts.erh')
 
 @section('content')
 <div class="container-fluid">
@@ -8,7 +8,7 @@
             <div class="col-lg-6 col-md-8 col-sm-12">
                 <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-left"></i></a> Recrutement</h2>
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('home') }}"><i class="icon-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="icon-home"></i></a></li>
                     <li class="breadcrumb-item"><a href="{{ route('offres.index') }}">Offres d'Emploi</a></li>
                     <li class="breadcrumb-item">Modifier Offre</li>
                 </ul>

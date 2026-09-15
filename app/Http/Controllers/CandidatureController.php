@@ -61,7 +61,7 @@ class CandidatureController extends Controller
 
     public function show($id)
     {
-        $candidature = Candidature::with(['candidat', 'offre', 'statut', 'entretiens', 'evaluations'])->findOrFail($id);
+        $candidature = Candidature::with(['candidat', 'offre', 'statut'])->findOrFail($id);
         $statuts = StatutCandidature::orderBy('ordre')->get();
         $users = \App\User::where('statut_id', 1)->orderBy('pseudo')->get();
 
