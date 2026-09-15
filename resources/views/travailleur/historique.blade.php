@@ -148,6 +148,10 @@
                             <i class="icon-refresh mr-2"></i>
                             Export Paie
                         </a>
+                        <a href="{{ route('excel_download_odoo', $code) }}" class="inline-flex items-center px-4 py-2 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors duration-200" title="Brouillon : à ajuster une fois le modèle d'import Odoo récupéré">
+                            <i class="icon-cloud-upload mr-2"></i>
+                            Export Odoo (brouillon)
+                        </a>
                     </div>
                 @endif
             </div>

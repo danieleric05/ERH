@@ -304,6 +304,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get("/telecharger-quinzaine-/{code}", [RecruController::class, 'excel_download_quinzaine'])->name("excel_download_quinzaine");
     Route::get("/telecharger-exel-travailleurs-fin-contrat", [RecruController::class, 'excel_download_fin_contrat'])->name("excel_download_fin_contrat");
     Route::get("/telecharger-exel-variables-travailleurs/{code}", [RecruController::class, 'excel_download_variables'])->name("excel_download_variables");
+    Route::get("/telecharger-exel-odoo/{code}", [RecruController::class, 'excel_download_odoo'])->name("excel_download_odoo");
     Route::get("/travailleurs-contrat-cessations", [RecruController::class, 'liste_cessations'])->name("liste_cessations");
     Route::get("/travailleurs-contrat-declarations-cnps", [RecruController::class, 'liste_declarations'])->name("liste_declarations");
     Route::post(

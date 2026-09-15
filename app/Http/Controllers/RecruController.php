@@ -916,6 +916,100 @@ class RecruController extends Controller
 
     }
 
+    /**
+     * Export au format standard d'import employés Odoo (brouillon).
+     * À ajuster une fois le vrai modèle d'import téléchargé depuis Odoo
+     * (module Employés > Importer > Télécharger le modèle d'import).
+     * N'affecte pas les exports SAGE/Paie existants.
+     */
+    public function excel_download_odoo($code)
+    {
+        if ($code) {
+
+            ini_set('memory_limit', '512M');
+            set_time_limit(180);
+
+            $tabCodes = explode("+", $code);
+            $termE = 'E';
+            $termJ = 'J';
+            $term = ($tabCodes['1'] == 1) ? $termE : $termJ;
+
+            $query = Travailleur::where('etapeid', '!=', 3)
+                ->where('matricule', 'like', '%' . $term . '%');
+
+            if (($tabCodes['2'] == 1) AND ($tabCodes['0'] != null)) {
+                $query->where('uniteid', '>=', $tabCodes['0']);
+            } elseif ($tabCodes['2'] == 3) {
+                $query->where('date_debut_contrat', '>=', $tabCodes['3'])
+                    ->where('date_debut_contrat', '<=', $tabCodes['4']);
+            } elseif ($tabCodes['2'] == 4) {
+                $query->where('date_fin_contrat', '>=', $tabCodes['3'])
+                    ->where('date_fin_contrat', '<=', $tabCodes['4']);
+            }
+            // rech == 2 (Toutes les Unités) : pas de filtre supplémentaire
+
+            $recherches = $query->get();
+
+            $genderMap = [
+                'Monsieur' => 'Male',
+                'Madame' => 'Female',
+                'Mademoiselle' => 'Female',
+            ];
+
+            $customer_array[] = array('Name', 'Identification No', 'SSN No', 'Job Position', 'Department',
+                'Work Email', 'Work Phone', 'Mobile Phone', 'Date of Birth', 'Place of Birth', 'Gender',
+                'Marital Status', 'Number of Dependent Children', 'Nationality (Country)',
+                'Contract - Start Date', 'Contract - End Date');
+
+            foreach ($recherches as $customer) {
+
+                $departement = Departement::where('id', $customer->departementid)->first();
+                $fonction = Fonction::where('id', $customer->fonction_entrepriseid)->first();
+                $pays = Pays::where('id', $customer->nationaliteid)->first();
+
+                $situation = $customer->situation_mat;
+                if (stripos($situation, 'celib') !== false || stripos($situation, 'ibataire') !== false) {
+                    $maritalStatus = 'Single';
+                } elseif (stripos($situation, 'veu') !== false) {
+                    $maritalStatus = 'Widower';
+                } elseif (stripos($situation, 'mari') !== false) {
+                    $maritalStatus = 'Married';
+                } else {
+                    $maritalStatus = '';
+                }
+
+                $formatDate = function ($value) {
+                    if (empty($value) || $value === '0000-00-00' || strtotime($value) === false) {
+                        return '';
+                    }
+                    $formatted = date('Y-m-d', strtotime($value));
+                    return $formatted < '1900-01-01' ? '' : $formatted;
+                };
+
+                $customer_array[] = array(
+                    'Name' => trim($customer->nom . ' ' . $customer->prenom . ' ' . $customer->prenom_suite),
+                    'Identification No' => $customer->matricule,
+                    'SSN No' => $customer->numero_securite,
+                    'Job Position' => $fonction->label ?? '',
+                    'Department' => $departement->label ?? '',
+                    'Work Email' => $customer->email,
+                    'Work Phone' => $customer->telephone,
+                    'Mobile Phone' => $customer->telephone2,
+                    'Date of Birth' => $formatDate($customer->date_naissance),
+                    'Place of Birth' => $customer->lieu_naissance,
+                    'Gender' => $genderMap[$customer->civilite] ?? '',
+                    'Marital Status' => $maritalStatus,
+                    'Number of Dependent Children' => $customer->nombre_enfant,
+                    'Nationality (Country)' => $pays->label ?? '',
+                    'Contract - Start Date' => $formatDate($customer->date_debut_contrat),
+                    'Contract - End Date' => $formatDate($customer->date_fin_contrat),
+                );
+            }
+
+            return Excel::download(new ArrayExport($customer_array, 'Export Odoo'), 'export_odoo_employes.xlsx');
+        }
+    }
+
     public function excel_download_variables($code)
     {
         if($code){
