@@ -505,9 +505,7 @@ Route::middleware(['auth'])->group(function () {
         "post_historiques_sante",
         [SanteController::class, 'post_historiques_sante'],
     );
-    Route::get("/ajouter-consultation", function () {
-        return view("menu.sante.consultation");
-    });
+    Route::get("/ajouter-consultation", [SanteController::class, 'index_santes']);
     Route::get("/liste-accident-travail", [SanteController::class, 'listesaccident'])->name("listesaccident");
     Route::get("/liste-consultations", [SanteController::class, 'listesconsultation'])->name("listesconsultation");
     Route::get("/historique-consultations", [SanteController::class, 'historique_consultation'])->name("historique_consultation");
