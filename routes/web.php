@@ -12,6 +12,7 @@ use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\OffreEmploiController;
 use App\Http\Controllers\CandidatureController;
 use App\Http\Controllers\CongesController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,14 @@ Route::middleware(['auth'])->group(function () {
         }
         return view('configuration.index'); // À créer ou rediriger
     })->name('settings');
+
+    // Gestion des utilisateurs (Admin seulement - Rôle 1 et 2)
+    Route::get('/liste-utilisateurs', [UserController::class, 'index'])->name('listeutilisateurs');
+    Route::get('/ajouter-utilisateur', [UserController::class, 'create'])->name('ajouterutilisateur');
+    Route::post('/post_utilisateur', [UserController::class, 'store'])->name('post_utilisateur');
+    Route::get('/modifier-utilisateur/{id}', [UserController::class, 'edit'])->name('modifierutilisateur');
+    Route::post('/post_edit_utilisateur/{id}', [UserController::class, 'update'])->name('post_edit_utilisateur');
+    Route::get('/statut-utilisateur/{id}', [UserController::class, 'toggleStatus'])->name('statututilisateur');
 
     // Page de bienvenue
     Route::get("/bienvenue", function () {

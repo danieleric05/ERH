@@ -1,4 +1,9 @@
 @extends('layouts.erh')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('rhassets/vendor/select2/select2.css') }}">
+@endpush
+
 @section('content')
 
 <div class="p-6">
@@ -38,9 +43,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="travailleurid" class="block text-sm font-medium text-text-primary mb-2">Travailleur</label>
-                        <select required name="travailleurid" id="travailleurid"
-                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
-                            <option value="">-SÉLECTIONNER-</option>
+                        <select required name="travailleurid" id="travailleurid" data-placeholder="-SÉLECTIONNER-">
+                            <option value=""></option>
                             @foreach($data_travailleur as $trav)
                                 <option value="{{ $trav->id }}">{{ $trav->nom }} {{ $trav->prenom }} ({{ $trav->matricule }})</option>
                             @endforeach
@@ -106,3 +110,16 @@
 </div>
 
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('rhassets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('rhassets/vendor/select2/select2.min.js') }}"></script>
+    <script>
+        $(function () {
+            $('#travailleurid').select2({
+                width: '100%',
+                allowClear: true
+            });
+        });
+    </script>
+@endpush

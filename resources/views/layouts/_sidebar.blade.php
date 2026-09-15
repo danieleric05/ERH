@@ -11,7 +11,8 @@
                sanctions: false,
                tenues: false,
                sante: false,
-               espaceSante: false
+               espaceSante: false,
+               utilisateurs: false
            }
        }">
     <div class="flex items-center justify-center h-16 bg-slate-50 border-b border-slate-200 shadow-sm">
@@ -275,6 +276,24 @@
                 </div>
             </div>
 
+            {{-- Administration Section --}}
+            <div class="pt-2">
+                <button @click="openMenus.utilisateurs = !openMenus.utilisateurs"
+                        class="w-full flex items-center justify-between px-4 py-2 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors font-medium">
+                    <div class="flex items-center">
+                        <i class="fa fa-users-cog mr-3 w-5"></i>
+                        <span>Administration</span>
+                    </div>
+                    <i class="fa fa-chevron-down transition-transform duration-300" :class="{'rotate-180': openMenus.utilisateurs}"></i>
+                </button>
+                <div x-show="openMenus.utilisateurs" x-transition class="ml-4 space-y-1 mt-2">
+                    <a href="{{ route('listeutilisateurs') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
+                        <i class="fa fa-users mr-3 w-4"></i>
+                        Gestion des utilisateurs
+                    </a>
+                </div>
+            </div>
+
         {{-- RÔLE 2 : ASSISTANTE RH --}}
         @elseif(Auth::user()->idrole == 2)
 
@@ -520,6 +539,24 @@
                 </div>
             </div>
 
+            {{-- Administration Section --}}
+            <div class="pt-2">
+                <button @click="openMenus.utilisateurs = !openMenus.utilisateurs"
+                        class="w-full flex items-center justify-between px-4 py-2 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors font-medium">
+                    <div class="flex items-center">
+                        <i class="fa fa-users-cog mr-3 w-5"></i>
+                        <span>Administration</span>
+                    </div>
+                    <i class="fa fa-chevron-down transition-transform duration-300" :class="{'rotate-180': openMenus.utilisateurs}"></i>
+                </button>
+                <div x-show="openMenus.utilisateurs" x-transition class="ml-4 space-y-1 mt-2">
+                    <a href="{{ route('listeutilisateurs') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
+                        <i class="fa fa-users mr-3 w-4"></i>
+                        Gestion des utilisateurs
+                    </a>
+                </div>
+            </div>
+
         {{-- RÔLE 4 : MÉDICAL ou RÔLE 5 : VISITEUR --}}
         @elseif(in_array(Auth::user()->idrole, [4, 5]))
 
@@ -566,8 +603,12 @@
                 </div>
             </div>
 
-            {{-- Gestion des Tenues Section --}}
-            <div class="pt-2">
+            {{-- ========================================
+                 ARCHIVÉ - Gestion des Tenues
+                 Routes commentées dans web.php (post_gestion_tenue, listetenues, stock_tenues, appro_stock)
+                 Pour réactiver : décommenter les routes dans web.php ET cette section
+                 ======================================== --}}
+            {{-- <div class="pt-2">
                 <button @click="openMenus.tenues = !openMenus.tenues"
                         class="w-full flex items-center justify-between px-4 py-2 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors font-medium">
                     <div class="flex items-center">
@@ -594,7 +635,7 @@
                         Stock des tenues
                     </a>
                 </div>
-            </div>
+            </div> --}}
 
         @endif
 

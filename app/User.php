@@ -55,4 +55,14 @@ class User extends Authenticatable
     {
         return $this->statut_id === 1;
     }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'idrole');
+    }
+
+    public function unite()
+    {
+        return $this->belongsTo(Unite::class, 'idunite');
+    }
 }

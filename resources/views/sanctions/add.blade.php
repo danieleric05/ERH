@@ -1,4 +1,9 @@
 @extends('layouts.erh')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('rhassets/vendor/select2/select2.css') }}">
+@endpush
+
 @section('content')
 
 <div class="p-6">
@@ -39,9 +44,8 @@
                 <!-- Demandeur -->
                 <div>
                     <label for="demandeurid" class="block text-sm font-medium text-text-primary mb-2">Demandeur</label>
-                    <select required name="demandeurid" id="demandeurid"
-                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
-                        <option value="">-SÉLECTIONNER-</option>
+                    <select required name="demandeurid" id="demandeurid" data-placeholder="-SÉLECTIONNER-">
+                        <option value=""></option>
                         @foreach($data_travailleur as $trav)
                             <option value="{{ $trav->id }}">{{ $trav->nom }} {{ $trav->prenom }} ({{ $trav->matricule }})</option>
                         @endforeach
@@ -51,9 +55,7 @@
                 <!-- Employé(s) -->
                 <div>
                     <label for="concerneid" class="block text-sm font-medium text-text-primary mb-2">Employé(s)</label>
-                    <select required name="concerneid[]" id="concerneid" multiple
-                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
-                        <option value="">-SÉLECTIONNER-</option>
+                    <select required name="concerneid[]" id="concerneid" multiple data-placeholder="-SÉLECTIONNER-">
                         @foreach($data_travailleurJour as $trav)
                             <option value="{{ $trav->matricule }}">{{ $trav->nom }} {{ $trav->prenom }} ({{ $trav->matricule }})</option>
                         @endforeach
@@ -72,6 +74,7 @@
                         <option value="4">Faute Lourde</option>
                         <option value="5">Insuffisance de Rendement</option>
                         <option value="6">Négligence Professionnelle</option>
+                        <option value="7">S'endormir au poste de travail</option>
                     </select>
                 </div>
             </div>
@@ -195,5 +198,21 @@ function initializeSanctionForm() {
     }
 }
 </script>
+
+@push('scripts')
+    <script src="{{ asset('rhassets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('rhassets/vendor/select2/select2.min.js') }}"></script>
+    <script>
+        $(function () {
+            $('#demandeurid').select2({
+                width: '100%',
+                allowClear: true
+            });
+            $('#concerneid').select2({
+                width: '100%'
+            });
+        });
+    </script>
+@endpush
 
 @endsection

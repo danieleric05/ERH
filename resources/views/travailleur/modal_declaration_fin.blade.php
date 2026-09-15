@@ -45,9 +45,24 @@
             <!-- Motif de départ (visible si cessation) -->
             <div x-show="selectedAction === '3'" class="mb-6 hidden">
                 <label for="motif_fin_contrat_fin" class="block text-sm font-medium text-text-primary mb-2">Motif de départ</label>
-                <input type="text" name="motif_fin_contrat" id="motif_fin_contrat_fin"
-                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"
-                    placeholder="Motif de départ">
+                <select id="motif_fin_contrat_fin" x-model="motifChoice"
+                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                    <option value="">-SÉLECTIONNER-</option>
+                    <option value="Démission">Démission</option>
+                    <option value="Licenciement pour faute">Licenciement pour faute</option>
+                    <option value="Licenciement économique">Licenciement économique</option>
+                    <option value="Fin de contrat (CDD)">Fin de contrat (CDD)</option>
+                    <option value="Rupture conventionnelle">Rupture conventionnelle</option>
+                    <option value="Rupture période d'essai">Rupture période d'essai</option>
+                    <option value="Retraite">Retraite</option>
+                    <option value="Décès">Décès</option>
+                    <option value="Abandon de poste">Abandon de poste</option>
+                    <option value="autre">Autre (préciser)</option>
+                </select>
+                <input x-show="motifChoice === 'autre'" type="text" x-model="motifAutre"
+                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent mt-3"
+                    placeholder="Précisez le motif de départ">
+                <input type="hidden" name="motif_fin_contrat" :value="motifChoice === 'autre' ? motifAutre : motifChoice">
             </div>
 
             <!-- Numéro CNPS (visible si déclaration CNPS) -->
@@ -80,17 +95,23 @@ function modalDeclarationFin() {
         isOpen: false,
         selectedId: null,
         selectedAction: '',
+        motifChoice: '',
+        motifAutre: '',
 
         openModal(id = null) {
             this.isOpen = true;
             this.selectedId = id;
             this.selectedAction = '';
+            this.motifChoice = '';
+            this.motifAutre = '';
         },
 
         closeModal() {
             this.isOpen = false;
             this.selectedId = null;
             this.selectedAction = '';
+            this.motifChoice = '';
+            this.motifAutre = '';
         },
 
         updateFields() {
