@@ -5,6 +5,8 @@
     <style>
 		@page {
 			margin-top: 20mm;
+			margin-left: 12mm;
+			margin-right: 12mm;
 		}
 		.text-center {
 		  text-align: center !important;
