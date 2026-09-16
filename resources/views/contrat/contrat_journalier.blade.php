@@ -203,34 +203,34 @@
                  <div>
                 <i>
                     <table style="width: 65%; margin: 0; border-collapse: collapse;">
-                        <tr><td colspan="2" style="text-align: left; padding-top: 4px;"><u>1/ Rémunération Brute Imposable</u></td></tr>
+                        <tr><td colspan="2" style="text-align: left; padding-top: 4px; padding-bottom: 3px; font-weight: bold; border-bottom: 1px solid black;"><u>1/ Rémunération Brute Imposable</u></td></tr>
                         <tr>
-                            <td style="text-align: left;">Salaire journalier (SMIG de 75 000F) : 433 X 8 heures =</td>
+                            <td style="text-align: left; padding-left: 20px;">Salaire journalier (SMIG de 75 000F) : 433 X 8 heures =</td>
                             <td style="text-align: right; white-space: nowrap;">3 464 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left;">Gratification journalier : 27 X 8 heures =</td>
+                            <td style="text-align: left; padding-left: 20px;">Gratification journalier : 27 X 8 heures =</td>
                             <td style="text-align: right; white-space: nowrap;">216 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left;">Congé journalier : 38 X 8 heures =</td>
+                            <td style="text-align: left; padding-left: 20px;">Congé journalier : 38 X 8 heures =</td>
                             <td style="text-align: right; white-space: nowrap; border-bottom: 1px solid black;">304 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left; font-weight: bold;">Sous total</td>
+                            <td style="text-align: left; padding-left: 20px; font-weight: bold;">Sous total</td>
                             <td style="text-align: right; white-space: nowrap; font-weight: bold;">= 3 984 F</td>
                         </tr>
-                        <tr><td colspan="2" style="text-align: left; padding-top: 10px;"><u>2/ Rémunration Non Imposable</u></td></tr>
+                        <tr><td colspan="2" style="text-align: left; padding-top: 10px; padding-bottom: 3px; font-weight: bold; border-bottom: 1px solid black;"><u>2/ Rémunration Non Imposable</u></td></tr>
                         <tr>
-                            <td style="text-align: left;">Transport Journalier :</td>
+                            <td style="text-align: left; padding-left: 20px;">Transport Journalier :</td>
                             <td style="text-align: right; white-space: nowrap;">- 1 154 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left;">Précarité (Salaire + gratification) : 3 680 x 3% =</td>
+                            <td style="text-align: left; padding-left: 20px;">Précarité (Salaire + gratification) : 3 680 x 3% =</td>
                             <td style="text-align: right; white-space: nowrap; border-bottom: 1px solid black;">- 110 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left; font-weight: bold;">Sous total</td>
+                            <td style="text-align: left; padding-left: 20px; font-weight: bold;">Sous total</td>
                             <td style="text-align: right; white-space: nowrap; font-weight: bold;">= - 1 264 F</td>
                         </tr>
                     </table>
