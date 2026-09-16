@@ -4,7 +4,7 @@
     <title>CONTRAT-JOURNALIER - <?php echo $travailleur->nom ?></title>
     <style>
 		@page {
-			margin-top: 20mm;
+			margin-top: 30mm;
 			margin-left: 12mm;
 			margin-right: 12mm;
 		}
@@ -162,6 +162,7 @@
                 <br/>
                 <br/>
              <div style="page-break-before: always;"></div>
+             <br/>
              <b><u>Article 3</u> : Durée du contrat et horaires de travail</b>
                 <br/>
                 <u>Durée</u> : Le présent contrat est à durée journalière et peut, sauf dénonciation par l’une ou l’autre des parties, être renouvelé par tacite reconduction, en respect des dispositions du Code du Travail et de la Convention Collective.
@@ -183,38 +184,38 @@
                     <table style="width: auto; margin: 0; border-collapse: collapse;">
                         <tr><td colspan="3" style="text-align: left; padding-top: 4px; padding-bottom: 3px; font-weight: bold;">1/ Rémunération Brute imposable</td></tr>
                         <tr>
-                            <td style="text-align: left; padding-left: 20px; white-space: nowrap;">Salaire journalier (SMIG de 75 000F) : 433 X 8 heures</td>
+                            <td style="text-align: left; padding-left: 40px; white-space: nowrap;">Salaire journalier (SMIG de 75 000F) : 433 X 8 heures</td>
                             <td style="text-align: center; width: 15px;">=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px;">3 464 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left; padding-left: 20px; white-space: nowrap;">Gratification journalière : 27 X 8 heures</td>
+                            <td style="text-align: left; padding-left: 40px; white-space: nowrap;">Gratification journalière : 27 X 8 heures</td>
                             <td style="text-align: center; width: 15px;">=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px;">216 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left; padding-left: 20px; white-space: nowrap;">Congé journalier : 38 X 8heures</td>
+                            <td style="text-align: left; padding-left: 40px; white-space: nowrap;">Congé journalier : 38 X 8heures</td>
                             <td style="text-align: center; width: 15px;">=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px; border-bottom: 1px solid black;">304 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left; padding-left: 20px; font-weight: bold; white-space: nowrap;">Sous total 1</td>
+                            <td style="text-align: left; padding-left: 40px; font-weight: bold; white-space: nowrap;">Sous total 1</td>
                             <td style="text-align: center; width: 15px; font-weight: bold;">=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px; font-weight: bold;">3 984 F</td>
                         </tr>
                         <tr><td colspan="3" style="text-align: left; padding-top: 10px; padding-bottom: 3px; font-weight: bold;">2/ Rémunération Non Imposable</td></tr>
                         <tr>
-                            <td style="text-align: left; padding-left: 20px; white-space: nowrap;">Transport journalier :</td>
+                            <td style="text-align: left; padding-left: 40px; white-space: nowrap;">Transport journalier :</td>
                             <td style="text-align: center; width: 15px;">=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px;">1 154 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left; padding-left: 20px; white-space: nowrap;">Précarité (salaire + gratification) : 3 680 X 3%</td>
+                            <td style="text-align: left; padding-left: 40px; white-space: nowrap;">Précarité (salaire + gratification) : 3 680 X 3%</td>
                             <td style="text-align: center; width: 15px;">=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px; border-bottom: 1px solid black;">110 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left; padding-left: 20px; font-weight: bold; white-space: nowrap;">Sous total 2</td>
+                            <td style="text-align: left; padding-left: 40px; font-weight: bold; white-space: nowrap;">Sous total 2</td>
                             <td style="text-align: center; width: 15px; font-weight: bold;">=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px; font-weight: bold;">1 264 F</td>
                         </tr>
