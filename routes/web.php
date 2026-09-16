@@ -190,7 +190,12 @@ Route::middleware(['auth'])->group(function () {
             });
         }
 
-        $data_journalier = $query->get();
+        $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];
+        $sort = $sortable[$request->input('sort')] ?? 'id';
+        $dir = $request->input('dir') === 'asc' ? 'asc' : 'desc';
+        $perPage = in_array((int) $request->input('per_page'), [25, 50, 100, 200]) ? (int) $request->input('per_page') : 50;
+
+        $data_journalier = $query->orderBy($sort, $dir)->paginate($perPage)->appends($request->query());
 
         return view(
             "travailleur.liste_embauches",
@@ -202,7 +207,7 @@ Route::middleware(['auth'])->group(function () {
                 "data_departements",
             ),
         );
-    });
+    })->name("liste_embauches");
     Route::get("/ajouter-autres-travailleur", function () {
         $termJ = "J";
         $data_unites = \App\Unites::get();

@@ -88,6 +88,8 @@ class RecruController extends Controller
     }
 
     public function liste_declarations(Request $request){
+        ini_set('memory_limit', '512M');
+        set_time_limit(180);
         $query = Travailleur::where('numero_securite', NULL);
 
         if (!empty($request->input('search'))) {
@@ -98,9 +100,18 @@ class RecruController extends Controller
                   ->orWhere('matricule', 'like', "%{$search}%");
             });
         }
-        
-        $data_declarations = $query->orderBy('id', 'DESC')->get();
-        return view('travailleur.liste_declarations', compact('data_declarations'));
+
+        $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];
+        $sort = $sortable[$request->input('sort')] ?? 'id';
+        $dir = $request->input('dir') === 'asc' ? 'asc' : 'desc';
+        $perPage = in_array((int) $request->input('per_page'), [25, 50, 100, 200]) ? (int) $request->input('per_page') : 50;
+
+        $data_declarations = $query->orderBy($sort, $dir)->paginate($perPage)->appends($request->query());
+
+        // Précalculé une seule fois pour éviter une requête Equipes par ligne dans la vue.
+        $equipesById = Equipes::whereIn('id', $data_declarations->pluck('equipeid'))->get()->keyBy('id');
+
+        return view('travailleur.liste_declarations', compact('data_declarations', 'equipesById'));
     }
 
     public function historiques_contrat($id){

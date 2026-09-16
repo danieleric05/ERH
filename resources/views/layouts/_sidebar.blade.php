@@ -57,6 +57,10 @@
                         <i class="fa fa-users mr-3 w-4"></i>
                         Liste des travailleurs
                     </a>
+                    <a href="{{ route('liste_embauches') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
+                        <i class="fa fa-user-plus mr-3 w-4"></i>
+                        Embauchés
+                    </a>
                     <a href="{{ route('liste_cessations') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-ban mr-3 w-4"></i>
                         Liste des cessations
@@ -323,6 +327,10 @@
                     <a href="{{ route('liste_tous_travailleurs') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-users mr-3 w-4"></i>
                         Liste des travailleurs
+                    </a>
+                    <a href="{{ route('liste_embauches') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
+                        <i class="fa fa-user-plus mr-3 w-4"></i>
+                        Embauchés
                     </a>
                     <a href="{{ route('liste_cessations') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-ban mr-3 w-4"></i>
