@@ -2,11 +2,19 @@
 <head>
     <meta charset="utf-8">
     <title>Fiche d'inscription - <?php echo $travailleur->nom ?></title>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
         body{
             font-family: Tahoma, Helvetica, Arial;
             font-size: 14px;
+        }
+        .container {
+            padding: 0 15px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-left {
+            text-align: left;
         }
     </style>
 </head>
