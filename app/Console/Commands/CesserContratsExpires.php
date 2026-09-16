@@ -22,7 +22,12 @@ class CesserContratsExpires extends Command
         $apply = $this->option('apply');
         $aujourdhui = Carbon::today()->toDateString();
 
-        $candidats = Travailleur::where('idtype_contrat', '!=', 3) // exclut le CDI, sans échéance naturelle
+        $candidats = Travailleur::where(function ($q) {
+                // exclut le CDI (sans échéance naturelle) ; les imports anciens ont idtype_contrat
+                // NULL (jamais un CDI dans ce cas) — un simple != 3 les exclurait aussi à tort,
+                // NULL != 3 n'étant jamais vrai en SQL.
+                $q->where('idtype_contrat', '!=', 3)->orWhereNull('idtype_contrat');
+            })
             ->where('etapeid', '!=', 3)
             ->where('etapeid', '!=', 4)
             ->whereNotNull('date_fin_contrat')
