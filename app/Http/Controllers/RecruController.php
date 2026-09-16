@@ -37,6 +37,8 @@ class RecruController extends Controller
     }
 
     public function liste_tous_travailleurs(){
+        ini_set('memory_limit', '512M');
+        set_time_limit(180);
         $termJ = 'J';
         $data_travailleurdeux = Travailleur::where('matricule', 'like', '%' . $termJ . '%')->where('equipeid', '!=' ,NULL)->where('statutid', '!=', 1)->where('etapeid', '!=', 3)->where('etapeid', '!=', 4)->orderBy('id', 'DESC')->get();
         return view('travailleur.listetravailleur', compact('data_travailleurdeux'));
