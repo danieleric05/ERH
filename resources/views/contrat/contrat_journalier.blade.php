@@ -100,7 +100,7 @@
             <br/>
             <br/>
             <div class="text-center">
-                <img src="{{ base_path('../rhassets/images/contrat.PNG') }}">
+                <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 100%;">
             </div>
 
             <p>
@@ -206,53 +206,39 @@
             <br/>
             <br/>
                  <div class="text-center">
-                <i><u>1/ Rémunération Brute Imposable</u><br/>
-                    Salaire journalier (SMIG de 75 000F) : 433 X 8 heures  =     3 464 F<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Gratification  journalier :	                          27 X 8 heures  = &nbsp;&nbsp; 216 F<br/>
-                    Congé journalier :	                                     38 X  8 heures   =
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;304 F</u><br/>
-
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;
-                    Sous total = 3 984 F
-                    <br/>
-                    <u>2/ Rémunration Non Imposable</u><br/>
-                    <br/>
-                   Transport Journalier :
-
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-                    -  1 154 F<br/>
-                    Précarité (Salaire + gratification ) : 3 680 x 3% = :
-
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-
-
-                    <u>- 110 F</u><br/>
-
-                    Sous total
-
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-                    =      - 1 264 F<br/>
+                <i>
+                    <table style="width: 70%; margin: 0 auto; border-collapse: collapse;">
+                        <tr><td colspan="2" style="text-align: left; padding-top: 4px;"><u>1/ Rémunération Brute Imposable</u></td></tr>
+                        <tr>
+                            <td style="text-align: left;">Salaire journalier (SMIG de 75 000F) : 433 X 8 heures =</td>
+                            <td style="text-align: right; white-space: nowrap;">3 464 F</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">Gratification journalier : 27 X 8 heures =</td>
+                            <td style="text-align: right; white-space: nowrap;">216 F</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">Congé journalier : 38 X 8 heures =</td>
+                            <td style="text-align: right; white-space: nowrap; border-bottom: 1px solid black;">304 F</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; font-weight: bold;">Sous total</td>
+                            <td style="text-align: right; white-space: nowrap; font-weight: bold;">= 3 984 F</td>
+                        </tr>
+                        <tr><td colspan="2" style="text-align: left; padding-top: 10px;"><u>2/ Rémunration Non Imposable</u></td></tr>
+                        <tr>
+                            <td style="text-align: left;">Transport Journalier :</td>
+                            <td style="text-align: right; white-space: nowrap;">- 1 154 F</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">Précarité (Salaire + gratification) : 3 680 x 3% =</td>
+                            <td style="text-align: right; white-space: nowrap; border-bottom: 1px solid black;">- 110 F</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; font-weight: bold;">Sous total</td>
+                            <td style="text-align: right; white-space: nowrap; font-weight: bold;">= - 1 264 F</td>
+                        </tr>
+                    </table>
                     </i>
                 </div>
                 <br/><br/>
