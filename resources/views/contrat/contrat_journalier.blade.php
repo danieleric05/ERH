@@ -103,7 +103,7 @@
 
                 <b><u style="color: black">Entre les soussignés</u>,</b>
                         <br/>
-                1) La Société dénommée « PLASTICA », Société par Actions Simplifiée Unipersonnelle (SASU) au capital social de deux milliards (2.000.000.000) FRANCS CFA,
+                1) La Société dénommée « PLASTICA CI », Société par Actions Simplifiée Unipersonnelle (SASU) au capital social de deux milliards (2.000.000.000) FRANCS CFA,
 				dont le siège social est fixé à ABIDJAN Zone Industrielle de KOUMASSI,
                 05 Boîte Postale  2160 Abidjan 05, immatriculée au Registre de Commerce et du Crédit Mobilier d’ABIDJAN
                 sous le numéro CI-ABJ-1999-B-249382, déclarée à la CNPS sous le numéro 82408.
@@ -112,7 +112,7 @@
                 Prise en la personne de son représentant légal, demeurant es-qualité audit siège,
                 <br/>
                 <br/>
-                La <b style="font-size: 15px"> SASU "PLASTICA" </b> parfois dénommée dans le présent contrat "L’Employeur",
+                La <b style="font-size: 15px"> "PLASTICA CI" </b> parfois dénommée dans le présent contrat "L’Employeur",
                 <br/>
                 <div style="color: black; font-weight: bold" class="text-right"><u style="color: black">D’UNE PART</u></div>
                 <br/>
@@ -173,9 +173,9 @@
                 b) Dispositions de la Convention Collective Interprofessionnelle de la Côte d’Ivoire en date du 20 Juillet 1977, ensemble les avenants,
                 annexes et décisions de commissions mixtes qui ont modifié et complété cette convention ou qui viendraient à la
                 modifier ou à la compléter<br/><br/>
-                c) Dispositions du Règlement Intérieur de la SASU PLASTICA dont le Travailleur reconnaît avoir pris connaissance<br/><br/>
-                d) Consignes techniques d’exploitation et de fabrication de la SASU PLASTICA, telles qu’elles lui seront inculquées par la
-                Direction de PLASTICA et par ses supérieurs hiérarchiques.<br/><br/>
+                c) Dispositions du Règlement Intérieur de la PLASTICA CI dont le Travailleur reconnaît avoir pris connaissance<br/><br/>
+                d) Consignes techniques d’exploitation et de fabrication de la PLASTICA CI, telles qu’elles lui seront inculquées par la
+                Direction de PLASTICA CI et par ses supérieurs hiérarchiques.<br/><br/>
             <b style="color: black; font-weight: bold"><u style="color: black">Article 2</u> : De l’activité du Travailleur</b>
                 <br/><br/>
                 Fonction : <b>{{ $fonction = \App\Fonction::where('id', $travailleur->fonction_entrepriseid )->first()->label }}</b><br/>
@@ -194,7 +194,7 @@
                 ou de 14H à 22H ou de 22H à 06H ou de 07H à 15H ou de 08H à 16H ou autres horaires variables, dans la limite des huit (8) heures par jour.
                 <br/><br/>
 
-                <b><u>Article 4</u> : Rémunération</b>
+                <b><u>Article 5</u> : Rémunération</b>
             <br/>
             <br/>
                 Le salaire ci-dessous détaillé est la rémunération des huit (08) heures de travail journalier :
@@ -239,12 +239,12 @@
                 <br/><br/>
                 Le Travailleur qui n’aura pas accompli ses huit heures de travail journalier ne sera rémunéré qu’au prorata du nombre d’heures effectivement ouvrées, le relevé de la badgeuse faisant foi.
                 <br/><br/>
-            <b style="color: black; font-weight: bold"><u>Article 5</u> :   Rupture du contrat</b>
+            <b style="color: black; font-weight: bold"><u>Article 6</u> :   Rupture du contrat</b>
                 <br/><br/>
                 Le présent contrat peut être résilié à la fin de chaque journée par l’une ou l’autre des parties, ou d’un commun accord, ou encore en cas de force majeure, de faute grave ou de faute lourde commise par  l'une des parties, au regard des dispositions du Code du Travail,
-            du Code Pénal, de la Convention Collective, du Règlement Intérieur de la <span style="font-size: 16px"> SASU PLASTICA</span> ou des Consignes de travail et d’exploitation de l’entreprise.
+            du Code Pénal, de la Convention Collective, du Règlement Intérieur de la <span style="font-size: 16px"> PLASTICA CI</span> ou des Consignes de travail et d’exploitation de l’entreprise.
                 <br/><br/>
-            <b style="color: black; font-weight: bold"><u>Article 6</u>   Attribution de juridiction</b>
+            <b style="color: black; font-weight: bold"><u>Article 7</u>   Attribution de juridiction</b>
                 <br/>
                 Pour toutes contestations relatives au présent contrat, les parties font attribution de juridiction au Tribunal du travail d’Abidjan.
                 <br/><br/>
