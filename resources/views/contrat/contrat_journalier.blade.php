@@ -156,8 +156,7 @@
                             <td style="text-align: right; white-space: nowrap; width: 70px; border-bottom: 1px solid black;">304 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left; padding-left: 60px; font-weight: bold; white-space: nowrap;">Sous total 1</td>
-                            <td style="text-align: center; width: 15px; font-weight: bold;">=</td>
+                            <td colspan="2" style="text-align: left; padding-left: 90px; font-weight: bold; white-space: nowrap;">Sous total 1 &nbsp;&nbsp;=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px; font-weight: bold;">3 984 F</td>
                         </tr>
                         <tr><td colspan="3" style="text-align: left; padding-top: 10px; padding-bottom: 3px; font-weight: bold;">2/ Rémunération Non Imposable</td></tr>
@@ -172,8 +171,7 @@
                             <td style="text-align: right; white-space: nowrap; width: 70px; border-bottom: 1px solid black;">110 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left; padding-left: 60px; font-weight: bold; white-space: nowrap;">Sous total 2</td>
-                            <td style="text-align: center; width: 15px; font-weight: bold;">=</td>
+                            <td colspan="2" style="text-align: left; padding-left: 90px; font-weight: bold; white-space: nowrap;">Sous total 2 &nbsp;&nbsp;=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px; font-weight: bold;">1 264 F</td>
                         </tr>
                     </table>
