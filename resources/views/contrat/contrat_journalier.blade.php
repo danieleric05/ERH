@@ -99,7 +99,7 @@
             <br/>
             <br/>
             <br/>
-            <div class="text-center">
+            <div>
                 <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 60%;">
             </div>
 
