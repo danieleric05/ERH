@@ -93,8 +93,8 @@
         <div class="col-md-12">
             
 
-            <div class="text-center">
-                <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 75%;">
+            <div>
+                <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 100%;">
             </div>
 
             <p>
