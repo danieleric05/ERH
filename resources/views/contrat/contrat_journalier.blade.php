@@ -203,7 +203,7 @@
                  <div>
                 <i>
                     <table style="width: 65%; margin: 0; border-collapse: collapse;">
-                        <tr><td colspan="2" style="text-align: left; padding-top: 4px; padding-bottom: 3px; font-weight: bold; border-bottom: 1px solid black;"><u>1/ Rémunération Brute Imposable</u></td></tr>
+                        <tr><td colspan="2" style="text-align: left; padding-top: 4px; padding-bottom: 3px; font-weight: bold; border-bottom: 1px solid black;">1/ Rémunération Brute Imposable</td></tr>
                         <tr>
                             <td style="text-align: left; padding-left: 20px;">Salaire journalier (SMIG de 75 000F) : 433 X 8 heures =</td>
                             <td style="text-align: right; white-space: nowrap;">3 464 F</td>
@@ -220,7 +220,7 @@
                             <td style="text-align: left; padding-left: 20px; font-weight: bold;">Sous total</td>
                             <td style="text-align: right; white-space: nowrap; font-weight: bold;">= 3 984 F</td>
                         </tr>
-                        <tr><td colspan="2" style="text-align: left; padding-top: 10px; padding-bottom: 3px; font-weight: bold; border-bottom: 1px solid black;"><u>2/ Rémunration Non Imposable</u></td></tr>
+                        <tr><td colspan="2" style="text-align: left; padding-top: 10px; padding-bottom: 3px; font-weight: bold; border-bottom: 1px solid black;">2/ Rémunration Non Imposable</td></tr>
                         <tr>
                             <td style="text-align: left; padding-left: 20px;">Transport Journalier :</td>
                             <td style="text-align: right; white-space: nowrap;">- 1 154 F</td>
