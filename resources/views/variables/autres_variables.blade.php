@@ -44,8 +44,8 @@
                 <!-- Employés -->
                 <div>
                     <label for="employeid" class="block text-sm font-medium text-text-primary mb-2">Employé(s)</label>
-                    <select multiple name="employeid[]" id="employeid" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
-                        <option value="">-DEROULER-</option>
+                    <select multiple name="employeid[]" id="employeid" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="-DEROULER-">
+                        <option value=""></option>
                         @foreach($data_travailleur as $trav)
                             <option value="{{ $trav->id }}">{{ $trav->nom }} {{ $trav->prenom }} {{ $trav->matricule }}</option>
                         @endforeach
@@ -55,8 +55,8 @@
                 <!-- Cas -->
                 <div>
                     <label for="cas_variables" class="block text-sm font-medium text-text-primary mb-2">Cas</label>
-                    <select name="cas_variables" id="cas_variables" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
-                        <option value="">-DEROULER-</option>
+                    <select name="cas_variables" id="cas_variables" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="-DEROULER-">
+                        <option value=""></option>
                         <option value="1">RAPPEL SALAIRE</option>
                         <option value="2">PRIME DE RESPONSABILITE</option>
                         <option value="3">COMPLEMENT GRATIFICATION</option>

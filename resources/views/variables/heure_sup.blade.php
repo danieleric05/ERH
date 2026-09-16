@@ -44,8 +44,8 @@
                 <!-- Employés -->
                 <div>
                     <label for="employer_hs" class="block text-sm font-medium text-text-primary mb-2">Employé(s)</label>
-                    <select multiple name="employer_hs[]" id="employer_hs" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
-                        <option value="">-DEROULER-</option>
+                    <select multiple name="employer_hs[]" id="employer_hs" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="-DEROULER-">
+                        <option value=""></option>
                         @foreach($data_travailleur as $trav)
                             <option value="{{ $trav->id }}">{{ $trav->nom }} {{ $trav->prenom }} {{ $trav->matricule }}</option>
                         @endforeach
@@ -55,8 +55,8 @@
                 <!-- Type H.S -->
                 <div>
                     <label for="heure_hs" class="block text-sm font-medium text-text-primary mb-2">Type H.S</label>
-                    <select name="heure_hs" id="heure_hs" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
-                        <option value="">-DEROULER-</option>
+                    <select name="heure_hs" id="heure_hs" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="-DEROULER-">
+                        <option value=""></option>
                         <option value="HS 15">HS 15</option>
                         <option value="HS 50">HS 50</option>
                         <option value="HS 75">HS 75</option>
@@ -67,8 +67,8 @@
                 <!-- Nombre d'heure -->
                 <div>
                     <label for="nbre_heure_hs" class="block text-sm font-medium text-text-primary mb-2">Nombre d'heure</label>
-                    <select name="nbre_heure_hs" id="nbre_heure_hs" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
-                        <option value="">-DEROULER-</option>
+                    <select name="nbre_heure_hs" id="nbre_heure_hs" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="-DEROULER-">
+                        <option value=""></option>
                         <option value="1">1 Heure</option>
                         <option value="2">2 Heures</option>
                         <option value="3">3 Heures</option>

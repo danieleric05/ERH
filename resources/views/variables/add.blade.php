@@ -44,8 +44,8 @@
                 <!-- Type Variable -->
                 <div>
                     <label for="type_variable" class="block text-sm font-medium text-text-primary mb-2">Choisir le type</label>
-                    <select name="type_variable" id="type_variable" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
-                        <option value="">-DEROULER-</option>
+                    <select name="type_variable" id="type_variable" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="-DEROULER-">
+                        <option value=""></option>
                         <option value="1">DIMANCHE</option>
                         <option value="2">FERIE</option>
                         <option value="3">JOUR OUVRABLE</option>
@@ -55,8 +55,8 @@
                 <!-- Employés -->
                 <div>
                     <label for="travailleurid" class="block text-sm font-medium text-text-primary mb-2">Employé(s)</label>
-                    <select multiple name="travailleurid[]" id="travailleurid" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
-                        <option value="">-DEROULER-</option>
+                    <select multiple name="travailleurid[]" id="travailleurid" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="-DEROULER-">
+                        <option value=""></option>
                         @foreach($data_travailleur as $trav)
                             <option value="{{ $trav->matricule }}">{{ $trav->nom }} {{ $trav->prenom }} {{ $trav->matricule }}</option>
                         @endforeach
@@ -66,8 +66,8 @@
                 <!-- Cas Variables -->
                 <div>
                     <label for="cas_variables" class="block text-sm font-medium text-text-primary mb-2">Cas</label>
-                    <select name="cas_variables" id="cas_variables" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
-                        <option value="">-DEROULER-</option>
+                    <select name="cas_variables" id="cas_variables" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="-DEROULER-">
+                        <option value=""></option>
                         <option value="1">RETARD D'ENROLEMENT</option>
                         <option value="2">DEFAUT DE POINTAGE</option>
                         <option value="3">OUBLI DE POINTAGE</option>
@@ -90,8 +90,8 @@
                 <!-- Periode -->
                 <div>
                     <label for="periode" class="block text-sm font-medium text-text-primary mb-2">Periode</label>
-                    <select name="periode" id="periode" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
-                        <option value="">-DEROULER-</option>
+                    <select name="periode" id="periode" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="-DEROULER-">
+                        <option value=""></option>
                         <option value="1">NUIT</option>
                         <option value="2">JOUR</option>
                     </select>
