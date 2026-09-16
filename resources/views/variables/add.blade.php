@@ -1,4 +1,9 @@
 @extends('layouts.erh')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('rhassets/vendor/select2/select2.css') }}">
+@endpush
+
 @section('content')
 
 <div class="p-6">
@@ -117,3 +122,16 @@
 </div>
 
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('rhassets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('rhassets/vendor/select2/select2.min.js') }}"></script>
+    <script>
+        $(function () {
+            $('.select2').select2({
+                width: '100%',
+                allowClear: true
+            });
+        });
+    </script>
+@endpush
