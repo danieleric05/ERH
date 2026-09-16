@@ -100,7 +100,7 @@
             <br/>
             <br/>
             <div class="text-center">
-                <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 100%;">
+                <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 60%;">
             </div>
 
             <p>
@@ -205,9 +205,9 @@
                 Le salaire ci-dessous détaillé est la rémunération des huit (08) heures de travail journalier :
             <br/>
             <br/>
-                 <div class="text-center">
+                 <div>
                 <i>
-                    <table style="width: 70%; margin: 0 auto; border-collapse: collapse;">
+                    <table style="width: 65%; margin: 0; border-collapse: collapse;">
                         <tr><td colspan="2" style="text-align: left; padding-top: 4px;"><u>1/ Rémunération Brute Imposable</u></td></tr>
                         <tr>
                             <td style="text-align: left;">Salaire journalier (SMIG de 75 000F) : 433 X 8 heures =</td>
