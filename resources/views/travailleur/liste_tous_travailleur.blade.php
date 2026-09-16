@@ -101,15 +101,26 @@
                                     {{ ($listedata->nom ?? '') }} {{ ($listedata->prenom ?? '') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                                    {{ $listedata->date_debut_contrat ?? '-' }}
+                                    {{ $listedata->date_debut_contrat ? \Carbon\Carbon::parse($listedata->date_debut_contrat)->format('d/m/Y') : '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span class="text-red-600 font-semibold">{{ $listedata->date_fin_contrat ?? '-' }}</span>
+                                    <span class="text-red-600 font-semibold">{{ $listedata->date_fin_contrat ? \Carbon\Carbon::parse($listedata->date_fin_contrat)->format('d/m/Y') : '-' }}</span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">
-                                        Actif
-                                    </span>
+                                    @php
+                                        $estCesseReel = ($listedata->etapeid ?? null) == 3
+                                            && ($listedata->date_debut_contrat ?? null) <= '2024-12-31'
+                                            && (($listedata->date_fin_contrat ?? null) < '2025-01-01' || in_array($listedata->id, $cessesReels ?? []));
+                                    @endphp
+                                    @if(($listedata->etapeid ?? null) == 4)
+                                        <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">Certificat</span>
+                                    @elseif($estCesseReel)
+                                        <span class="px-2 py-1 text-xs font-semibold text-slate-800 bg-slate-200 rounded-full">Cessation</span>
+                                    @elseif(($listedata->etapeid ?? null) == 6)
+                                        <span class="px-2 py-1 text-xs font-semibold text-blue-800 bg-blue-100 rounded-full">Reconduit</span>
+                                    @else
+                                        <span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">Actif</span>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                     <div class="flex items-center justify-center space-x-2">

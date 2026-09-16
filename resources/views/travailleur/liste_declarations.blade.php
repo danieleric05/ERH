@@ -116,10 +116,10 @@
                             {{ $equipe?->label ?? '-' }}
                         </td>
                         <td class="px-6 py-4 text-text-secondary text-sm">
-                            {{ $listedata->date_debut_contrat ?? '-' }}
+                            {{ $listedata->date_debut_contrat ? \Carbon\Carbon::parse($listedata->date_debut_contrat)->format('d/m/Y') : '-' }}
                         </td>
                         <td class="px-6 py-4 text-red-600 font-bold text-sm">
-                            {{ $listedata->date_fin_contrat ?? '-' }}
+                            {{ $listedata->date_fin_contrat ? \Carbon\Carbon::parse($listedata->date_fin_contrat)->format('d/m/Y') : '-' }}
                         </td>
                         <td class="px-6 py-4 text-center">
                             <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">DÉCLARATION</span>

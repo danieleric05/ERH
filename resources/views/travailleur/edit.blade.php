@@ -126,12 +126,19 @@
                     </div>
 
                     <!-- Situation matrimoniale -->
+                    @php
+                        // Les dossiers migrés avant le passage à Tailwind stockent des valeurs
+                        // accentuées ("Célibataire"/"Marié(e)"), les nouveaux dossiers stockent
+                        // les mêmes valeurs sans accent ("Celibataire"/"Marie") : on accepte les deux.
+                        $situationMatCelibataire = in_array($edit->situation_mat, ['Celibataire', 'Célibataire']);
+                        $situationMatMarie = in_array($edit->situation_mat, ['Marie', 'Marié(e)']);
+                    @endphp
                     <div>
                         <label for="situation_mat" class="block text-sm font-medium text-text-primary mb-2">Situation matrimoniale</label>
                         <select name="situation_mat" id="situation_mat"
                             class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white font-bold text-text-primary">
-                            <option @if($edit->situation_mat == 'Célibataire') selected @endif value="Celibataire">Célibataire</option>
-                            <option @if($edit->situation_mat == 'Marié(e)') selected @endif value="Marie">Marié(e)</option>
+                            <option @if($situationMatCelibataire) selected @endif value="Celibataire">Célibataire</option>
+                            <option @if($situationMatMarie) selected @endif value="Marie">Marié(e)</option>
                         </select>
                     </div>
 

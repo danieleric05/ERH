@@ -65,34 +65,34 @@
                 <thead>
                     <tr class="bg-slate-900 text-white border-b">
                         <th class="px-6 py-4 text-left text-sm font-semibold">Image</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('matricule')">
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort(1)">
                             <div class="flex items-center gap-2">
                                 Matricule
-                                <span x-show="sortBy === 'matricule'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                                <span x-show="sortBy === 1" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
                             </div>
                         </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('nomprnoms')">
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort(2)">
                             <div class="flex items-center gap-2">
                                 Nom & Prénoms
-                                <span x-show="sortBy === 'nomprnoms'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                                <span x-show="sortBy === 2" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
                             </div>
                         </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('datedembauche')">
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort(3)">
                             <div class="flex items-center gap-2">
                                 Date d'embauche
-                                <span x-show="sortBy === 'datedembauche'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                                <span x-show="sortBy === 3" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
                             </div>
                         </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('datefindecontrat')">
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort(4)">
                             <div class="flex items-center gap-2">
                                 Date fin de contrat
-                                <span x-show="sortBy === 'datefindecontrat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                                <span x-show="sortBy === 4" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
                             </div>
                         </th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('etat')">
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort(5)">
                             <div class="flex items-center gap-2">
                                 Etat
-                                <span x-show="sortBy === 'etat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                                <span x-show="sortBy === 5" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
                             </div>
                         </th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Options</th>
@@ -121,20 +121,18 @@
                             <div>{{ $listedata->prenom ?? '' }} {{ $listedata->prenom_suite ?? '' }}</div>
                         </td>
                         <td class="px-6 py-4 text-text-secondary text-sm">
-                            {{ $listedata->date_debut_contrat ?? '-' }}
+                            {{ $listedata->date_debut_contrat ? \Carbon\Carbon::parse($listedata->date_debut_contrat)->format('d/m/Y') : '-' }}
                         </td>
                         <td class="px-6 py-4 text-red-600 font-bold text-sm">
-                            {{ $listedata->date_fin_contrat ?? '-' }}
+                            {{ $listedata->date_fin_contrat ? \Carbon\Carbon::parse($listedata->date_fin_contrat)->format('d/m/Y') : '-' }}
                         </td>
                         <td class="px-6 py-4 text-center">
-                            @if(($listedata->etapeid ?? null) == 2 || ($listedata->etapeid ?? null) == 5)
-                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-800">ACTIF</span>
-                            @elseif($listedata->etapeid == 3)
-                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">CESSATION</span>
-                            @elseif($listedata->etapeid == 4)
-                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">CERTIFICAT</span>
-                            @elseif($listedata->etapeid == 6)
+                            {{-- Cette liste est déjà filtrée par Travailleur::actif() côté contrôleur :
+                                 toute ligne affichée ici est active par construction. --}}
+                            @if(($listedata->etapeid ?? null) == 6)
                                 <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">RECONDUIRE</span>
+                            @else
+                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-800">ACTIF</span>
                             @endif
                         </td>
                         <td class="px-6 py-4 text-center">
@@ -379,16 +377,8 @@ function tableSort() {
                 const cells = Array.from(a.querySelectorAll('td'));
                 if (cells.length === 0) return 0;
 
-                // Déterminer l'index de la colonne
-                let colIndex = 0;
-                const headers = document.querySelectorAll('thead th');
-                let clickCount = 0;
-                for (let i = 0; i < headers.length; i++) {
-                    if (headers[i].textContent.toLowerCase().includes(this.sortBy.toLowerCase())) {
-                        colIndex = i;
-                        break;
-                    }
-                }
+                // this.sortBy est directement l'index (0-based) de la colonne cliquée.
+                const colIndex = this.sortBy;
 
                 valueA = a.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
                 valueB = b.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';

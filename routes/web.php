@@ -178,7 +178,7 @@ Route::middleware(['auth'])->group(function () {
         $query = \App\Travailleur::where(
             "matricule",
             "like",
-            "%" . $termJ . "%",
+            $termJ . "%",
         );
 
         if (!empty($request->input('search'))) {
@@ -330,7 +330,8 @@ Route::middleware(['auth'])->group(function () {
         $datejour = date("Y-m-d");
         $termE = "J";
         $datefincontrat = date("Y-m-d", strtotime("$datejour +20 day"));
-        $data_travailleur = \App\Travailleur::where("etapeid", "!=", 6)
+        $data_travailleur = \App\Travailleur::where("etapeid", "!=", 3)
+            ->where("etapeid", "!=", 4)
             ->where("matricule", "like", "%" . $termE . "%")
             ->where("date_fin_contrat", "<=", $datefincontrat)
             ->where("date_fin_contrat", ">", $datejour)
@@ -339,7 +340,7 @@ Route::middleware(['auth'])->group(function () {
             "travailleur.listejournalierfin_contrat",
             compact("data_travailleur"),
         );
-    });
+    })->name("journaliers_fin_contrat");
     Route::get("/ajouter-autorisation", function () {
         $data_travailleur = \App\Travailleur::where("etapeid", "!=", 3)
             ->where("statutid", "!=", 4)

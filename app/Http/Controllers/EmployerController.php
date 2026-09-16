@@ -726,13 +726,13 @@ class EmployerController extends Controller
         $travail->niveau_etudeid = $request->niveau_etudeid;
         $travail->savoirFaire = null;
 
-        /*if($travail->etapeid == 1){
-                $travail->etapeid = 2;
-            }else{
-
-            }*/
-
-        $travail->etapeid = 2; // fin enregistrement contrat telecharger
+        // Une simple modification ne doit jamais faire perdre un statut de cessation/certificat/
+        // reconduction (etapeid 3/4/5/6) : etapeid n'avance que depuis l'étape 1 (0/1) vers l'étape
+        // 2 (fin d'enregistrement). Un travailleur déjà avancé garde son état ; seule une réembauche
+        // dédiée doit pouvoir le faire redevenir actif.
+        if (in_array($travail->etapeid, [0, 1])) {
+            $travail->etapeid = 2; // fin enregistrement contrat telecharger
+        }
         $travail->inscrit_le = date('Y-m-d H-i-s');
         $travail->ip = $_SERVER['REMOTE_ADDR'];
 
@@ -862,7 +862,9 @@ class EmployerController extends Controller
         $travail->niveau_etudeid = $request->niveau_etudeid;
         $travail->savoirFaire = null;
 
-        $travail->etapeid = 2; // fin enregistrement contrat telecharger
+        if (in_array($travail->etapeid, [0, 1])) {
+            $travail->etapeid = 2; // fin enregistrement contrat telecharger
+        }
         $travail->inscrit_le = date('Y-m-d H-i-s');
         $travail->ip = $_SERVER['REMOTE_ADDR'];
 

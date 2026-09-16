@@ -71,8 +71,8 @@
                                     </td>
                                     <td title="#">{{ $listedata->nom.' '.$listedata->prenom }}</td>
 
-                                    <td>{{ $listedata->date_debut_contrat }}</td>
-                                    <td style="color: red; font-weight: bold">{{ $listedata->date_fin_contrat }}</td>
+                                    <td>{{ $listedata->date_debut_contrat ? \Carbon\Carbon::parse($listedata->date_debut_contrat)->format('d/m/Y') : '-' }}</td>
+                                    <td style="color: red; font-weight: bold">{{ $listedata->date_fin_contrat ? \Carbon\Carbon::parse($listedata->date_fin_contrat)->format('d/m/Y') : '-' }}</td>
                                     <td class="text-center" style="color: red; font-weight: bold">
                                         @if($listedata->etapeid == 3)
                                             <span class="badge badge-success">CESSASSION</span>
@@ -96,7 +96,7 @@
                                         @endif
 
                                         @if($listedata->etapeid == 3)
-                                            <a title="RECONDUIRE LE TRAVAILLEUR"  data-toggle="tooltip" data-original-title="Remove" aria-describedby="tooltip270584" id="reconduire_journalier" data-id="{{ $listedata->id }}" href="{{ url('reconduire/journalier') }}" class="btn btn-sm btn-icon btn-pure btn-dark on-default button-remove">
+                                            <a href="javascript:void(0)" title="RECONDUIRE LE TRAVAILLEUR" onclick="openReconduite({{ $listedata->id }})" class="btn btn-sm btn-icon btn-pure btn-dark on-default button-remove">
                                                 <i class="icon-envelope" aria-hidden="true"></i>
                                             </a>
                                         @endif
@@ -124,7 +124,7 @@
 
     </div>
 
-    @include('travailleur.modal_reconduire_fin')
+    @include('travailleur.modal_reconduire')
     @include('travailleur.modal_declaration_fin')
 
 

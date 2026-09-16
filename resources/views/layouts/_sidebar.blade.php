@@ -69,6 +69,10 @@
                         <i class="fa fa-file-text mr-3 w-4"></i>
                         Liste des déclarations
                     </a>
+                    <a href="{{ route('journaliers_fin_contrat') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
+                        <i class="fa fa-exclamation-triangle mr-3 w-4"></i>
+                        Contrats bientôt expirés
+                    </a>
                     <a href="{{ route('historiques') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-search mr-3 w-4"></i>
                         Rechercher
@@ -331,6 +335,10 @@
                     <a href="{{ route('liste_declarations') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-file-text mr-3 w-4"></i>
                         Liste des déclarations
+                    </a>
+                    <a href="{{ route('journaliers_fin_contrat') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
+                        <i class="fa fa-exclamation-triangle mr-3 w-4"></i>
+                        Contrats bientôt expirés
                     </a>
                     <a href="{{ route('historiques') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-search mr-3 w-4"></i>

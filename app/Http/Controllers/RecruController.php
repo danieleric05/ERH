@@ -40,12 +40,14 @@ class RecruController extends Controller
         ini_set('memory_limit', '512M');
         set_time_limit(180);
         $termJ = 'J';
-        $data_travailleurdeux = Travailleur::where('matricule', 'like', '%' . $termJ . '%')->where('equipeid', '!=' ,NULL)->where('statutid', '!=', 1)->where('etapeid', '!=', 3)->where('etapeid', '!=', 4)->orderBy('id', 'DESC')->get();
+        $data_travailleurdeux = Travailleur::where('matricule', 'like', $termJ . '%')->where('equipeid', '!=' ,NULL)->actif()->orderBy('id', 'DESC')->get();
         return view('travailleur.listetravailleur', compact('data_travailleurdeux'));
     }
 
     public function liste_cessations(Request $request){
-        $query = Travailleur::where('etapeid',3);
+        ini_set('memory_limit', '512M');
+        set_time_limit(180);
+        $query = Travailleur::cesseConfirme();
 
         if (!empty($request->input('search'))) {
             $search = $request->input('search');
@@ -86,6 +88,8 @@ class RecruController extends Controller
     }
 
     public function liste_travailleurs(Request $request){
+        ini_set('memory_limit', '512M');
+        set_time_limit(180);
         $query = Travailleur::where('matricule', '!=' ,NULL);
 
         if (!empty($request->input('search'))) {
@@ -99,7 +103,10 @@ class RecruController extends Controller
 
         $data_Travailleur = $query->orderBy('id', 'DESC')->get();
 
-        return view('travailleur.liste_tous_travailleur', compact('data_Travailleur'));
+        // Précalculé une seule fois pour éviter une requête ActionsCDC par ligne dans la vue.
+        $cessesReels = ActionsCDC::where('actionid', 3)->pluck('travailleurid')->all();
+
+        return view('travailleur.liste_tous_travailleur', compact('data_Travailleur', 'cessesReels'));
     }
 
     public function liste_certificat_travail(){
@@ -130,7 +137,7 @@ class RecruController extends Controller
 
             if( ($tabCodes['0'] == null) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 2) ){
                 ///dd('okllllllllllddddddddddddd');
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     //->where('uniteid', '>=', $tabCodes['0'])
                     /*->where('date_debut_contrat', '>=', $tabCodes['0'])
                     ->where('date_debut_contrat', '<=', $tabCodes['1'])*/
@@ -173,7 +180,7 @@ class RecruController extends Controller
 
             }elseif( ($tabCodes['0'] == null) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == 2) ){
 
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termE . '%')
                     ->get();
 
@@ -212,7 +219,7 @@ class RecruController extends Controller
 
             }elseif(($tabCodes['0'] != null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 1) ){
                 //dd('okkkkk');
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('uniteid', '>=', $tabCodes['0'])
                     /*
                     ->where('date_debut_contrat', '>=', $tabCodes['0'])
@@ -255,7 +262,7 @@ class RecruController extends Controller
 
             }elseif(($tabCodes['0'] != null ) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == 1) ){
 
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('uniteid', '>=', $tabCodes['0'])
                     ->where('matricule', 'like', '%' . $termE . '%')
                     ->get();
@@ -294,7 +301,7 @@ class RecruController extends Controller
 
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 3) ){
 
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termJ . '%')
                     ->where('date_debut_contrat', '>=', $tabCodes['3'])
                     ->where('date_debut_contrat', '<=', $tabCodes['4'])
@@ -334,7 +341,7 @@ class RecruController extends Controller
 
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == 3) ){
 
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termE . '%')
                     ->where('date_debut_contrat', '>=', $tabCodes['3'])
                     ->where('date_debut_contrat', '<=', $tabCodes['4'])
@@ -374,7 +381,7 @@ class RecruController extends Controller
 
             }elseif(($tabCodes['1'] == 2) AND ($tabCodes['2'] == 4) ){
 
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termJ . '%')
                     ->where('date_fin_contrat', '>=', $tabCodes['3'])
                     ->where('date_fin_contrat', '<=', $tabCodes['4'])
@@ -414,7 +421,7 @@ class RecruController extends Controller
 
             }elseif(($tabCodes['1'] == 1) AND ($tabCodes['2'] == 4) ){
 
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termE . '%')
                     ->where('date_fin_contrat', '>=', $tabCodes['3'])
                     ->where('date_fin_contrat', '<=', $tabCodes['4'])
@@ -474,7 +481,7 @@ class RecruController extends Controller
 
             if( ($tabCodes['0'] == null) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 2) ){
                 
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termJ . '%')
                     ->get();
 
@@ -549,7 +556,7 @@ class RecruController extends Controller
 
             }elseif( ($tabCodes['0'] == null) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == 2) ){
 
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termE . '%')
                     ->get();
 
@@ -621,7 +628,7 @@ class RecruController extends Controller
 
             }elseif(($tabCodes['0'] != null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 1) ){
 
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('uniteid', '>=', $tabCodes['0'])
                     /*
                     ->where('date_debut_contrat', '>=', $tabCodes['0'])
@@ -674,7 +681,7 @@ class RecruController extends Controller
 
             }elseif(($tabCodes['0'] != null ) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == 1) ){
 
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('uniteid', '>=', $tabCodes['0'])
                     ->where('matricule', 'like', '%' . $termE . '%')
                     ->get();
@@ -713,7 +720,7 @@ class RecruController extends Controller
 
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 2) AND ($tabCodes['2'] == 3) ){
 				//dd('iciooooooooooooooooo');
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termJ . '%')
                     ->where('date_debut_contrat', '>=', $tabCodes['3'])
                     ->where('date_debut_contrat', '<=', $tabCodes['4'])
@@ -764,7 +771,7 @@ class RecruController extends Controller
 
             }elseif(($tabCodes['0'] == null ) AND ($tabCodes['1'] == 1) AND ($tabCodes['2'] == 3) ){
 
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termE . '%')
                     ->where('date_debut_contrat', '>=', $tabCodes['3'])
                     ->where('date_debut_contrat', '<=', $tabCodes['4'])
@@ -814,7 +821,7 @@ class RecruController extends Controller
 
             }elseif(($tabCodes['1'] == 2) AND ($tabCodes['2'] == 4) ){
 
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termJ . '%')
                     ->where('date_fin_contrat', '>=', $tabCodes['3'])
                     ->where('date_fin_contrat', '<=', $tabCodes['4'])
@@ -864,7 +871,7 @@ class RecruController extends Controller
 
             }elseif(($tabCodes['1'] == 1) AND ($tabCodes['2'] == 4) ){
 
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termE . '%')
                     ->where('date_fin_contrat', '>=', $tabCodes['3'])
                     ->where('date_fin_contrat', '<=', $tabCodes['4'])
@@ -936,7 +943,7 @@ class RecruController extends Controller
             $termJ = 'J';
             $term = ($tabCodes['1'] == 1) ? $termE : $termJ;
 
-            $query = Travailleur::where('etapeid', '!=', 3)
+            $query = Travailleur::actif()
                 ->where('matricule', 'like', '%' . $term . '%');
 
             if (($tabCodes['2'] == 1) AND ($tabCodes['0'] != null)) {
@@ -1255,7 +1262,7 @@ class RecruController extends Controller
                 $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
 
                 $data_unites = Unites::get();
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('uniteid', '=', $request->uniteid)
                     ->where('matricule', 'like', '%' . $termE . '%')->get();
                 return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
@@ -1268,7 +1275,7 @@ class RecruController extends Controller
                 $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
 
                 $data_unites = Unites::get();
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termE . '%')->get();
                 return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
 
@@ -1280,7 +1287,7 @@ class RecruController extends Controller
                 $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
 
                 $data_unites = Unites::get();
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termE . '%')
 					->where('date_debut_contrat', '>=', $request->beginn)
                     ->where('date_debut_contrat', '<=', $request->endd)
@@ -1296,7 +1303,7 @@ class RecruController extends Controller
                 $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
 
                 $data_unites = Unites::get();
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termE . '%')
 					->where('date_fin_contrat', '>=', $request->beginn)
                     ->where('date_fin_contrat', '<=', $request->endd)
@@ -1315,7 +1322,7 @@ class RecruController extends Controller
                 $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
 
                 $data_unites = Unites::get();
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('uniteid', '=', $request->uniteid)
                     ->where('matricule', 'like', '%' . $termJ . '%')->get();
                 return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
@@ -1328,7 +1335,7 @@ class RecruController extends Controller
                 $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
 
                 $data_unites = Unites::get();
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termJ . '%')->get();
                 return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
 
@@ -1340,7 +1347,7 @@ class RecruController extends Controller
                 $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
 
                 $data_unites = Unites::get();
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termJ . '%')
 					->where('date_debut_contrat', '>=', $request->beginn)
                     ->where('date_debut_contrat', '<=', $request->endd)
@@ -1356,7 +1363,7 @@ class RecruController extends Controller
                 $code = $chaine=$unite.'+'.$type.'+'.$rech.'+'.$debut.'+'.$fin;
 
                 $data_unites = Unites::get();
-                $recherches = Travailleur::where('etapeid', '!=', 3)
+                $recherches = Travailleur::actif()
                     ->where('matricule', 'like', '%' . $termJ . '%')
 					->where('date_fin_contrat', '>=', $request->beginn)
                     ->where('date_fin_contrat', '<=', $request->endd)
@@ -1445,6 +1452,7 @@ class RecruController extends Controller
         }elseif ($request->actionid == 3){
             // cessation
             $actionup = Travailleur::find($request->id);
+            $dejaCesse = $actionup->etapeid == 3; // évite de bloquer une 2e cessation légitime après une reconduction
             $actionup->etapeid = $request->actionid;
             $actionup->userid = Auth::user()->id;
             $actionup->date_fin_contrat = $request->datechoisit;
@@ -1453,9 +1461,7 @@ class RecruController extends Controller
 
             if($actionup->save()){
 
-                $verif_action = ActionsCDC::where('actionid', 3)->where('travailleurid', $request->id)->first();
-
-                if($verif_action){
+                if($dejaCesse){
                     return Redirect::back()->withErrors("Ce journalier a déja reçu une cessation .");
                 }else{
 
@@ -1543,6 +1549,7 @@ class RecruController extends Controller
             $actionup->etapeid = $request->actionid;
             $actionup->date_debut_contrat = $request->datechoisit;
             $actionup->date_fin_contrat = $request->datefin;
+            $actionup->motif_fin_contrat = null; // nouvelle période : l'ancien motif ne s'applique plus
             $actionup->userid = Auth::user()->id;
             $actionup->updated_at = Carbon::now();
 
@@ -1558,7 +1565,7 @@ class RecruController extends Controller
                     $actions->debut_contrat = $request->datechoisit;
                     $actions->fin_contrat = $actionup->date_fin_contrat;
                     $actions->travailleurid = $request->id;
-                    $actions->travailleur_mat = $actionup->travailleur_mat;
+                    $actions->travailleur_mat = $actionup->matricule;
                     $actions->userid = Auth::user()->id;
                     $actions->actionid = $request->actionid; //Reconduire 6
                     if($actions->save() == true){
