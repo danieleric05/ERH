@@ -2,6 +2,29 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('rhassets/vendor/select2/select2.css') }}">
+    <style>
+        /* Uniformise l'apparence : ajoute la flèche de dropdown sur les multi-select,
+           absente par défaut du thème select2 (contrairement aux select simples). */
+        .select2-container-multi .select2-choices {
+            position: relative;
+            padding-right: 20px;
+        }
+        .select2-container-multi .select2-choices::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 18px;
+            border-left: 1px solid #aaa;
+            border-radius: 0 4px 4px 0;
+            background-color: #ccc;
+            background-image: url('{{ asset('rhassets/vendor/select2/select2.png') }}'), linear-gradient(to top, #ccc 0%, #eee 60%);
+            background-repeat: no-repeat;
+            background-position: 0 center, 0 0;
+            pointer-events: none;
+        }
+    </style>
 @endpush
 
 @section('content')
