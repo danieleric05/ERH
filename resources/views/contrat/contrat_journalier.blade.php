@@ -202,36 +202,43 @@
             <br/>
                  <div>
                 <i>
-                    <table style="width: 55%; margin: 0; border-collapse: collapse;">
-                        <tr><td colspan="2" style="text-align: left; padding-top: 4px; padding-bottom: 3px; font-weight: bold;">1/ Rémunération Brute imposable</td></tr>
+                    <table style="width: 60%; margin: 0; border-collapse: collapse;">
+                        <tr><td colspan="3" style="text-align: left; padding-top: 4px; padding-bottom: 3px; font-weight: bold;">1/ Rémunération Brute imposable</td></tr>
                         <tr>
-                            <td style="text-align: left; padding-left: 20px;">Salaire journalier (SMIG de 75 000F) : 433 X 8 heures =</td>
+                            <td style="text-align: left; padding-left: 20px;">Salaire journalier (SMIG de 75 000F) : 433 X 8 heures</td>
+                            <td style="text-align: center; width: 15px;">=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px;">3 464 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left; padding-left: 20px;">Gratification journalière : 27 X 8 heures =</td>
+                            <td style="text-align: left; padding-left: 20px;">Gratification journalière : 27 X 8 heures</td>
+                            <td style="text-align: center; width: 15px;">=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px;">216 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left; padding-left: 20px;">Congé journalier : 38 X 8heures =</td>
+                            <td style="text-align: left; padding-left: 20px;">Congé journalier : 38 X 8heures</td>
+                            <td style="text-align: center; width: 15px;">=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px; border-bottom: 1px solid black;">304 F</td>
                         </tr>
                         <tr>
                             <td style="text-align: left; padding-left: 20px; font-weight: bold;">Sous total 1</td>
-                            <td style="text-align: right; white-space: nowrap; width: 70px; font-weight: bold;">= 3 984 F</td>
+                            <td style="text-align: center; width: 15px; font-weight: bold;">=</td>
+                            <td style="text-align: right; white-space: nowrap; width: 70px; font-weight: bold;">3 984 F</td>
                         </tr>
-                        <tr><td colspan="2" style="text-align: left; padding-top: 10px; padding-bottom: 3px; font-weight: bold;">2/ Rémunération Non Imposable</td></tr>
+                        <tr><td colspan="3" style="text-align: left; padding-top: 10px; padding-bottom: 3px; font-weight: bold;">2/ Rémunération Non Imposable</td></tr>
                         <tr>
                             <td style="text-align: left; padding-left: 20px;">Transport journalier :</td>
+                            <td style="text-align: center; width: 15px;">=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px;">1 154 F</td>
                         </tr>
                         <tr>
-                            <td style="text-align: left; padding-left: 20px;">Précarité (salaire + gratification) : 3 680 X 3% =</td>
+                            <td style="text-align: left; padding-left: 20px;">Précarité (salaire + gratification) : 3 680 X 3%</td>
+                            <td style="text-align: center; width: 15px;">=</td>
                             <td style="text-align: right; white-space: nowrap; width: 70px; border-bottom: 1px solid black;">110 F</td>
                         </tr>
                         <tr>
                             <td style="text-align: left; padding-left: 20px; font-weight: bold;">Sous total 2</td>
-                            <td style="text-align: right; white-space: nowrap; width: 70px; font-weight: bold;">= 1 264 F</td>
+                            <td style="text-align: center; width: 15px; font-weight: bold;">=</td>
+                            <td style="text-align: right; white-space: nowrap; width: 70px; font-weight: bold;">1 264 F</td>
                         </tr>
                     </table>
                     </i>
