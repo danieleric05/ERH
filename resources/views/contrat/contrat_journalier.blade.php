@@ -122,6 +122,7 @@
              <br/>
              <b><u>Article 3</u> : Durée du contrat et horaires de travail</b>
                 <br/>
+                <br/>
                 <u>Durée</u> : Le présent contrat est à durée journalière et peut, sauf dénonciation par l’une ou l’autre des parties, être renouvelé par tacite reconduction, en respect des dispositions du Code du Travail et de la Convention Collective.
 
                 <br/><br/>
@@ -138,7 +139,7 @@
             <br/>
                  <div>
                 <i>
-                    <table style="width: auto; margin: 0; border-collapse: collapse;">
+                    <table style="width: auto; margin: 0 0 0 40px; border-collapse: collapse;">
                         <tr><td colspan="3" style="text-align: left; padding-top: 4px; padding-bottom: 3px; font-weight: bold;">1/ Rémunération Brute imposable</td></tr>
                         <tr>
                             <td style="text-align: left; padding-left: 60px; white-space: nowrap;">Salaire journalier (SMIG de 75 000F) : 433 X 8 heures</td>
