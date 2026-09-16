@@ -7,10 +7,6 @@
 		  text-align: center !important;
 		}
 		
-		.container {
-			min-width: 992px !important;
-		  }
-		  
 		 .container {
 		  width: 100%;
 		  padding-right: 15px;
@@ -99,7 +95,7 @@
             <br/>
             <br/>
             <br/>
-            <div>
+            <div class="text-center">
                 <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 60%;">
             </div>
 
