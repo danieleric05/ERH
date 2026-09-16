@@ -4,9 +4,12 @@
     <title>CONTRAT-JOURNALIER - <?php echo $travailleur->nom ?></title>
     <style>
 		@page {
-			margin-top: 35mm;
+			margin-top: 12mm;
 			margin-left: 12mm;
 			margin-right: 12mm;
+		}
+		@page :first {
+			margin-top: 35mm;
 		}
 		.text-center {
 		  text-align: center !important;
