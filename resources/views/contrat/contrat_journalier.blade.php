@@ -3,6 +3,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>CONTRAT-JOURNALIER - <?php echo $travailleur->nom ?></title>
     <style>
+		@page {
+			margin-top: 10mm;
+		}
 		.text-center {
 		  text-align: center !important;
 		}
@@ -90,11 +93,6 @@
         <div class="col-md-12">
             
 
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
             <div class="text-center">
                 <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 75%;">
             </div>
