@@ -183,6 +183,7 @@
                 (Avant éventuelles affectations pour nécessités de service)
                 <br/>
                 <br/>
+             <div style="page-break-before: always;"></div>
              <b><u>Article 3</u> : Durée du contrat et horaires de travail</b>
                 <br/>
                 <u>Durée</u> : Le présent contrat est à durée journalière et peut, sauf dénonciation par l’une ou l’autre des parties, être renouvelé par tacite reconduction, en respect des dispositions du Code du Travail et de la Convention Collective.
