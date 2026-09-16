@@ -73,13 +73,13 @@
                 <!-- Date debut -->
                 <div>
                     <label for="debut" class="block text-sm font-medium text-text-primary mb-2">Date debut</label>
-                    <input name="debut" id="debut" value="{{ date('Y-m-d') }}" type="date" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
+                    <input name="debut" id="debut" value="{{ date('Y-m-d') }}" type="date" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white text-text-primary">
                 </div>
 
                 <!-- Date de fin -->
                 <div>
                     <label for="fin" class="block text-sm font-medium text-text-primary mb-2">Date de fin</label>
-                    <input name="fin" id="fin" value="{{ date('Y-m-d') }}" type="date" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
+                    <input name="fin" id="fin" value="{{ date('Y-m-d') }}" type="date" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white text-text-primary">
                 </div>
 
                 <!-- Periode -->
@@ -96,7 +96,7 @@
             <!-- Textarea -->
             <div class="mb-8">
                 <label for="justification" class="block text-sm font-medium text-text-primary mb-2">Justification</label>
-                <textarea rows="3" name="justification" id="justification" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"></textarea>
+                <textarea rows="3" name="justification" id="justification" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white text-text-primary"></textarea>
             </div>
 
             <!-- Button Group -->

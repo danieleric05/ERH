@@ -80,14 +80,14 @@
                 <!-- Date -->
                 <div>
                     <label for="date_heure_supp" class="block text-sm font-medium text-text-primary mb-2">Date</label>
-                    <input name="date_heure_supp" id="date_heure_supp" value="{{ date('Y-m-d') }}" type="date" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
+                    <input name="date_heure_supp" id="date_heure_supp" value="{{ date('Y-m-d') }}" type="date" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white text-text-primary">
                 </div>
             </div>
 
             <!-- Textarea -->
             <div class="mb-8">
                 <label for="justification" class="block text-sm font-medium text-text-primary mb-2">Justification</label>
-                <textarea rows="3" name="justification" id="justification" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"></textarea>
+                <textarea rows="3" name="justification" id="justification" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white text-text-primary"></textarea>
             </div>
 
             <!-- Button Group -->
