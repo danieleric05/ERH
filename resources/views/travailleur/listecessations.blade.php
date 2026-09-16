@@ -140,6 +140,7 @@
                                 {{-- Cessation/Certificat/Déclaration --}}
                                 @if($listedata->etapeid != 3)
                                     <a href="{{ url('action/declaration/travailleurs') }}"
+                                       onclick="event.preventDefault(); openDeclarationModal({{ $listedata->id }})"
                                        title="CESSATION/CERTIFICAT/DÉCLARATION"
                                        data-id="{{ $listedata->id }}"
                                        class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition">

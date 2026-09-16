@@ -180,6 +180,6 @@ function modalEditSante() {
 
 // Global function to trigger modal
 window.openEditSanteModal = function(data) {
-    document.dispatchEvent(new CustomEvent('open-modal-edit', { detail: data }));
+    window.dispatchEvent(new CustomEvent('open-modal-edit', { detail: data }));
 }
 </script>

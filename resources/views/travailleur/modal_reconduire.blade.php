@@ -88,11 +88,11 @@ function modalReconduire() {
 
 // Global function to trigger modal
 window.openReconduireModal = function(id) {
-    document.dispatchEvent(new CustomEvent('open-modal-reconduire', { detail: { id: id } }));
+    window.dispatchEvent(new CustomEvent('open-modal-reconduire', { detail: { id: id } }));
 }
 
 // Alias for backwards compatibility
 window.openReconduite = function(id) {
-    document.dispatchEvent(new CustomEvent('open-modal-reconduire', { detail: { id: id } }));
+    window.dispatchEvent(new CustomEvent('open-modal-reconduire', { detail: { id: id } }));
 }
 </script>

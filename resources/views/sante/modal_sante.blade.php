@@ -60,6 +60,6 @@ function modalSante() {
 
 // Global function to trigger modal
 window.openSanteModal = function() {
-    document.dispatchEvent(new CustomEvent('open-modal-sante', { detail: {} }));
+    window.dispatchEvent(new CustomEvent('open-modal-sante', { detail: {} }));
 }
 </script>

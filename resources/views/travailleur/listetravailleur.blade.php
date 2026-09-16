@@ -141,6 +141,7 @@
                             <div class="flex flex-wrap justify-center gap-1">
                                 @if(($listedata->etapeid ?? null) != 3)
                                     <a href="{{ url('action/declaration/travailleurs') }}"
+                                       onclick="event.preventDefault(); openDeclarationModal({{ $listedata->id }})"
                                        title="CESSATION/CERTIFICAT/DECLARATION"
                                        data-id="{{ $listedata->id }}"
                                        class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
@@ -151,6 +152,7 @@
 
                                 @if($listedata->etapeid == 3)
                                     <a href="{{ url('reconduire/journalier') }}"
+                                       onclick="event.preventDefault(); openReconduireModal({{ $listedata->id }})"
                                        title="RECONDUIRE LE TRAVAILLEUR"
                                        data-id="{{ $listedata->id }}"
                                        class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition"

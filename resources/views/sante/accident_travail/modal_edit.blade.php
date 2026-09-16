@@ -181,6 +181,6 @@ function modalEditAccident() {
 
 // Global function to trigger modal
 window.openEditAccidentModal = function(data) {
-    document.dispatchEvent(new CustomEvent('open-modal-edit-accident', { detail: data }));
+    window.dispatchEvent(new CustomEvent('open-modal-edit-accident', { detail: data }));
 }
 </script>

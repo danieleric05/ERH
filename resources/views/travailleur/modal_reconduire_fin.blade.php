@@ -86,6 +86,6 @@ function modalReconduireFin() {
 
 // Global function to trigger modal
 window.openRecondmireFinModal = function(id) {
-    document.dispatchEvent(new CustomEvent('open-modal-reconduire-fin', { detail: { id: id } }));
+    window.dispatchEvent(new CustomEvent('open-modal-reconduire-fin', { detail: { id: id } }));
 }
 </script>

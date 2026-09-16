@@ -131,6 +131,7 @@
                                 @if(($listedata->etapeid ?? 0) != 3)
                                     <a id="declaration_new" data-id="{{ $listedata->id ?? '' }}"
                                        href="{{ url('action/declaration/travailleurs') }}"
+                                       onclick="event.preventDefault(); openDeclarationModal({{ $listedata->id ?? 'null' }})"
                                        title="CESSATION/CERTIFICAT/DECLARATION"
                                        class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition">
                                         <i class="fa fa-map-marker"></i>
@@ -141,6 +142,7 @@
                                 @if(($listedata->etapeid ?? 0) == 3)
                                     <a id="reconduire_journalier" data-id="{{ $listedata->id ?? '' }}"
                                        href="{{ url('reconduire/journalier') }}"
+                                       onclick="event.preventDefault(); openReconduireModal({{ $listedata->id ?? 'null' }})"
                                        title="RECONDUIRE LE TRAVAILLEUR"
                                        class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
                                         <i class="fa fa-refresh"></i>

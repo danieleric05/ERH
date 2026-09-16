@@ -156,6 +156,6 @@ function modalDeclaration() {
 
 // Global function to trigger modal
 window.openDeclarationModal = function(id) {
-    document.dispatchEvent(new CustomEvent('open-modal-declaration', { detail: { id: id } }));
+    window.dispatchEvent(new CustomEvent('open-modal-declaration', { detail: { id: id } }));
 }
 </script>
