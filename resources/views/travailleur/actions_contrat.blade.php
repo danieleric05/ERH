@@ -43,10 +43,6 @@
                     Télécharger Contrat de Cessation
                 </a>
 
-                <!-- Fiche de Précarité -->
-                <a href="{{ route('telechargerFichePrecarite',['id'=>$edit->id, 'download'=>'pdf']) }}" title="PRECARITE" class="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors text-center">
-                    Télécharger Fiche de Précarité
-                </a>
             @endif
 
             @if($edit->etapeid == 4)
