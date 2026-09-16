@@ -58,8 +58,17 @@ class RecruController extends Controller
             });
         }
 
-        $data_cessations = $query->orderBy('id', 'DESC')->get();
-        return view('travailleur.listecessations', compact('data_cessations'));
+        $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];
+        $sort = $sortable[$request->input('sort')] ?? 'id';
+        $dir = $request->input('dir') === 'asc' ? 'asc' : 'desc';
+        $perPage = in_array((int) $request->input('per_page'), [25, 50, 100, 200]) ? (int) $request->input('per_page') : 50;
+
+        $data_cessations = $query->orderBy($sort, $dir)->paginate($perPage)->appends($request->query());
+
+        // Précalculé une seule fois pour éviter une requête Equipes par ligne dans la vue.
+        $equipesById = Equipes::whereIn('id', $data_cessations->pluck('equipeid'))->get()->keyBy('id');
+
+        return view('travailleur.listecessations', compact('data_cessations', 'equipesById'));
     }
 
     public function liste_declarations(Request $request){
@@ -101,7 +110,12 @@ class RecruController extends Controller
             });
         }
 
-        $data_Travailleur = $query->orderBy('id', 'DESC')->get();
+        $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];
+        $sort = $sortable[$request->input('sort')] ?? 'id';
+        $dir = $request->input('dir') === 'asc' ? 'asc' : 'desc';
+        $perPage = in_array((int) $request->input('per_page'), [25, 50, 100, 200]) ? (int) $request->input('per_page') : 50;
+
+        $data_Travailleur = $query->orderBy($sort, $dir)->paginate($perPage)->appends($request->query());
 
         // Précalculé une seule fois pour éviter une requête ActionsCDC par ligne dans la vue.
         $cessesReels = ActionsCDC::where('actionid', 3)->pluck('travailleurid')->all();

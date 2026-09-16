@@ -38,10 +38,31 @@
             </a>
         </div>
 
-        {{-- Search Form --}}
-        <div class="mb-6 flex justify-end">
-            <form action="{{ route('liste_travailleurs') }}" method="GET" class="flex items-center max-w-lg" id="searchForm">
-                <input type="text" name="search" id="searchInput" value="{{ request('search') }}" placeholder="Rechercher par nom, prénom, matricule..." class="w-full px-4 py-2 border border-slate-300 rounded-l-lg focus:ring-primary-accent focus:border-primary-accent transition-shadow" autocomplete="off">
+        @php
+            $sortLink = fn($col) => request()->fullUrlWithQuery([
+                'sort' => $col,
+                'dir' => (request('sort') === $col && request('dir') === 'asc') ? 'desc' : 'asc',
+                'page' => 1,
+            ]);
+            $sortIcon = fn($col) => request('sort') === $col
+                ? '<i class="fa fa-arrow-' . (request('dir') === 'asc' ? 'up' : 'down') . ' text-xs"></i>'
+                : '';
+        @endphp
+
+        {{-- Search Form + taille de page --}}
+        <div class="mb-6 flex justify-end items-center gap-3">
+            <form method="GET" action="{{ route('liste_travailleurs') }}">
+                <select name="per_page" onchange="this.form.submit()" class="px-3 py-2 border border-slate-300 rounded-lg text-sm">
+                    @foreach([25, 50, 100, 200] as $n)
+                        <option value="{{ $n }}" @selected((int) request('per_page', 50) === $n)>{{ $n }} / page</option>
+                    @endforeach
+                </select>
+                @if(request('search'))<input type="hidden" name="search" value="{{ request('search') }}">@endif
+                @if(request('sort'))<input type="hidden" name="sort" value="{{ request('sort') }}">@endif
+                @if(request('dir'))<input type="hidden" name="dir" value="{{ request('dir') }}">@endif
+            </form>
+            <form action="{{ route('liste_travailleurs') }}" method="GET" class="flex items-center max-w-lg">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher par nom, prénom, matricule..." class="w-full px-4 py-2 border border-slate-300 rounded-l-lg focus:ring-primary-accent focus:border-primary-accent transition-shadow" autocomplete="off">
                 <button type="submit" class="px-4 py-2 bg-primary-accent text-white font-semibold rounded-r-lg hover:bg-plastica-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-accent transition-colors">
                     <i class="fa fa-search"></i>
                 </button>
@@ -49,35 +70,31 @@
         </div>
 
         {{-- Tableau --}}
-        <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()">
+        <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-slate-200" id="travailleursTable">
                     <thead class="bg-slate-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Image</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition select-none" @click="sort('matricule')">
-                                <div class="flex items-center gap-2">
-                                    Matricule
-                                    <span x-show="sortBy === 'matricule'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
-                                </div>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                <a href="{{ $sortLink('matricule') }}" class="flex items-center gap-2 hover:text-slate-900">
+                                    Matricule {!! $sortIcon('matricule') !!}
+                                </a>
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition select-none" @click="sort('nom')">
-                                <div class="flex items-center gap-2">
-                                    Nom & Prénoms
-                                    <span x-show="sortBy === 'nom'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
-                                </div>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                <a href="{{ $sortLink('nom') }}" class="flex items-center gap-2 hover:text-slate-900">
+                                    Nom & Prénoms {!! $sortIcon('nom') !!}
+                                </a>
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition select-none" @click="sort('embauche')">
-                                <div class="flex items-center gap-2">
-                                    Embauche
-                                    <span x-show="sortBy === 'embauche'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
-                                </div>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                <a href="{{ $sortLink('embauche') }}" class="flex items-center gap-2 hover:text-slate-900">
+                                    Embauche {!! $sortIcon('embauche') !!}
+                                </a>
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition select-none" @click="sort('fin')">
-                                <div class="flex items-center gap-2">
-                                    Fin contrat
-                                    <span x-show="sortBy === 'fin'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
-                                </div>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                <a href="{{ $sortLink('fin') }}" class="flex items-center gap-2 hover:text-slate-900">
+                                    Fin contrat {!! $sortIcon('fin') !!}
+                                </a>
                             </th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">État</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
@@ -162,140 +179,10 @@
                 </table>
             </div>
         </div>
+
+        <div class="mt-6">
+            {{ $data_Travailleur->links() }}
+        </div>
     </div>
-
-    {{-- Script de recherche en temps réel --}}
-    <script>
-        (function() {
-            const searchInput = document.getElementById('searchInput');
-            const tableBody = document.getElementById('travailleursTableBody');
-            const searchForm = document.getElementById('searchForm');
-            const allRows = Array.from(tableBody.querySelectorAll('tr'));
-
-            // Fonction de recherche côté client
-            function filterTable() {
-                const searchValue = searchInput.value.toLowerCase().trim();
-                let visibleCount = 0;
-
-                allRows.forEach(function(row) {
-                    // Ignorer la ligne "Aucun travailleur trouvé"
-                    if (row.cells.length === 1 && row.cells[0].colSpan === 7) {
-                        row.style.display = 'none';
-                        return;
-                    }
-
-                    // Récupérer le texte de toutes les cellules
-                    const matricule = row.cells[1] ? row.cells[1].textContent.toLowerCase() : '';
-                    const nomPrenom = row.cells[2] ? row.cells[2].textContent.toLowerCase() : '';
-
-                    // Vérifier si le terme de recherche est présent
-                    if (searchValue === '' ||
-                        matricule.includes(searchValue) ||
-                        nomPrenom.includes(searchValue)) {
-                        row.style.display = '';
-                        visibleCount++;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-
-                // Afficher un message si aucun résultat
-                if (visibleCount === 0 && searchValue !== '') {
-                    const noResultRow = tableBody.querySelector('.no-result-row');
-                    if (!noResultRow) {
-                        const tr = document.createElement('tr');
-                        tr.className = 'no-result-row';
-                        tr.innerHTML = `
-                            <td colspan="7" class="px-6 py-8 text-center text-slate-500">
-                                <p class="text-lg">Aucun travailleur trouvé pour "${searchValue}"</p>
-                            </td>
-                        `;
-                        tableBody.appendChild(tr);
-                    }
-                } else {
-                    // Supprimer le message "aucun résultat" s'il existe
-                    const noResultRow = tableBody.querySelector('.no-result-row');
-                    if (noResultRow) {
-                        noResultRow.remove();
-                    }
-                }
-            }
-
-            // Écouter l'événement input pour la recherche instantanée
-            searchInput.addEventListener('input', filterTable);
-
-            // Empêcher la soumission normale du formulaire
-            searchForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                filterTable();
-            });
-
-            // Filtrer au chargement si une valeur est présente
-            if (searchInput.value.trim() !== '') {
-                filterTable();
-            }
-        })();
-    </script>
-
-<script>
-function tableSort() {
-    return {
-        sortBy: null,
-        sortDir: 'asc',
-
-        sort(column) {
-            if (this.sortBy === column) {
-                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
-            } else {
-                this.sortBy = column;
-                this.sortDir = 'asc';
-            }
-            this.sortTable();
-        },
-
-        sortTable() {
-            const tbody = document.querySelector('tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
-
-            rows.sort((a, b) => {
-                let valueA, valueB;
-
-                switch(this.sortBy) {
-                    case 'matricule':
-                        valueA = a.querySelector('td:nth-child(2) a')?.textContent.trim() || '';
-                        valueB = b.querySelector('td:nth-child(2) a')?.textContent.trim() || '';
-                        break;
-                    case 'nom':
-                        valueA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
-                        valueB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
-                        break;
-                    case 'embauche':
-                        valueA = a.querySelector('td:nth-child(4)')?.textContent.trim() || '';
-                        valueB = b.querySelector('td:nth-child(4)')?.textContent.trim() || '';
-                        valueA = new Date(valueA).getTime() || 0;
-                        valueB = new Date(valueB).getTime() || 0;
-                        break;
-                    case 'fin':
-                        valueA = a.querySelector('td:nth-child(5)')?.textContent.trim() || '';
-                        valueB = b.querySelector('td:nth-child(5)')?.textContent.trim() || '';
-                        valueA = new Date(valueA).getTime() || 0;
-                        valueB = new Date(valueB).getTime() || 0;
-                        break;
-                }
-
-                if (typeof valueA === 'number' && typeof valueB === 'number') {
-                    return this.sortDir === 'asc' ? valueA - valueB : valueB - valueA;
-                } else {
-                    return this.sortDir === 'asc'
-                        ? String(valueA).localeCompare(String(valueB), 'fr-FR')
-                        : String(valueB).localeCompare(String(valueA), 'fr-FR');
-                }
-            });
-
-            rows.forEach(row => tbody.appendChild(row));
-        }
-    }
-}
-</script>
 
 @endsection
