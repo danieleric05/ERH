@@ -36,11 +36,27 @@ class RecruController extends Controller
         return view('travailleur.liste', compact('data_travailleurdeux', 'equipesById'));
     }
 
-    public function liste_tous_travailleurs(){
+    public function liste_tous_travailleurs(Request $request){
         ini_set('memory_limit', '512M');
         set_time_limit(180);
         $termJ = 'J';
-        $data_travailleurdeux = Travailleur::where('matricule', 'like', $termJ . '%')->where('equipeid', '!=' ,NULL)->actif()->orderBy('id', 'DESC')->get();
+        $query = Travailleur::where('matricule', 'like', $termJ . '%')->where('equipeid', '!=' ,NULL)->actif();
+
+        if (!empty($request->input('search'))) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('nom', 'like', "%{$search}%")
+                  ->orWhere('prenom', 'like', "%{$search}%")
+                  ->orWhere('matricule', 'like', "%{$search}%");
+            });
+        }
+
+        $sortable = ['matricule' => 'matricule', 'nomprnoms' => 'nom', 'datedembauche' => 'date_debut_contrat', 'datefindecontrat' => 'date_fin_contrat'];
+        $sort = $sortable[$request->input('sort')] ?? 'id';
+        $dir = $request->input('dir') === 'asc' ? 'asc' : 'desc';
+        $perPage = in_array((int) $request->input('per_page'), [25, 50, 100, 200]) ? (int) $request->input('per_page') : 50;
+
+        $data_travailleurdeux = $query->orderBy($sort, $dir)->paginate($perPage)->appends($request->query());
         return view('travailleur.listetravailleur', compact('data_travailleurdeux'));
     }
 

@@ -43,12 +43,33 @@
     @include('success')
     @include('errors')
 
-    <!-- Search Form -->
-    <div class="mb-6 flex justify-end">
-        <form id="searchForm" class="flex items-center max-w-lg">
+    @php
+        $sortLink = fn($col) => request()->fullUrlWithQuery([
+            'sort' => $col,
+            'dir' => (request('sort') === $col && request('dir') === 'asc') ? 'desc' : 'asc',
+            'page' => 1,
+        ]);
+        $sortIcon = fn($col) => request('sort') === $col
+            ? '<i class="fa fa-arrow-' . (request('dir') === 'asc' ? 'up' : 'down') . ' text-xs"></i>'
+            : '';
+    @endphp
+
+    <!-- Search Form + taille de page -->
+    <div class="mb-6 flex justify-end items-center gap-3">
+        <form method="GET">
+            <select name="per_page" onchange="this.form.submit()" class="px-3 py-2 border border-slate-300 rounded-lg text-sm">
+                @foreach([25, 50, 100, 200] as $n)
+                    <option value="{{ $n }}" @selected((int) request('per_page', 50) === $n)>{{ $n }} / page</option>
+                @endforeach
+            </select>
+            @if(request('search'))<input type="hidden" name="search" value="{{ request('search') }}">@endif
+            @if(request('sort'))<input type="hidden" name="sort" value="{{ request('sort') }}">@endif
+            @if(request('dir'))<input type="hidden" name="dir" value="{{ request('dir') }}">@endif
+        </form>
+        <form method="GET" class="flex items-center max-w-lg">
             <input type="text"
                    name="search"
-                   id="searchInput"
+                   value="{{ request('search') }}"
                    placeholder="Rechercher par nom, prénom, matricule, identifiant..."
                    class="w-full px-4 py-2 border border-slate-300 rounded-l-lg focus:ring-primary-accent focus:border-primary-accent transition-shadow"
                    autocomplete="off">
@@ -60,41 +81,32 @@
     </div>
 
     <!-- Main Content -->
-    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()"><div class="overflow-x-auto">
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden"><div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
                     <tr class="bg-slate-900 text-white border-b">
                         <th class="px-6 py-4 text-left text-sm font-semibold">Image</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort(1)">
-                            <div class="flex items-center gap-2">
-                                Matricule
-                                <span x-show="sortBy === 1" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
-                            </div>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">
+                            <a href="{{ $sortLink('matricule') }}" class="flex items-center gap-2 hover:text-slate-300">
+                                Matricule {!! $sortIcon('matricule') !!}
+                            </a>
                         </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort(2)">
-                            <div class="flex items-center gap-2">
-                                Nom & Prénoms
-                                <span x-show="sortBy === 2" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
-                            </div>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">
+                            <a href="{{ $sortLink('nomprnoms') }}" class="flex items-center gap-2 hover:text-slate-300">
+                                Nom & Prénoms {!! $sortIcon('nomprnoms') !!}
+                            </a>
                         </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort(3)">
-                            <div class="flex items-center gap-2">
-                                Date d'embauche
-                                <span x-show="sortBy === 3" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
-                            </div>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">
+                            <a href="{{ $sortLink('datedembauche') }}" class="flex items-center gap-2 hover:text-slate-300">
+                                Date d'embauche {!! $sortIcon('datedembauche') !!}
+                            </a>
                         </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort(4)">
-                            <div class="flex items-center gap-2">
-                                Date fin de contrat
-                                <span x-show="sortBy === 4" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
-                            </div>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">
+                            <a href="{{ $sortLink('datefindecontrat') }}" class="flex items-center gap-2 hover:text-slate-300">
+                                Date fin de contrat {!! $sortIcon('datefindecontrat') !!}
+                            </a>
                         </th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort(5)">
-                            <div class="flex items-center gap-2">
-                                Etat
-                                <span x-show="sortBy === 5" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
-                            </div>
-                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Etat</th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Options</th>
                     </tr>
                 </thead>
@@ -271,136 +283,11 @@
         </div>
     </div>
 
+    <div class="mt-6">
+        {{ $data_travailleurdeux->links() }}
+    </div>
+
     @include('travailleur.modal_declaration')
     @include('travailleur.modal_reconduire')
-
-    {{-- Script de recherche en temps réel --}}
-    <script>
-        (function() {
-            const searchInput = document.getElementById('searchInput');
-            const tableBody = document.getElementById('travailleursTableBody');
-            const searchForm = document.getElementById('searchForm');
-            const allRows = Array.from(tableBody.querySelectorAll('tr'));
-
-            // Fonction de recherche côté client
-            function filterTable() {
-                const searchValue = searchInput.value.toLowerCase().trim();
-                let visibleCount = 0;
-
-                allRows.forEach(function(row) {
-                    // Ignorer la ligne "Aucune donnée disponible"
-                    if (row.cells.length === 1 && row.cells[0].colSpan === 8) {
-                        row.style.display = 'none';
-                        return;
-                    }
-
-                    // Récupérer le texte des cellules importantes
-                    const matricule = row.cells[1] ? row.cells[1].textContent.toLowerCase() : '';
-                    const identifiant = row.cells[2] ? row.cells[2].textContent.toLowerCase() : '';
-                    const nomPrenom = row.cells[3] ? row.cells[3].textContent.toLowerCase() : '';
-
-                    // Vérifier si le terme de recherche est présent
-                    if (searchValue === '' ||
-                        matricule.includes(searchValue) ||
-                        identifiant.includes(searchValue) ||
-                        nomPrenom.includes(searchValue)) {
-                        row.style.display = '';
-                        visibleCount++;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-
-                // Afficher un message si aucun résultat
-                if (visibleCount === 0 && searchValue !== '') {
-                    const noResultRow = tableBody.querySelector('.no-result-row');
-                    if (!noResultRow) {
-                        const tr = document.createElement('tr');
-                        tr.className = 'no-result-row';
-                        tr.innerHTML = `
-                            <td colspan="8" class="px-6 py-8 text-center text-slate-500">
-                                <p class="text-lg">Aucun travailleur trouvé pour "${searchValue}"</p>
-                            </td>
-                        `;
-                        tableBody.appendChild(tr);
-                    }
-                } else {
-                    // Supprimer le message "aucun résultat" s'il existe
-                    const noResultRow = tableBody.querySelector('.no-result-row');
-                    if (noResultRow) {
-                        noResultRow.remove();
-                    }
-                }
-            }
-
-            // Écouter l'événement input pour la recherche instantanée
-            searchInput.addEventListener('input', filterTable);
-
-            // Empêcher la soumission normale du formulaire
-            searchForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                filterTable();
-            });
-
-            // Filtrer au chargement si une valeur est présente
-            if (searchInput.value.trim() !== '') {
-                filterTable();
-            }
-        })();
-    </script>
-
-
-<script>
-function tableSort() {
-    return {
-        sortBy: null,
-        sortDir: 'asc',
-
-        sort(column) {
-            if (this.sortBy === column) {
-                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
-            } else {
-                this.sortBy = column;
-                this.sortDir = 'asc';
-            }
-            this.sortTable();
-        },
-
-        sortTable() {
-            const tbody = document.querySelector('tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
-
-            rows.sort((a, b) => {
-                let valueA, valueB;
-
-                // Récupérer les données de la colonne
-                const cells = Array.from(a.querySelectorAll('td'));
-                if (cells.length === 0) return 0;
-
-                // this.sortBy est directement l'index (0-based) de la colonne cliquée.
-                const colIndex = this.sortBy;
-
-                valueA = a.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
-                valueB = b.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
-
-                // Essayer de convertir en date
-                const dateA = new Date(valueA).getTime();
-                const dateB = new Date(valueB).getTime();
-
-                if (!isNaN(dateA) && !isNaN(dateB) && dateA > 0 && dateB > 0) {
-                    return this.sortDir === 'asc' ? dateA - dateB : dateB - dateA;
-                }
-
-                // Comparaison textuelle
-                return this.sortDir === 'asc'
-                    ? String(valueA).localeCompare(String(valueB), 'fr-FR')
-                    : String(valueB).localeCompare(String(valueA), 'fr-FR');
-            });
-
-            rows.forEach(row => tbody.appendChild(row));
-        }
-    }
-}
-</script>
 
 @endsection
