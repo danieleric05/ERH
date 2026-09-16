@@ -4,7 +4,7 @@
     <title>CONTRAT-JOURNALIER - <?php echo $travailleur->nom ?></title>
     <style>
 		@page {
-			margin-top: 10mm;
+			margin-top: 20mm;
 		}
 		.text-center {
 		  text-align: center !important;
