@@ -4,7 +4,7 @@
     <title>CONTRAT-JOURNALIER - <?php echo $travailleur->nom ?></title>
     <style>
 		@page {
-			margin-top: 30mm;
+			margin-top: 35mm;
 			margin-left: 12mm;
 			margin-right: 12mm;
 		}
