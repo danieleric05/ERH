@@ -1,6 +1,6 @@
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=gb18030">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>CONTRAT-JOURNALIER - <?php echo $travailleur->nom ?></title>
     <style>
 		.text-center {
