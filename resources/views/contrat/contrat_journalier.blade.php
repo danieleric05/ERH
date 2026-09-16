@@ -1,248 +1,295 @@
-<!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>CONTRAT JOURNALIER - {{ $travailleur->nom }} {{ $travailleur->prenom }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb18030">
+    <title>CONTRAT-JOURNALIER - <?php echo $travailleur->nom ?></title>
     <style>
-        @page {
-            margin: 20mm 15mm 20mm 15mm;
-        }
-        body {
-            font-family: DejaVu Sans, Arial, sans-serif;
-            font-size: 11px;
-            color: #000;
-            line-height: 1.4;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .header img {
-            max-width: 100%;
-            height: auto;
-        }
-        .title {
-            text-align: center;
-            font-size: 14px;
-            font-weight: bold;
-            text-decoration: underline;
-            margin: 20px 0;
-        }
-        .section {
-            margin-bottom: 10px;
-            text-align: justify;
-        }
-        .article-title {
-            font-weight: bold;
-            text-decoration: underline;
-            margin-top: 15px;
-            margin-bottom: 5px;
-        }
-        .text-right {
-            text-align: right;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .bold {
-            font-weight: bold;
-        }
-        .underline {
-            text-decoration: underline;
-        }
-        table.remuneration {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-            font-size: 10px;
-        }
-        table.remuneration td {
-            padding: 3px 5px;
-            vertical-align: top;
-        }
-        table.remuneration .label {
-            width: 60%;
-        }
-        table.remuneration .amount {
-            width: 40%;
-            text-align: right;
-        }
-        table.remuneration .subtotal {
-            font-weight: bold;
-            border-top: 1px solid #000;
-        }
-        table.remuneration .section-title {
-            font-weight: bold;
-            padding-top: 10px;
-        }
-        table.signatures {
-            width: 100%;
-            margin-top: 50px;
-        }
-        table.signatures td {
-            width: 50%;
-            vertical-align: top;
-            padding: 10px;
-        }
-        .page-break {
-            page-break-before: always;
+		.text-center {
+		  text-align: center !important;
+		}
+		
+		.container {
+			min-width: 992px !important;
+		  }
+		  
+		 .container {
+		  width: 100%;
+		  padding-right: 15px;
+		  padding-left: 15px;
+		  margin-right: auto;
+		  margin-left: auto;
+		}
+
+		@media (min-width: 576px) {
+		  .container {
+			max-width: 540px;
+		  }
+		}
+
+		@media (min-width: 768px) {
+		  .container {
+			max-width: 720px;
+		  }
+		}
+
+		@media (min-width: 992px) {
+		  .container {
+			max-width: 960px;
+		  }
+		}
+
+		@media (min-width: 1200px) {
+		  .container {
+			max-width: 1140px;
+		  }
+		}
+				  
+				  .row {
+		  display: -ms-flexbox;
+		  display: flex;
+		  -ms-flex-wrap: wrap;
+		  flex-wrap: wrap;
+		  margin-right: -15px;
+		  margin-left: -15px;
+		}
+
+		.col-md-12 {
+			-ms-flex: 0 0 100%;
+			flex: 0 0 100%;
+			max-width: 100%;
+		  }
+		  
+		  .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12, .col,
+		.col-auto, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm,
+		.col-sm-auto, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-md,
+		.col-md-auto, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg,
+		.col-lg-auto, .col-xl-1, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-10, .col-xl-11, .col-xl-12, .col-xl,
+		.col-xl-auto {
+		  position: relative;
+		  width: 100%;
+		  min-height: 1px;
+		  padding-right: 15px;
+		  padding-left: 15px;
+		}
+
+		.text-left {
+		  text-align: left !important;
+		}
+
+		.text-right {
+		  text-align: right !important;
+		}
+			
+        body{
+            font-family: Tahoma, Helvetica, Arial;
+            font-size: 13px;
+            color: black;
         }
     </style>
 </head>
 <body>
+<div class="container">
 
-    <!-- EN-TETE - Remplacer par l'image scannee -->
-    <div class="header">
-        <img src="{{ base_path('../rhassets/images/contrat.PNG') }}">
+    <div class="row">
+
+        <div class="col-md-12">
+            
+
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <div class="text-center">
+                <img src="{{ base_path('../rhassets/images/contrat.PNG') }}">
+            </div>
+
+            <p>
+                <br/>
+                <br/>
+
+                <b><u style="color: black">Entre les soussignés</u>,</b>
+                        <br/>
+                1) La Société dénommée « PLASTICA », Société par Actions Simplifiée Unipersonnelle (SASU) au capital social de deux milliards (2.000.000.000) FRANCS CFA,
+				dont le siège social est fixé à ABIDJAN Zone Industrielle de KOUMASSI,
+                05 Boîte Postale  2160 Abidjan 05, immatriculée au Registre de Commerce et du Crédit Mobilier d’ABIDJAN
+                sous le numéro CI-ABJ-1999-B-249382, déclarée à la CNPS sous le numéro 82408.
+                <br/>
+                <br/>
+                Prise en la personne de son représentant légal, demeurant es-qualité audit siège,
+                <br/>
+                <br/>
+                La <b style="font-size: 15px"> SASU "PLASTICA" </b> parfois dénommée dans le présent contrat "L’Employeur",
+                <br/>
+                <div style="color: black; font-weight: bold" class="text-right"><u style="color: black">D’UNE PART</u></div>
+                <br/>
+                ET
+                <br/>
+                <br/>
+                <?php $tabDate = explode("-", $travailleur->date_naissance); ?>
+                <?php $tabDateP = explode("-", $travailleur->pieceidentite_livrele); ?>
+                2) <b> @if($travailleur->civilite == 'Monsieur') M. @endif @if($travailleur->civilite == 'Mademoiselle') Mlle. @endif @if($travailleur->civilite == 'Madame') Mme. @endif  <?= $travailleur->nom.' '.$travailleur->prenom.''.$travailleur->prenom_suite ?></b>  demeurant à  <b><?php echo $comm = \App\Commune::where('id', $travailleur->communeid)->first()->label; ?></b> <br/>
+                Situation matrimoniale     …<b>{{ ucfirst(strtolower($travailleur->situation_mat)) }}</b>…    Nom du (de la) conjoint (e)…………. <br/>
+                @if($travailleur->nationaliteid)
+                    De nationalité    <b>IVOIRIENNE</b> <br/>
+                @endif
+                @if(!$travailleur->nationaliteid)
+                    De nationalité     <br/>
+                @endif
+                Né (e) le   <b><?=$tabDate['2']?>/<?=$tabDate['1']?>/<?=$tabDate['0']?>  à  <?= strtoupper($travailleur->lieu_naissance) ?> </b><br/>
+
+                Pièce d’identité : (ATT/CNI, N°
+
+                @if($travailleur->pieceidentite)
+                    <?= $travailleur->pieceidentite ?>
+                @endif
+                @if(!$travailleur->pieceidentite)
+
+                @endif
+
+                    délivré(e) le
+                @if($travailleur->pieceidentite != null)
+                    <b> <?=$tabDateP['2']?>/<?=$tabDateP['1']?>/<?=$tabDateP['0']?> </b>
+                @endif
+                    à
+                @if($travailleur->pieceidentite)
+                            <?= $travailleur->pieceidentite_lieu ?>
+                @endif
+                            @if(!$travailleur->pieceidentite)
+
+                            @endif
+
+                        </b> par ONI <br/>
+
+            Catégorie Professionnelle : @if($travailleur->categorieid)<b>{{ $catego = \App\Categories::where('id', $travailleur->categorieid)->first()->label }}</b> @endif<br/>
+
+            Matricule : <b> <?= strtoupper($travailleur->matricule) ?> </b> <br/>
+                N°CNPS : <?= $travailleur->numero_securite ?> <br/>
+
+                <br/>
+                <br/>
+
+                <b> @if($travailleur->civilite == 'Monsieur') M. @endif @if($travailleur->civilite == 'Mademoiselle') Mlle. @endif @if($travailleur->civilite == 'Madame') Mme. @endif <?= strtoupper($travailleur->nom).' '.strtoupper($travailleur->prenom).''.strtoupper($travailleur->prenom_suite) ?></b>  dénommé(e) dans le présent contrat le "Travailleur occasionnel" ou « le Travailleur Journalier»,
+                <br/>
+                <br/>
+                <span class="text-left">D’AUTRE PART</span>
+                <br/>
+            <b style="color: black; font-weight: bold"><u style="color: black">Article 1</u> : Textes régissant le présent contrat :</b>
+                <br/>
+                a) Dispositions de la loi N° 2015 – 532 du 20 juillet 2015 portant Code du Travail et des textes réglementaires pris pour son application <br/>
+                b) Dispositions de la Convention Collective Interprofessionnelle de la Côte d’Ivoire en date du 20 Juillet 1977, ensemble les avenants,
+                annexes et décisions de commissions mixtes qui ont modifié et complété cette convention ou qui viendraient à la
+                modifier ou à la compléter<br/><br/>
+                c) Dispositions du Règlement Intérieur de la SASU PLASTICA dont le Travailleur reconnaît avoir pris connaissance<br/><br/>
+                d) Consignes techniques d’exploitation et de fabrication de la SASU PLASTICA, telles qu’elles lui seront inculquées par la
+                Direction de PLASTICA et par ses supérieurs hiérarchiques.<br/><br/>
+            <b style="color: black; font-weight: bold"><u style="color: black">Article 2</u> : De l’activité du Travailleur</b>
+                <br/><br/>
+                Fonction : <b>{{ $fonction = \App\Fonction::where('id', $travailleur->fonction_entrepriseid )->first()->label }}</b><br/>
+                Unité de rattachement : <b>{{ $unite = \App\Equipes::where('id', $travailleur->equipeid )->first()->label }}</b><br/>
+                (Avant éventuelles affectations pour nécessités de service)
+                <br/>
+                <br/>
+             <b><u>Article 3</u> : Durée du contrat et horaires de travail</b>
+                <br/>
+                <u>Durée</u> : Le présent contrat est à durée journalière et peut, sauf dénonciation par l’une ou l’autre des parties, être renouvelé par tacite reconduction, en respect des dispositions du Code du Travail et de la Convention Collective.
+
+                <br/><br/>
+
+                <u>Horaires de travail</u> : Le Travailleur exerce son activité en équipe tournante de 06H à 14H
+                ou de 14H à 22H ou de 22H à 06H ou de 07H à 15H ou de 08H à 16H ou autres horaires variables, dans la limite des huit (8) heures par jour.
+                <br/><br/>
+
+                <b><u>Article 4</u> : Rémunération</b>
+            <br/>
+            <br/>
+                Le salaire ci-dessous détaillé est la rémunération des huit (08) heures de travail journalier :
+            <br/>
+            <br/>
+                 <div class="text-center">
+                <i><u>1/ Rémunération Brute Imposable</u><br/>
+                    Salaire journalier (SMIG de 75 000F) : 433 X 8 heures  =     3 464 F<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Gratification  journalier :	                          27 X 8 heures  = &nbsp;&nbsp; 216 F<br/>
+                    Congé journalier :	                                     38 X  8 heures   =
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;304 F</u><br/>
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;
+                    Sous total = 3 984 F
+                    <br/>
+                    <u>2/ Rémunration Non Imposable</u><br/>
+                    <br/>
+                   Transport Journalier :
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    -  1 154 F<br/>
+                    Précarité (Salaire + gratification ) : 3 680 x 3% = :
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+
+
+                    <u>- 110 F</u><br/>
+
+                    Sous total
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    =      - 1 264 F<br/>
+                    </i>
+                </div>
+                <br/><br/>
+                Le Travailleur qui n’aura pas accompli ses huit heures de travail journalier ne sera rémunéré qu’au prorata du nombre d’heures effectivement ouvrées, le relevé de la badgeuse faisant foi.
+                <br/><br/>
+            <b style="color: black; font-weight: bold"><u>Article 5</u> :   Rupture du contrat</b>
+                <br/><br/>
+                Le présent contrat peut être résilié à la fin de chaque journée par l’une ou l’autre des parties, ou d’un commun accord, ou encore en cas de force majeure, de faute grave ou de faute lourde commise par  l'une des parties, au regard des dispositions du Code du Travail,
+            du Code Pénal, de la Convention Collective, du Règlement Intérieur de la <span style="font-size: 16px"> SASU PLASTICA</span> ou des Consignes de travail et d’exploitation de l’entreprise.
+                <br/><br/>
+            <b style="color: black; font-weight: bold"><u>Article 6</u>   Attribution de juridiction</b>
+                <br/>
+                Pour toutes contestations relatives au présent contrat, les parties font attribution de juridiction au Tribunal du travail d’Abidjan.
+                <br/><br/>
+                <?php $tabDateDebut = explode("-", $travailleur->date_debut_contrat); ?>
+                Fait à Abidjan en 02 (deux) exemplaires originaux de 2 pages, le <?=$tabDateDebut['2']?>/<?=$tabDateDebut['1']?>/<?=$tabDateDebut['0']?>
+                <br/>
+                <br/>
+
+                <b style="color: black; font-weight: bold">L’EMPLOYE(E)</b>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <b style="color: black; font-weight: bold">L’EMPLOYEUR</b> <br/>
+            <b>(Lu et approuvé)</b>
+
+            </p>
+			
+        </div>
+
     </div>
 
-    <div class="section">
-        <span class="bold underline">Entre les soussignés,</span>
-        <br><br>
-        1) La Société dénommée &laquo; PLASTICA &raquo;, Société par Actions Simplifiée Unipersonnelle (SASU) au capital social de deux milliards (2.000.000.000) FRANCS CFA, dont le siège social est fixé à ABIDJAN Zone Industrielle de KOUMASSI, 05 Boîte Postale 2160 Abidjan 05, immatriculée au Registre de Commerce et du Crédit Mobilier d'ABIDJAN sous le numéro CI-ABJ-1999-B-249382, déclarée à la CNPS sous le numéro 82408.
-        <br><br>
-        Prise en la personne de son représentant légal, demeurant ès-qualité audit siège,
-        <br><br>
-        La <span class="bold">SASU "PLASTICA"</span> parfois dénommée dans le présent contrat "L'Employeur",
-        <p class="text-right bold underline">D'UNE PART</p>
-        ET
-        <br><br>
-        @php
-            $tabDate = $travailleur->date_naissance ? explode("-", $travailleur->date_naissance) : ['', '', ''];
-            $tabDateP = $travailleur->pieceidentite_livrele ? explode("-", $travailleur->pieceidentite_livrele) : ['', '', ''];
-            $civilite = '';
-            if($travailleur->civilite == 'Monsieur') $civilite = 'M.';
-            elseif($travailleur->civilite == 'Mademoiselle') $civilite = 'Mlle.';
-            elseif($travailleur->civilite == 'Madame') $civilite = 'Mme.';
-        @endphp
-        2) <span class="bold">{{ $civilite }} {{ $travailleur->nom }} {{ $travailleur->prenom }} {{ $travailleur->prenom_suite }}</span> demeurant à <span class="bold">{{ \App\Commune::where('id', $travailleur->communeid)->first()?->label ?? '' }}</span>
-        <br>
-        Situation matrimoniale : <span class="bold">{{ ucfirst(strtolower($travailleur->situation_mat ?? '')) }}</span> - Nom du (de la) conjoint(e) : ...............
-        <br>
-        @if($travailleur->nationaliteid)
-            De nationalité : <span class="bold">{{ \App\Pays::where('id', $travailleur->nationaliteid)->value('nationalite') ?? '' }}</span>
-        @else
-            De nationalité : ...............
-        @endif
-        <br>
-        Né(e) le : <span class="bold">{{ isset($tabDate[2]) ? $tabDate[2].'/'.$tabDate[1].'/'.$tabDate[0] : '' }}</span> à <span class="bold">{{ strtoupper($travailleur->lieu_naissance ?? '') }}</span>
-        <br>
-        Pièce d'identité : (ATT/CNI) N° <span class="bold">{{ $travailleur->pieceidentite ?? '' }}</span>
-        @if($travailleur->pieceidentite_livrele && isset($tabDateP[2]))
-            délivrée le <span class="bold">{{ $tabDateP[2].'/'.$tabDateP[1].'/'.$tabDateP[0] }}</span>
-        @endif
-        à <span class="bold">{{ $travailleur->pieceidentite_lieu ?? '' }}</span> par ONI
-        <br>
-        Catégorie Professionnelle : <span class="bold">{{ $travailleur->categorieid ? (\App\Categories::where('id', $travailleur->categorieid)->first()?->label ?? '') : '' }}</span>
-        <br>
-        Matricule : <span class="bold">{{ strtoupper($travailleur->matricule ?? '') }}</span>
-        <br>
-        N° CNPS : <span class="bold">{{ $travailleur->numero_securite ?? '' }}</span>
-        <br><br>
-        <span class="bold">{{ $civilite }} {{ strtoupper($travailleur->nom ?? '') }} {{ strtoupper($travailleur->prenom ?? '') }} {{ strtoupper($travailleur->prenom_suite ?? '') }}</span> dénommé(e) dans le présent contrat le "Travailleur occasionnel" ou &laquo; le Travailleur Journalier &raquo;,
-        <p class="text-right bold underline">D'AUTRE PART</p>
-    </div>
-
-    <div class="section">
-        <p class="article-title">Article 1 : Textes régissant le présent contrat</p>
-        a) Dispositions de la loi N° 2015-532 du 20 juillet 2015 portant Code du Travail et des textes réglementaires pris pour son application.
-        <br>
-        b) Dispositions de la Convention Collective Interprofessionnelle de la Côte d'Ivoire en date du 20 Juillet 1977, ensemble les avenants, annexes et décisions de commissions mixtes qui ont modifié et complété cette convention ou qui viendraient à la modifier ou à la compléter.
-        <br>
-        c) Dispositions du Règlement Intérieur de la SASU PLASTICA dont le Travailleur reconnaît avoir pris connaissance.
-        <br>
-        d) Consignes techniques d'exploitation et de fabrication de la SASU PLASTICA, telles qu'elles lui seront inculquées par la Direction de PLASTICA et par ses supérieurs hiérarchiques.
-    </div>
-
-    <div class="section">
-        <p class="article-title">Article 2 : De l'activité du Travailleur</p>
-        Fonction : <span class="bold">{{ \App\Fonction::where('id', $travailleur->fonction_entrepriseid)->first()?->label ?? '' }}</span>
-        <br>
-        Unité de rattachement : <span class="bold">{{ \App\Equipes::where('id', $travailleur->equipeid)->first()?->label ?? '' }}</span>
-        <br>
-        (Avant éventuelles affectations pour nécessités de service)
-    </div>
-
-    <div class="section">
-        <p class="article-title">Article 3 : Durée du contrat et horaires de travail</p>
-        <span class="underline">Durée</span> : Le présent contrat est à durée journalière et peut, sauf dénonciation par l'une ou l'autre des parties, être renouvelé par tacite reconduction, en respect des dispositions du Code du Travail et de la Convention Collective.
-        <br><br>
-        <span class="underline">Horaires de travail</span> : Le Travailleur exerce son activité en équipe tournante de 06H à 14H ou de 14H à 22H ou de 22H à 06H ou de 07H à 15H ou de 08H à 16H ou autres horaires variables, dans la limite des huit (8) heures par jour.
-    </div>
-
-    <div class="section">
-        <p class="article-title">Article 5 : Rémunération</p>
-        Le salaire ci-dessous détaillé est la rémunération des huit (08) heures de travail journalier :
-
-        <table class="remuneration">
-            <tr>
-                <td colspan="2" class="section-title">1/ Rémunération Brute imposable</td>
-            </tr>
-            <tr>
-                <td class="label">Salaire journalier (SMIG de 75 000F) : 433 x 8 heures</td>
-                <td class="amount">3 464 F</td>
-            </tr>
-            <tr>
-                <td class="label">Gratification journalière : 27 x 8 heures</td>
-                <td class="amount">216 F</td>
-            </tr>
-            <tr>
-                <td class="label">Congé journalier : 38 x 8 heures</td>
-                <td class="amount" style="border-bottom: 1px solid #000;">304 F</td>
-            </tr>
-            <tr>
-                <td class="label bold">Sous total 1</td>
-                <td class="amount bold">3 984 F</td>
-            </tr>
-            <tr>
-                <td colspan="2" class="section-title">2/ Rémunération Non Imposable</td>
-            </tr>
-            <tr>
-                <td class="label">Transport journalier</td>
-                <td class="amount">1 154 F</td>
-            </tr>
-            <tr>
-                <td class="label">Précarité (salaire + gratification) : 3 680 x 3%</td>
-                <td class="amount" style="border-bottom: 1px solid #000;">110 F</td>
-            </tr>
-            <tr>
-                <td class="label bold">Sous total 2</td>
-                <td class="amount bold">1 264 F</td>
-            </tr>
-        </table>
-
-        Le Travailleur qui n'aura pas accompli ses huit heures de travail journalier ne sera rémunéré qu'au prorata du nombre d'heures effectivement ouvrées, le relevé de la badgeuse faisant foi.
-    </div>
-
-    <div class="section">
-        <p class="article-title">Article 6 : Rupture du contrat</p>
-        Le présent contrat peut être résilié à la fin de chaque journée par l'une ou l'autre des parties, ou d'un commun accord, ou encore en cas de force majeure, de faute grave ou de faute lourde commise par l'une des parties, au regard des dispositions du Code du Travail, du Code Pénal, de la Convention Collective, du Règlement Intérieur de la SASU PLASTICA ou des Consignes de travail et d'exploitation de l'entreprise.
-    </div>
-
-    <div class="section">
-        <p class="article-title">Article 7 : Attribution de juridiction</p>
-        Pour toutes contestations relatives au présent contrat, les parties font attribution de juridiction au Tribunal du travail d'Abidjan.
-        <br><br>
-        @php
-            $tabDateDebut = $travailleur->date_debut_contrat ? explode("-", $travailleur->date_debut_contrat) : ['', '', ''];
-        @endphp
-        Fait à Abidjan en 02 (deux) exemplaires originaux de 2 pages, le <span class="bold">{{ isset($tabDateDebut[2]) ? $tabDateDebut[2].'/'.$tabDateDebut[1].'/'.$tabDateDebut[0] : '' }}</span>
-    </div>
-
-    <table class="signatures">
-        <tr>
-            <td>
-                <span class="bold">L'EMPLOYÉ(E)</span>
-                <br>
-                (Lu et approuvé)
-                <br><br><br><br>
-            </td>
-            <td class="text-right">
-                <span class="bold">L'EMPLOYEUR</span>
-                <br><br><br><br>
-            </td>
-        </tr>
-    </table>
-
+</div>
 </body>
 </html>
