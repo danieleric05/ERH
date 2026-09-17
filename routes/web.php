@@ -33,7 +33,7 @@ Route::get("/se-connecter", [HomeController::class, 'logining'])->name("login");
 Route::post("post_login", [HomeController::class, 'post_login'])->middleware('throttle:5,1');
 
 // Routes nécessitant une authentification
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'role.readonly'])->group(function () {
     // Corrected logout route
     Route::post('/logout', [HomeController::class, 'logoutUser'])->name('logout');
 
@@ -53,15 +53,15 @@ Route::middleware(['auth'])->group(function () {
         return redirect("/monprofil/{$id}");
     })->name('mon-profil');
 
-    // Settings (Admin seulement - Rôle 1 et 2)
+    // Settings (Admin seulement - Rôle 2)
     Route::get('/settings', function () {
-        if (!in_array(Auth::user()->idrole, [1, 2])) {
+        if (Auth::user()->idrole != 2) {
             abort(403, 'Accès non autorisé');
         }
         return view('configuration.index'); // À créer ou rediriger
     })->name('settings');
 
-    // Gestion des utilisateurs (Admin seulement - Rôle 1 et 2)
+    // Gestion des utilisateurs (Admin seulement - Rôle 2)
     Route::get('/liste-utilisateurs', [UserController::class, 'index'])->name('listeutilisateurs');
     Route::get('/ajouter-utilisateur', [UserController::class, 'create'])->name('ajouterutilisateur');
     Route::post('/post_utilisateur', [UserController::class, 'store'])->name('post_utilisateur');

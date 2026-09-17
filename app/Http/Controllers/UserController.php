@@ -22,7 +22,7 @@ class UserController extends Controller
 
     private function ensureIsAdmin(): void
     {
-        if (!in_array(Auth::user()->idrole, [1, 2])) {
+        if (Auth::user()->idrole != 2) {
             abort(403, 'Accès non autorisé');
         }
     }
