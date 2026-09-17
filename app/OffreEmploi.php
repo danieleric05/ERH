@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class OffreEmploi extends Model
 {
     protected $table = 'e_offre_emploi';
+    protected $casts = [
+        'date_publication' => 'date',
+        'date_cloture' => 'date',
+    ];
     protected $fillable = [
         'titre', 'departement_id', 'fonction_id', 'unite_id', 'type_contrat',
         'description', 'competences_requises', 'experience_requise',

@@ -1,34 +1,26 @@
 @extends('layouts.erh')
 
 @section('content')
-<div class="container-fluid">
-    <!-- Header -->
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-left"></i></a> Recrutement</h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('offres.index') }}">Offres d'Emploi</a></li>
-                    <li class="breadcrumb-item">Nouvelle Offre</li>
-                </ul>
-            </div>
-        </div>
+
+    <!-- Header Section -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-text-primary mb-4">Nouvelle offre d'emploi</h1>
+        <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+            <a href="{{ route('dashboard') }}" class="hover:text-text-primary">
+                <i class="fa fa-home"></i> Accueil
+            </a>
+            <span class="text-text-secondary">/</span>
+            <a href="{{ route('offres.index') }}" class="hover:text-text-primary">Offres d'emploi</a>
+            <span class="text-text-secondary">/</span>
+            <span class="text-text-primary font-semibold">Nouvelle offre</span>
+        </nav>
     </div>
 
-    <!-- Form Card -->
-    <div class="row">
-        <div class="col-lg-12">
-            @include('errors')
+    @include('errors')
 
-            <div class="card">
-                <div class="header">
-                    <h2>Nouvelle Offre d'Emploi</h2>
-                </div>
-
-                <div class="body">
-                    <form action="{{ route('offres.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
+    <div class="bg-white rounded-lg shadow-lg-soft p-8">
+        <form action="{{ route('offres.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
 
                         <!-- Titre -->
                         <div class="mb-6">
@@ -168,14 +160,11 @@
                             <button type="submit" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
                                 <i class="fa fa-save mr-2"></i>Créer l'Offre
                             </button>
-                            <a href="{{ route('offres.index') }}" class="px-8 py-3 bg-gray-200 hover:bg-gray-300 text-text-primary rounded-lg font-medium transition-colors">
-                                <i class="fa fa-times mr-2"></i>Annuler
-                            </a>
-                        </div>
-                    </form>
-                </div>
+            <a href="{{ route('offres.index') }}" class="px-8 py-3 bg-gray-200 hover:bg-gray-300 text-text-primary rounded-lg font-medium transition-colors">
+                <i class="fa fa-times mr-2"></i>Annuler
+            </a>
             </div>
-        </div>
+        </form>
     </div>
-</div>
+
 @endsection
