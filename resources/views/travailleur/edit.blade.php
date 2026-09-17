@@ -1,4 +1,9 @@
 @extends('layouts.erh')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('rhassets/vendor/select2/select2.css') }}">
+@endpush
+
 @section('content')
 
 <div class="p-6">
@@ -192,8 +197,9 @@
                     <!-- Pays -->
                     <div>
                         <label for="paysid" class="block text-sm font-medium text-text-primary mb-2">Pays</label>
-                        <select name="paysid" id="paysid"
-                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white font-bold text-text-primary">
+                        <select name="paysid" id="paysid" class="select2 w-full"
+                            data-placeholder="-SÉLECTIONNER-">
+                            <option value=""></option>
                             @foreach($pays as $pay)
                                 <option @if($edit->nationaliteid == $pay->id) selected @endif value="{{ $pay->id }}">{{ $pay->label }}</option>
                             @endforeach
@@ -309,10 +315,10 @@
                     <!-- Fonction occupée -->
                     <div>
                         <label for="fonction_entrepriseid" class="block text-sm font-medium text-text-primary mb-2">Fonction occupée</label>
-                        <select name="fonction_entrepriseid" id="fonction_entrepriseid"
-                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white font-bold text-text-primary"
+                        <select name="fonction_entrepriseid" id="fonction_entrepriseid" class="select2 w-full"
+                            data-placeholder="-SÉLECTIONNER-"
                             required>
-                            <option value="">-SÉLECTIONNER-</option>
+                            <option value=""></option>
                             @foreach($fonctions as $fonction)
                                 <option @if($edit->fonction_entrepriseid == $fonction->id) selected @endif value="{{ $fonction->id }}">{{ $fonction->label }}</option>
                             @endforeach
@@ -322,9 +328,9 @@
                     <!-- Commune -->
                     <div>
                         <label for="communeid" class="block text-sm font-medium text-text-primary mb-2">Commune</label>
-                        <select name="communeid" id="communeid"
-                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white font-bold text-text-primary">
-                            <option value="">-SÉLECTIONNER-</option>
+                        <select name="communeid" id="communeid" class="select2 w-full"
+                            data-placeholder="-SÉLECTIONNER-">
+                            <option value=""></option>
                             @foreach($commune as $comm)
                                 <option @if($edit->communeid == $comm->id) selected @endif value="{{ $comm->id }}">{{ $comm->label }}</option>
                             @endforeach
@@ -334,9 +340,9 @@
                     <!-- Catégorie -->
                     <div>
                         <label for="categorieid" class="block text-sm font-medium text-text-primary mb-2">Catégorie</label>
-                        <select name="categorieid" id="categorieid"
-                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white font-bold text-text-primary">
-                            <option value="">-SÉLECTIONNER-</option>
+                        <select name="categorieid" id="categorieid" class="select2 w-full"
+                            data-placeholder="-SÉLECTIONNER-">
+                            <option value=""></option>
                             @foreach($categories as $category)
                                 <option @if($edit->categorieid == $category->id) selected @endif value="{{ $category->id }}">{{ $category->label }}</option>
                             @endforeach
@@ -346,9 +352,9 @@
                     <!-- Niveau d'étude -->
                     <div>
                         <label for="niveau_etudeid" class="block text-sm font-medium text-text-primary mb-2">Niveau d'étude</label>
-                        <select name="niveau_etudeid" id="niveau_etudeid"
-                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white font-bold text-text-primary">
-                            <option value="">-SÉLECTIONNER-</option>
+                        <select name="niveau_etudeid" id="niveau_etudeid" class="select2 w-full"
+                            data-placeholder="-SÉLECTIONNER-">
+                            <option value=""></option>
                             @foreach($niveauEtudes as $niveau)
                                 <option @if($edit->niveau_etudeid == $niveau->id) selected @endif value="{{ $niveau->id }}">{{ $niveau->label }}</option>
                             @endforeach
@@ -434,5 +440,15 @@ function previewPhoto(input) {
     }
 }
 </script>
+
+@push('scripts')
+    <script src="{{ asset('rhassets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('rhassets/vendor/select2/select2.min.js') }}"></script>
+    <script>
+        $(function () {
+            $('.select2').select2({ width: '100%', allowClear: true });
+        });
+    </script>
+@endpush
 
 @endsection

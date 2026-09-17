@@ -1,4 +1,9 @@
 @extends('layouts.erh')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('rhassets/vendor/select2/select2.css') }}">
+@endpush
+
 @section('content')
 
 <div class="p-6">
@@ -83,9 +88,9 @@
                 <!-- Unité -->
                 <div>
                     <label for="uniteid" class="block text-sm font-medium text-text-primary mb-2">Unité</label>
-                    <select required name="uniteid" id="uniteid"
-                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
-                        <option value="">-SÉLECTIONNER-</option>
+                    <select required name="uniteid" id="uniteid" class="select2 w-full"
+                        data-placeholder="-SÉLECTIONNER-">
+                        <option value=""></option>
                         @foreach($data_unites as $unite)
                             <option value="{{ $unite->id }}">{{ $unite->label }}</option>
                         @endforeach
@@ -95,9 +100,9 @@
                 <!-- Département -->
                 <div>
                     <label for="departementid" class="block text-sm font-medium text-text-primary mb-2">Département</label>
-                    <select required name="departementid" id="departementid"
-                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
-                        <option value="">-SÉLECTIONNER-</option>
+                    <select required name="departementid" id="departementid" class="select2 w-full"
+                        data-placeholder="-SÉLECTIONNER-">
+                        <option value=""></option>
                         @foreach($data_departements as $depart)
                             <option value="{{ $depart->id }}">{{ $depart->label }}</option>
                         @endforeach
@@ -107,9 +112,9 @@
                 <!-- Équipe -->
                 <div>
                     <label for="equipeid" class="block text-sm font-medium text-text-primary mb-2">Équipe</label>
-                    <select required name="equipeid" id="equipeid"
-                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
-                        <option value="">-SÉLECTIONNER-</option>
+                    <select required name="equipeid" id="equipeid" class="select2 w-full"
+                        data-placeholder="-SÉLECTIONNER-">
+                        <option value=""></option>
                         @foreach($data_equipes as $equipe)
                             <option value="{{ $equipe->id }}">{{ $equipe->label }}</option>
                         @endforeach
@@ -119,9 +124,9 @@
                 <!-- Pays -->
                 <div>
                     <label for="paysid" class="block text-sm font-medium text-text-primary mb-2">Pays</label>
-                    <select required name="paysid" id="paysid"
-                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
-                        <option value="">-SÉLECTIONNER-</option>
+                    <select required name="paysid" id="paysid" class="select2 w-full"
+                        data-placeholder="-SÉLECTIONNER-">
+                        <option value=""></option>
                         @foreach($data_pays as $pays)
                             <option value="{{ $pays->id }}">{{ $pays->label }}</option>
                         @endforeach
@@ -211,5 +216,15 @@ function initializeForm() {
     }
 }
 </script>
+
+@push('scripts')
+    <script src="{{ asset('rhassets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('rhassets/vendor/select2/select2.min.js') }}"></script>
+    <script>
+        $(function () {
+            $('.select2').select2({ width: '100%', allowClear: true });
+        });
+    </script>
+@endpush
 
 @endsection
