@@ -716,6 +716,11 @@ class EmployerController extends Controller
         $travail->idtype_contrat = $request->idtype_contrat;
         $travail->equipeid = $request->equipeid;
 
+        $travail->type_remuneration = $request->type_remuneration;
+        $travail->salaire_base = $request->salaire_base;
+        $travail->sursalaire = $request->type_remuneration == 2 ? $request->sursalaire : null;
+        $travail->prime_transport = $request->prime_transport;
+
         $travail->pieceidentite = strtoupper($request->pieceidentite);
         $travail->pieceidentite_livrele = $request->pieceidentite_livrele;
         $travail->pieceidentite_lieu = strtoupper($request->pieceidentite_lieu);

@@ -188,7 +188,16 @@
 
     <div class="section">
         <p class="article-title">Article 7 - RÉMUNÉRATION</p>
-        En contrepartie de son travail, le Travailleur percevra une rémunération horaire de base de <span class="bold">486 F</span> (Quatre cent quatre-vingt-six francs) à laquelle s'ajoute une prime de transport.
+        @php
+            $primePhrase = $travailleur->prime_transport
+                ? ', ainsi qu\'une prime mensuelle nette de transport de <span class="bold">' . number_format($travailleur->prime_transport, 0, ',', ' ') . ' F</span> CFA'
+                : '';
+        @endphp
+        @if($travailleur->type_remuneration == 2)
+            En contrepartie de son travail, le Travailleur percevra une rémunération mensuelle de base de <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA, à laquelle s'ajoute un sursalaire de <span class="bold">{{ number_format($travailleur->sursalaire ?? 0, 0, ',', ' ') }} F</span> CFA{!! $primePhrase !!}.
+        @else
+            En contrepartie de son travail, le Travailleur percevra une rémunération mensuelle nette de <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA{!! $primePhrase !!}.
+        @endif
         <br><br>
         Le salaire sera payé mensuellement, par virement bancaire ou tout autre moyen de paiement légal.
     </div>
