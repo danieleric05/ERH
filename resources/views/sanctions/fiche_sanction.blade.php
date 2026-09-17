@@ -1,60 +1,57 @@
-@extends('erhform')
+@extends('layouts.erh')
 @section('content')
 
-            <div class="block-header">
-                <div class="row">
-                    <div class="col-lg-6 col-md-8 col-sm-12">
-                        <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-left"></i></a> Modules </h2>
-                        <ul class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#"><i class="icon-home"></i></a></li>
-                            <li class="breadcrumb-item">Sanction</li>
-                        </ul>
-                    </div>
-                </div>
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-text-primary mb-4">Fiche de sanction</h1>
+                <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+                    <a href="{{ url('bienvenue') }}" class="hover:text-text-primary">
+                        <i class="fa fa-home"></i> Accueil
+                    </a>
+                    <span class="text-text-secondary">/</span>
+                    <span class="text-text-primary font-semibold">Sanction</span>
+                </nav>
             </div>
-
-            <div class="row clearfix">
-
-                @include('success')
-                @include('errors')
-
-                <div class="col-lg-12">
-                    <div class="card perso_color_title">
-                        <div class="header">
-                            <h2>Telecharger</h2>
-                        </div>
-                        <div class="body text-center perso_color">
-                            <a href="{{ route('listesanctions') }}">
-                                <button type="button" class="btn btn-outline-danger">Retour à la liste</button>
-                            </a>
-							
-                        </div>
-                        <div class="body text-center perso_color">
-
-							<?php
-								$sanctions = [];
-								if (!empty($sanct->employeid)) {
-									try {
-										$sanctions = unserialize($sanct->employeid);
-										if (!is_array($sanctions)) {
-											$sanctions = [$sanctions];
-										}
-									} catch (Exception $e) {
-										$sanctions = [];
-									}
-								}
-							?>
-							@forelse($sanctions as $sant)
-								<a target="_blank" title="{{ optional(App\Travailleur::where('matricule', $sant)->first())->nom }} {{ optional(App\Travailleur::where('matricule', $sant)->first())->prenom }}" href="{{ route('telechargerSanctions', ['mat' => $sant, 'idsanc' => $sanct->id]) }}?download=pdf">
-										<button type="button" class="btn btn-outline-secondary">DOWNLOAD - {{ $sant}} </button>
-								</a>
-							@empty
-								<p class="text-slate-500">Aucune sanction à télécharger</p>
-							@endforelse
-                        </div>
-                    </div>
-                </div>
-
+            <div class="flex gap-2">
+                <a href="{{ route('listesanctions') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition">
+                    <i class="fa fa-arrow-left"></i> Retour à la liste
+                </a>
             </div>
+        </div>
+    </div>
+
+    @include('success')
+    @include('errors')
+
+    <div class="bg-white rounded-lg shadow-lg-soft p-8 text-center">
+        @php
+            $sanctions = [];
+            if (!empty($sanct->employeid)) {
+                try {
+                    $sanctions = unserialize($sanct->employeid);
+                    if (!is_array($sanctions)) {
+                        $sanctions = [$sanctions];
+                    }
+                } catch (Exception $e) {
+                    $sanctions = [];
+                }
+            }
+        @endphp
+        <div class="flex flex-wrap justify-center gap-3">
+            @forelse($sanctions as $sant)
+                <a target="_blank"
+                   title="{{ optional(App\Travailleur::where('matricule', $sant)->first())->nom }} {{ optional(App\Travailleur::where('matricule', $sant)->first())->prenom }}"
+                   href="{{ route('telechargerSanctions', ['mat' => $sant, 'idsanct' => $sanct->id]) }}?download=pdf"
+                   class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-text-primary hover:bg-slate-50 transition">
+                    <i class="fa fa-file-pdf-o"></i> TÉLÉCHARGER - {{ $sant }}
+                </a>
+            @empty
+                <p class="text-text-secondary">Aucune sanction à télécharger</p>
+            @endforelse
+        </div>
+    </div>
 
 @endsection
