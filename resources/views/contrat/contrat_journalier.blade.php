@@ -100,7 +100,7 @@
                 <br/>
                 <br/>
 
-                <b> @if($travailleur->civilite == 'Monsieur') M. @endif @if($travailleur->civilite == 'Mademoiselle') Mlle. @endif @if($travailleur->civilite == 'Madame') Mme. @endif <?= strtoupper($travailleur->nom).' '.strtoupper($travailleur->prenom).''.strtoupper($travailleur->prenom_suite) ?></b>  dénommé(e) dans le présent contrat le "Travailleur occasionnel" ou « le Travailleur Journalier»,
+                <b> @if($travailleur->civilite == 'Monsieur') M. @endif @if($travailleur->civilite == 'Mademoiselle') Mlle. @endif @if($travailleur->civilite == 'Madame') Mme. @endif <?= strtoupper($travailleur->nom).' '.strtoupper($travailleur->prenom).''.strtoupper($travailleur->prenom_suite ?? '') ?></b>  dénommé(e) dans le présent contrat le "Travailleur occasionnel" ou « le Travailleur Journalier»,
                 <br/>
                 <br/>
                 <span class="text-left">D’AUTRE PART</span>
@@ -193,7 +193,7 @@
                 <br/>
                 Pour toutes contestations relatives au présent contrat, les parties font attribution de juridiction au Tribunal du travail d’Abidjan.
                 <br/><br/>
-                <?php $tabDateDebut = explode("-", $travailleur->date_debut_contrat); ?>
+                <?php $tabDateDebut = explode("-", $travailleur->date_debut_contrat ?? ''); ?>
                 Fait à Abidjan en 02 (deux) exemplaires originaux de 2 pages, le <?=$tabDateDebut['2']?>/<?=$tabDateDebut['1']?>/<?=$tabDateDebut['0']?>
                 <br/>
                 <br/>
