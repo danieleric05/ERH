@@ -1,72 +1,152 @@
-@extends('erh')
+@extends('layouts.erh')
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2>
-                    <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Gestions des variables
-                </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Missions</li>
-                    <li class="breadcrumb-item active">Liste des variables(automatique)</li>
-                </ul>
-            </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
-            </div>
-        </div>
-    </div>
-
-    <div class="row clearfix">
-
-        <div class="col-lg-12">
-            <div class="card">
-
-                <div class="body">
-                    <div class="table-responsive">
-
-                        <table class="table table-hover js-basic-example dataTable table-custom">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>Employés</th>
-                                <th>Variables</th>
-                                <th>Nombre de jour</th>
-                                <th class="text-center">Etat</th>
-                                <th class="text-center">Options</th>
-                            </tr>
-                            </thead>
-
-                            <tr>
-                                <td>KKKK</td>
-                                <td>KKKKKKKKK</td>
-                                <td>KKKK</td>
-                                <td class="text-center">
-                                    <span class="badge badge-primary">Actif</span>
-                                    <span class="badge badge-danger">Inactif</span>
-                                </td>
-                                <td class="text-center">
-                                    <a title="MODIFIER" class="btn btn-sm btn-icon btn-pure btn-dark on-default button-remove" href="#" data-toggle="tooltip" data-original-title="Remove">
-                                        <i class="icon-pencil" aria-hidden="true"></i>
-                                    </a>
-                                    <a title="ANUULER" class="btn btn-sm btn-icon btn-pure btn-danger on-default button-remove" href="#" data-toggle="tooltip" data-original-title="Remove">
-                                        <i class="icon-trash" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+<div class="p-6">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-3xl font-bold text-text-primary">Gestions des variables (automatique)</h1>
         </div>
 
+        <!-- Breadcrumb -->
+        <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+            <a href="{{ url('bienvenue') }}" class="hover:text-primary-accent">
+                <i class="fa fa-home"></i> Accueil
+            </a>
+            <span>/</span>
+            <span>Configuration</span>
+            <span>/</span>
+            <span class="text-text-primary font-medium">Liste des variables (automatique)</span>
+        </nav>
     </div>
 
-    @include('tenues.modal_edit')
+    <!-- Messages -->
+    @include('success')
+    @include('errors')
+
+    <!-- Data Table -->
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()"><div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-slate-900 text-white border-b">
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('employs')">
+                            <div class="flex items-center gap-2">
+                                Employés
+                                <span x-show="sortBy === 'employs'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('variables')">
+                            <div class="flex items-center gap-2">
+                                Variables
+                                <span x-show="sortBy === 'variables'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('nombredejour')">
+                            <div class="flex items-center gap-2">
+                                Nombre de jour
+                                <span x-show="sortBy === 'nombredejour'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('tat')">
+                            <div class="flex items-center gap-2">
+                                État
+                                <span x-show="sortBy === 'tat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($data_variables_automatique ?? [] as $item)
+                        <tr class="border-b hover:bg-slate-50 transition">
+                            <td class="px-6 py-4 text-sm text-text-primary">{{ $item->employe ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-text-primary">{{ $item->variable ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-text-primary">{{ $item->nombre_jour ?? '-' }}</td>
+                            <td class="px-6 py-4 text-center text-sm">
+                                <span class="inline-block px-3 py-1 text-xs font-semibold text-white bg-blue-600 rounded-full">Actif</span>
+                            </td>
+                            <td class="px-6 py-4 text-center text-sm">
+                                <a title="Modifier" href="#" class="inline-flex items-center gap-2 px-3 py-1 text-slate-700 hover:text-slate-900 transition">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <a title="Supprimer" href="#" class="inline-flex items-center gap-2 px-3 py-1 text-red-600 hover:text-red-800 transition">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center text-text-secondary">Aucune donnée disponible</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@include('tenues.modal_edit')
+
+
+<script>
+function tableSort() {
+    return {
+        sortBy: null,
+        sortDir: 'asc',
+
+        sort(column) {
+            if (this.sortBy === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = column;
+                this.sortDir = 'asc';
+            }
+            this.sortTable();
+        },
+
+        sortTable() {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
+
+            rows.sort((a, b) => {
+                let valueA, valueB;
+
+                // Récupérer les données de la colonne
+                const cells = Array.from(a.querySelectorAll('td'));
+                if (cells.length === 0) return 0;
+
+                // Déterminer l'index de la colonne
+                let colIndex = 0;
+                const headers = document.querySelectorAll('thead th');
+                let clickCount = 0;
+                for (let i = 0; i < headers.length; i++) {
+                    if (headers[i].textContent.toLowerCase().includes(this.sortBy.toLowerCase())) {
+                        colIndex = i;
+                        break;
+                    }
+                }
+
+                valueA = a.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+                valueB = b.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+
+                // Essayer de convertir en date
+                const dateA = new Date(valueA).getTime();
+                const dateB = new Date(valueB).getTime();
+
+                if (!isNaN(dateA) && !isNaN(dateB) && dateA > 0 && dateB > 0) {
+                    return this.sortDir === 'asc' ? dateA - dateB : dateB - dateA;
+                }
+
+                // Comparaison textuelle
+                return this.sortDir === 'asc'
+                    ? String(valueA).localeCompare(String(valueB), 'fr-FR')
+                    : String(valueB).localeCompare(String(valueA), 'fr-FR');
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    }
+}
+</script>
 
 @endsection

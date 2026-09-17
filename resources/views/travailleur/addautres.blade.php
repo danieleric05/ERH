@@ -1,179 +1,169 @@
-@extends('erhselect')
+@extends('layouts.erh')
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-left"></i></a> Modules </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Recrutement</li>
-                    <li class="breadcrumb-item active">Ajouter travailleur(non inscrit dans la base)</li>
-                </ul>
-            </div>
-        </div>
+<div class="p-6">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-text-primary mb-4">Ajouter Travailleur (Non inscrit)</h1>
+
+        <!-- Breadcrumb -->
+        <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+            <a href="{{ route('dashboard') }}" class="hover:text-primary-accent">
+                <i class="icon-home"></i> Accueil
+            </a>
+            <span>/</span>
+            <span>Recrutement</span>
+            <span>/</span>
+            <span class="text-text-primary font-medium">Ajouter travailleur (non inscrit dans la base)</span>
+        </nav>
     </div>
 
-    <div class="row clearfix">
-        <div class="col-md-12">
-            <div class="card">
+    <!-- Messages -->
+    @include('success')
+    @include('errors')
 
-                @include('success')
-                @include('errors')
+    <!-- Form Container -->
+    <div class="bg-white rounded-lg shadow-lg-soft p-8">
+        <h2 class="text-xl font-bold text-text-primary mb-6">Enregistrement</h2>
 
-                <div class="header">
-                    <h2>Enregistrement</h2>
+        <form action="{{ url('post_travailleur_autres') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+
+            <!-- Photo de Profil -->
+            <div class="mb-6 p-4 bg-slate-50 rounded-lg">
+                <label for="photo" class="block text-sm font-medium text-text-primary mb-2">Photo du travailleur (optionnel)</label>
+                <input type="file" name="photo" id="photo" accept="image/jpeg,image/png,image/jpg"
+                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"
+                    onchange="previewPhotoAdd(this)">
+                <p class="text-xs text-text-secondary mt-2">Formats acceptés: JPG, PNG (max 2 Mo)</p>
+
+                <!-- Aperçu -->
+                <div class="mt-4" id="photoPreviewContainer" style="display: none;">
+                    <p class="text-xs font-semibold text-text-primary mb-2">Aperçu :</p>
+                    <img id="photoPreviewAdd" src="" alt="Aperçu" class="w-24 h-24 rounded-full object-cover border-2 border-slate-300">
                 </div>
-                <form action="{{ url('post_travailleur_autres') }}" method="POST" role="form">
-    @csrf
-                <div class="body">
-                    <div class="row clearfix">
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="phone" class="control-label">Matricule</label>
-                                <input  required style="color: black; font-weight: bold" value="A000" placeholder="Le matricule" type="text" name="matricule" class="form-control text-uppercase" maxlength="50">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="nom" class="control-label">Nom</label>
-                                <input required placeholder="Nom" type="text" name="nom" class="form-control text-uppercase">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="phone-ex" class="control-label">Prénoms</label>
-                                <input required type="text" placeholder="Prénoms" name="prenom" class="form-control text-uppercase" maxlength="150">
-                            </div>
-                        </div>
-
-                        <!--<div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="phone-ex" class="control-label">Date d'embauche</label>
-                                <input required type="date" name="dateembauche" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="phone-ex" class="control-label">Date de fin de contrat</label>
-                                <input required type="date" name="dateembauche" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="phone-ex" class="control-label">Situation matrimoniale</label>
-                                <select required name="situation_mat" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    <option value="Celibataire">Célibataire</option>
-                                    <option value="Marie">Marié(e)</option>
-                                </select>
-
-                            </div>
-                        </div>-->
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="phone-ex" class="control-label">Unité</label>
-                                <select required name="uniteid" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($data_unites as $date)
-                                        <option value="{{ $date->id }}">{{ $date->label }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="phone-ex" class="control-label">Departement</label>
-                                <select required name="departementid" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($data_departements as $depart)
-                                        <option value="{{ $depart->id }}">{{ $depart->label }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                       <!-- <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="equipeid" class="control-label">Equipe</label>
-                                <select required name="equipeid" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($data_equipes as $depart)
-                                        <option value="{{ $depart->id }}">{{ $depart->label }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        -->
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="fonction_entrepriseid" class="control-label">Fonction occupée</label>
-                                <select style="color: black; font-weight: bold" name="fonction_entrepriseid" required class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($data_fonctions as $fonc)
-                                        <option value="{{ $fonc->id }}">{{ $fonc->label }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="telephone" class="control-label">Téléphone</label>
-                                <input placeholder="Ex: 08080000" style="color: black; font-weight: bold" type="number" name="telephone" class="form-control text-uppercase" maxlength="10">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="paysid" class="control-label">Pays</label>
-                                <select required name="paysid" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($data_pays as $depart)
-                                        <option value="{{ $depart->id }}">{{ $depart->label }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-12 col-md-6 col-sm-12 text-center">
-
-                            <button type="submit" class="btn btn-primary">Enregistrer</button>
-                            <a href="{{ route('listetravailleurs') }}">
-                                <button style="padding-left: 35px; padding-right: 35px" href="#" type="button" class="btn btn-danger">
-                                    Liste
-                                </button>
-                            </a>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="body" style="display: none">
-                    <div class="row clearfix">
-                        <div class="col-lg-6 col-md-12">
-                            <p><b>Basic Example</b></p>
-                            <div id="nouislider_basic_example"></div>
-                            <div class="m-t-20 font-12"><b>Value: </b><span class="js-nouislider-value"></span></div>
-                        </div>
-                        <div class="col-lg-6 col-md-12">
-                            <p><b>Range Example</b></p>
-                            <div id="nouislider_range_example"></div>
-                            <div class="m-t-20 font-12"><b>Value: </b><span class="js-nouislider-value"></span></div>
-                        </div>
-                    </div>
-                </div>
-
-                </form>
             </div>
-        </div>
+
+            <!-- Grid Layout -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+                <!-- Matricule -->
+                <div>
+                    <label for="matricule" class="block text-sm font-medium text-text-primary mb-2">Matricule</label>
+                    <input required type="text" name="matricule" id="matricule"
+                        value="{{ old('matricule', 'A000') }}"
+                        placeholder="Le matricule"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-bold text-text-primary"
+                        maxlength="50">
+                </div>
+
+                <!-- Nom -->
+                <div>
+                    <label for="nom" class="block text-sm font-medium text-text-primary mb-2">Nom</label>
+                    <input required type="text" name="nom" id="nom"
+                        placeholder="Nom"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent uppercase"
+                        @input="$el.value = $el.value.toUpperCase()">
+                </div>
+
+                <!-- Prénom -->
+                <div>
+                    <label for="prenom" class="block text-sm font-medium text-text-primary mb-2">Prénoms</label>
+                    <input required type="text" name="prenom" id="prenom"
+                        placeholder="Prénoms"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent uppercase"
+                        maxlength="150"
+                        @input="$el.value = $el.value.toUpperCase()">
+                </div>
+
+                <!-- Unité -->
+                <div>
+                    <label for="uniteid" class="block text-sm font-medium text-text-primary mb-2">Unité</label>
+                    <select required name="uniteid" id="uniteid"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                        <option value="">-SÉLECTIONNER-</option>
+                        @foreach($data_unites as $unite)
+                            <option value="{{ $unite->id }}">{{ $unite->label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Département -->
+                <div>
+                    <label for="departementid" class="block text-sm font-medium text-text-primary mb-2">Département</label>
+                    <select required name="departementid" id="departementid"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                        <option value="">-SÉLECTIONNER-</option>
+                        @foreach($data_departements as $depart)
+                            <option value="{{ $depart->id }}">{{ $depart->label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Fonction occupée -->
+                <div>
+                    <label for="fonction_entrepriseid" class="block text-sm font-medium text-text-primary mb-2">Fonction occupée</label>
+                    <select required name="fonction_entrepriseid" id="fonction_entrepriseid"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white font-medium">
+                        <option value="">-SÉLECTIONNER-</option>
+                        @foreach($data_fonctions as $fonction)
+                            <option value="{{ $fonction->id }}">{{ $fonction->label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Téléphone -->
+                <div>
+                    <label for="telephone" class="block text-sm font-medium text-text-primary mb-2">Téléphone</label>
+                    <input type="tel" name="telephone" id="telephone"
+                        placeholder="Ex: 08080000"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-medium"
+                        maxlength="10">
+                </div>
+
+                <!-- Pays -->
+                <div>
+                    <label for="paysid" class="block text-sm font-medium text-text-primary mb-2">Pays</label>
+                    <select required name="paysid" id="paysid"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                        <option value="">-SÉLECTIONNER-</option>
+                        @foreach($data_pays as $pays)
+                            <option value="{{ $pays->id }}">{{ $pays->label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex justify-center gap-4">
+                <button type="submit" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+                    Enregistrer
+                </button>
+                <a href="{{ route('listetravailleurs') }}" class="px-8 py-3 bg-gray-200 hover:bg-gray-300 text-text-primary rounded-lg font-medium transition-colors">
+                    Liste
+                </a>
+            </div>
+        </form>
     </div>
+</div>
+
+<script>
+function previewPhotoAdd(input) {
+    const container = document.getElementById('photoPreviewContainer');
+    const preview = document.getElementById('photoPreviewAdd');
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            container.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        container.style.display = 'none';
+    }
+}
+</script>
 
 @endsection

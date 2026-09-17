@@ -20,7 +20,7 @@ class SanctionController extends Controller
         $verif = Sanctions::Where('demandeurid', $request->demandeurid)->Where('employeid', $request->concerneid)->Where('datesanction', $request->datesanction)->first();
 
         if($verif){
-            return Redirect::back()->withErrors("Impossible qu'un employé ai des heures supplémentaire égales durant la meme journée.");
+            return Redirect::back()->withErrors("Une sanction existe déjà pour ce(s) employé(s) à cette date.");
         }else{
 
             $tabDate = explode("-", $request->datesanction);
@@ -58,7 +58,7 @@ class SanctionController extends Controller
         return view('sanctions.fiche_sanction', compact('sanct'));
     }
 
-    public function listes_anctions(){
+    public function listes_sanctions(){
         $Sanctions = Sanctions::orderBy('id', 'DESC')->get();
         return view('sanctions.liste', compact('Sanctions'));
     }
@@ -177,7 +177,18 @@ class SanctionController extends Controller
 
             $nb_jour = $SanctionsFirst->nombre_jour;
 
-            $consernes = unserialize($SanctionsFirst->employeid);
+            // Sécuriser unserialize avec gestion d'erreur
+            $consernes = [];
+            if (!empty($SanctionsFirst->employeid)) {
+                try {
+                    $consernes = unserialize($SanctionsFirst->employeid);
+                    if (!is_array($consernes)) {
+                        $consernes = [$consernes];
+                    }
+                } catch (Exception $e) {
+                    return Redirect::back()->withErrors("Erreur : données de sanction corrompues.");
+                }
+            }
 
             $verif_traitement = HAO1::where('statutid', 1)->get();
 

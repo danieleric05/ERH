@@ -310,7 +310,7 @@
                     <li class="menu-item">
                         <a href='{{ route('departements') }}' class=' menu-link'>
                             <span class="menu-label">
-                                <span class="menu-name">Departement
+                                <span class="menu-name">Département
                                 </span>
                             </span>
                             <span class="menu-icon">
@@ -321,7 +321,7 @@
                     <li class="menu-item">
                         <a href='#' class=' menu-link'>
                             <span class="menu-label">
-                                <span class="menu-name">Equipe
+                                <span class="menu-name">Équipe
                                 </span>
                             </span>
                             <span class="menu-icon">
@@ -343,7 +343,7 @@
                     <li class="menu-item">
                         <a href='#' class=' menu-link'>
                             <span class="menu-label">
-                                <span class="menu-name">Niveau d'etude
+                                <span class="menu-name">Niveau d'étude
                                 </span>
                             </span>
                             <span class="menu-icon">

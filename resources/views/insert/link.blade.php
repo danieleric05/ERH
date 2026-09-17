@@ -4,24 +4,31 @@
             <img src="{{ asset('rhassets/images/images.png') }}" height="50" width="50" class="rounded-circle user-photo">
             <div class="dropdown">
                 <span>Welcome,</span>
-                <a href="javascript:void(0);" class="dropdown-toggle user-name" data-toggle="dropdown"><strong>{{ Auth::user()->name }}</strong></a>
+                <a href="javascript:void(0);" class="dropdown-toggle user-name" data-toggle="dropdown"><strong>{{ Auth::user()?->name }}</strong></a>
                 <ul class="dropdown-menu dropdown-menu-right account animated flipInY">
-                    <li><a href="{{ url('monprofil', Auth::user()->id) }}"><i class="icon-user"></i>Mon Profil</a></li>
+                    <li><a href="{{ url('monprofil', Auth::user()?->id) }}"><i class="icon-user"></i>Mon Profil</a></li>
                     <li class="divider"></li>
-                    <li><a href="{{ route('logoutUser', Auth::user()->id) }}"><i class="icon-power"></i>Déconnexion</a></li>
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                            @csrf
+                            <button type="submit" class="w-full text-left py-2 px-4 block text-sm text-gray-700 hover:bg-slate-100">
+                                <i class="icon-power"></i>Déconnexion
+                            </button>
+                        </form>
+                    </li>
                 </ul>
             </div>
             <hr>
             <div class="row">
                 <div class="col-12 text-center">
-                    <h6>@if(Auth::user()->idrole == 1) ADMIN @endif @if(Auth::user()->idrole == 2) ASSISTANTE @endif</h6>
+                    <h6>@if(Auth::user()?->idrole == 1) ADMIN @endif @if(Auth::user()?->idrole == 2) ASSISTANTE @endif</h6>
                 </div>
             </div>
         </div>
 
         <!-- Nav tabs -->
 
-        @if((Auth::user()->idrole == 4) || (Auth::user()->idrole == 5))
+        @if((Auth::user()?->idrole == 4) || (Auth::user()?->idrole == 5))
             <ul class="nav nav-tabs">
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#hr_menu">ERH</a></li>
                 <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#project_menu">Modules</a></li>
@@ -112,7 +119,7 @@
             </div>
         @endif
 
-        @if(Auth::user()->idrole == 6)
+        @if(Auth::user()?->idrole == 6)
 			
 			<ul class="nav nav-tabs">
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#hr_menu">ERH</a></li>
@@ -150,8 +157,8 @@
                             <li>
                                 <a href="#Recrutement" class="has-arrow"><i class="icon-users"></i><span>Recrutement</span></a>
                                 <ul>
-                                    <!--<li><a href="{{ url('ajouter-travailleur-etape-un') }}">Recrutement 1ere Etape</a></li>
-                                    <li><a href="{{ route('listetravailleurs') }}">Recrutement 2eme Etape</a></li>-->
+                                    <!--<li><a href="{{ url('ajouter-travailleur-etape-un') }}">Recrutement 1ère Étape</a></li>
+                                    <li><a href="{{ route('listetravailleurs') }}">Recrutement 2ème Étape</a></li>-->
                                     <li><a href="{{ route('liste_tous_travailleurs') }}">Liste des travailleurs</a></li>
                                     <!--<li><a href="{{ route('liste_cessations') }}">Liste des cessations</a></li>
                                     <li><a href="{{ route('liste_certificat_travail') }}">Liste des certificats de travail</a></li>
@@ -192,15 +199,15 @@
                                         <li><a href="#">Paramètre de connexion</a></li>
                                     </ul>
                                 </li>
-                                @if((Auth::user()->idrole == 2) || (Auth::user()->idrole == 1))
+                                @if((Auth::user()?->idrole == 2) || (Auth::user()?->idrole == 1))
                                 <li>
                                     <a href="#FileManager" class="has-arrow"><i class="icon-folder"></i> <span>Setting</span></a>
                                     <ul>
                                         <li><a href="{{ route('unites') }}">Unité</a></li>
-                                        <li><a href="{{ route('departements') }}">Departement</a></li>
-                                        <li><a href="{{ route('equipes') }}">Equipe</a></li>
-                                        <li><a href="{{ route('niveauEtude') }}">Niveau d'etude</a></li>
-                                        <li><a href="{{ route('categories') }}">Categorie</a></li>
+                                        <li><a href="{{ route('departements') }}">Département</a></li>
+                                        <li><a href="{{ route('equipes') }}">Équipe</a></li>
+                                        <li><a href="{{ route('niveauEtude') }}">Niveau d'étude</a></li>
+                                        <li><a href="{{ route('categories') }}">Catégorie</a></li>
                                         <li><a href="{{ route('fonctions') }}">Fonction</a></li>
                                         <li><a href="{{ route('pays') }}">Pays</a></li>
                                     </ul>
@@ -216,7 +223,7 @@
 		
 		@endif
 	
-        @if((Auth::user()->idrole == 2))
+        @if((Auth::user()?->idrole == 2))
 
             <ul class="nav nav-tabs">
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#hr_menu">ERH</a></li>
@@ -255,8 +262,8 @@
                             <li>
                                 <a href="#Recrutement" class="has-arrow"><i class="icon-users"></i><span>Recrutement</span></a>
                                 <ul>
-                                    <li><a href="{{ url('ajouter-travailleur-etape-un') }}">Recrutement 1ere Etape</a></li>
-                                    <li><a href="{{ route('listetravailleurs') }}">Recrutement 2eme Etape</a></li>
+                                    <li><a href="{{ url('ajouter-travailleur-etape-un') }}">Recrutement 1ère Étape</a></li>
+                                    <li><a href="{{ route('listetravailleurs') }}">Recrutement 2ème Étape</a></li>
                                     <li><a href="{{ route('liste_tous_travailleurs') }}">Liste des travailleurs</a></li>
                                     <li><a href="{{ route('liste_cessations') }}">Liste des cessations</a></li>
                                     <li><a href="{{ route('liste_certificat_travail') }}">Liste des certificats de travail</a></li>
@@ -279,7 +286,7 @@
                                 <a href="#Variables" class="has-arrow"><i class="icon-users"></i><span>Gestion des Variables</span></a>
                                 <ul>
                                     <li><a href="{{ url('ajouter-variable') }}">Ajouter une variable(manuelle)</a></li>
-                                    <li><a href="{{ url('ajouter-heure-supplementaire') }}">Ajouter une heure supplementaire</a></li>
+                                    <li><a href="{{ url('ajouter-heure-supplementaire') }}">Ajouter une heure supplémentaire</a></li>
                                     <li><a href="{{ url('ajouter-autres-variables') }}">Ajouter autres variables</a></li>
                                     <li><a href="{{ route('listevariables_manuelle') }}">Liste des variables(manuelles)</a></li>
                                     <li><a href="{{ route('listevariables_heure_supp') }}">Liste des heures-supplementaire</a></li>
@@ -339,15 +346,15 @@
                                         <li><a href="#">Paramètre de connexion</a></li>
                                     </ul>
                                 </li>
-                                @if((Auth::user()->idrole == 2) || (Auth::user()->idrole == 1))
+                                @if((Auth::user()?->idrole == 2) || (Auth::user()?->idrole == 1))
                                 <li>
                                     <a href="#FileManager" class="has-arrow"><i class="icon-folder"></i> <span>Setting</span></a>
                                     <ul>
                                         <li><a href="{{ route('unites') }}">Unité</a></li>
-                                        <li><a href="{{ route('departements') }}">Departement</a></li>
-                                        <li><a href="{{ route('equipes') }}">Equipe</a></li>
-                                        <li><a href="{{ route('niveauEtude') }}">Niveau d'etude</a></li>
-                                        <li><a href="{{ route('categories') }}">Categorie</a></li>
+                                        <li><a href="{{ route('departements') }}">Département</a></li>
+                                        <li><a href="{{ route('equipes') }}">Équipe</a></li>
+                                        <li><a href="{{ route('niveauEtude') }}">Niveau d'étude</a></li>
+                                        <li><a href="{{ route('categories') }}">Catégorie</a></li>
                                         <li><a href="{{ route('fonctions') }}">Fonction</a></li>
                                         <li><a href="{{ route('pays') }}">Pays</a></li>
                                     </ul>
@@ -392,7 +399,7 @@
 
         @endif
 
-        @if((Auth::user()->idrole == 1))
+        @if((Auth::user()?->idrole == 1))
             <ul class="nav nav-tabs">
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#hr_menu">ERH</a></li>
                 <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#project_menu">Modules</a></li>
@@ -430,8 +437,8 @@
                             <li>
                                 <a href="#Recrutement" class="has-arrow"><i class="icon-users"></i><span>Recrutement</span></a>
                                 <ul>
-                                    <li><a href="{{ url('ajouter-travailleur-etape-un') }}">Recrutement 1ere Etape</a></li>
-                                    <li><a href="{{ route('listetravailleurs') }}">Recrutement 2eme Etape</a></li>
+                                    <li><a href="{{ url('ajouter-travailleur-etape-un') }}">Recrutement 1ère Étape</a></li>
+                                    <li><a href="{{ route('listetravailleurs') }}">Recrutement 2ème Étape</a></li>
                                     <li><a href="{{ route('liste_tous_travailleurs') }}">Liste des travailleurs</a></li>
                                     <li><a href="{{ route('liste_cessations') }}">Liste des cessations</a></li>
                                     <li><a href="{{ route('liste_certificat_travail') }}">Liste des certificats de travail</a></li>
@@ -454,7 +461,7 @@
                                 <a href="#Variables" class="has-arrow"><i class="icon-users"></i><span>Gestion des Variables</span></a>
                                 <ul>
                                     <li><a href="{{ url('ajouter-variable') }}">Ajouter une variable(manuelle)</a></li>
-                                    <li><a href="{{ url('ajouter-heure-supplementaire') }}">Ajouter une heure supplementaire</a></li>
+                                    <li><a href="{{ url('ajouter-heure-supplementaire') }}">Ajouter une heure supplémentaire</a></li>
                                     <li><a href="{{ url('ajouter-autres-variables') }}">Ajouter autres variables</a></li>
                                     <li><a href="{{ route('listevariables_manuelle') }}">Liste des variables(manuelles)</a></li>
                                     <li><a href="{{ route('listevariables_heure_supp') }}">Liste des heures-supplementaire</a></li>
@@ -503,7 +510,7 @@
                     </nav>
                 </div>
                 <div class="tab-pane animated fadeIn" id="sub_menu">
-                    @if((Auth::user()->idrole == 1))
+                    @if((Auth::user()?->idrole == 1))
                         <nav class="sidebar-nav">
                             <ul class="main-menu metismenu">
 
@@ -526,10 +533,10 @@
                                     <a href="#FileManager" class="has-arrow"><i class="icon-folder"></i> <span>Setting</span></a>
                                     <ul>
                                         <li><a href="{{ route('unites') }}">Unité</a></li>
-                                        <li><a href="{{ route('departements') }}">Departement</a></li>
-                                        <li><a href="{{ route('equipes') }}">Equipe</a></li>
-                                        <li><a href="{{ route('niveauEtude') }}">Niveau d'etude</a></li>
-                                        <li><a href="{{ route('categories') }}">Categorie</a></li>
+                                        <li><a href="{{ route('departements') }}">Département</a></li>
+                                        <li><a href="{{ route('equipes') }}">Équipe</a></li>
+                                        <li><a href="{{ route('niveauEtude') }}">Niveau d'étude</a></li>
+                                        <li><a href="{{ route('categories') }}">Catégorie</a></li>
                                         <li><a href="{{ route('fonctions') }}">Fonction</a></li>
                                         <li><a href="{{ route('pays') }}">Pays</a></li>
                                     </ul>

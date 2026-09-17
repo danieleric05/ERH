@@ -1,90 +1,197 @@
-@extends('erh')
+@extends('layouts.erh')
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2>
-                    <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Gestions des autorisations
-                </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Missions</li>
-                    <li class="breadcrumb-item active">Liste des missions</li>
-                </ul>
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-text-primary mb-4">Gestion des heures supplémentaires</h1>
+                <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+                    <a href="{{ url('bienvenue') }}" class="hover:text-text-primary">
+                        <i class="fa fa-home"></i> Accueil
+                    </a>
+                    <span class="text-text-secondary">/</span>
+                    <span>Autorisations</span>
+                    <span class="text-text-secondary">/</span>
+                    <span class="text-text-primary font-semibold">Heures Supplémentaires</span>
+                </nav>
             </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
+            <div class="flex gap-2">
+                <a href="{{ url('ajouter-heure-supplementaire') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    <i class="fa fa-plus"></i> Ajouter
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="row clearfix">
+    <!-- Messages Section -->
+    @include('success')
+    @include('errors')
 
-        <div class="col-lg-12">
-            <div class="card">
-
-                <a href="{{ url('ajouter-heure-supplementaire') }}" style="float: right" class="btn btn-info m-b-15 m-t-10 m-r-20">
-                    <i class="icon-plus" aria-hidden="true"></i> Ajouter
-                </a>
-
-                <div class="body">
-                    <div class="table-responsive">
-
-                        <table class="table table-hover js-basic-example dataTable table-custom">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>Employes</th>
-                                <th class="text-center">Nombre d'heure</th>
-                                <th>Date</th>
-                                <th class="text-center">Etat</th>
-                                <th class="text-center">Options</th>
-                            </tr>
-                            </thead>
-                            @foreach($variableHS as $vari)
-                             <tr>
-                                 <td>
-                                     @foreach( unserialize($vari->employer_hs) as $servaiable )
-                                         <span title="{{ optional($travailleursById->get($servaiable))->nom }} {{ optional($travailleursById->get($servaiable))->prenom }}" class="badge badge-dark" style="font-weight: bold">
-                                            {{ optional($travailleursById->get($servaiable))->matricule }}
-                                        </span> <br/>
-                                     @endforeach
-                                 </td>
-                                <td class="text-center">
-                                    {{ $vari->nbre_heure_hs }}
+    <!-- Main Content -->
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()"><div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-slate-900 text-white border-b">
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('employs')">
+                            <div class="flex items-center gap-2">
+                                Employés
+                                <span x-show="sortBy === 'employs'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('nombredheures')">
+                            <div class="flex items-center gap-2">
+                                Nombre d'heures
+                                <span x-show="sortBy === 'nombredheures'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('date')">
+                            <div class="flex items-center gap-2">
+                                Date
+                                <span x-show="sortBy === 'date'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('tat')">
+                            <div class="flex items-center gap-2">
+                                État
+                                <span x-show="sortBy === 'tat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        @php
+                            $allEmployerIds = [];
+                            foreach ($variableHS ?? [] as $var) {
+                                $allEmployerIds = array_merge($allEmployerIds, unserialize($var->employer_hs));
+                            }
+                            $allEmployers = \App\Travailleur::whereIn('id', array_unique($allEmployerIds))->get()->keyBy('id');
+                        @endphp
+                        @forelse($variableHS ?? [] as $vari)
+                            <tr class="border-b hover:bg-slate-50 transition">
+                                <td class="px-6 py-4 text-sm">
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach(unserialize($vari->employer_hs) as $employerId)
+                                            @php
+                                                $travailleur = $allEmployers->get($employerId);
+                                            @endphp
+                                            @if($travailleur)
+                                                <span title="{{ $travailleur->nom ?? '' }} {{ $travailleur->prenom ?? '' }}" class="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 rounded-full">
+                                                    {{ $travailleur->matricule ?? '' }}
+                                                </span>
+                                            @endif
+                                        @endforeach
+                                    </div>
                                 </td>
-                                <td>{{ $vari->date_hs }}</td>
-
-                                <td class="text-center">
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-text-primary font-semibold">
+                                    {{ $vari->nbre_heure_hs ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
+                                    {{ $vari->date_hs ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
                                     @if($vari->statutid == 1)
-                                        <span class="badge badge-primary">Actif</span>
-                                    @endif
-                                    @if($vari->statutid == 2)
-                                        <span class="badge badge-danger">Inactif</span>
+                                        <span class="px-2 py-1 text-xs font-semibold text-blue-800 bg-blue-100 rounded-full">Actif</span>
+                                    @else
+                                        <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">Inactif</span>
                                     @endif
                                 </td>
+                                <td class="px-6 py-4 text-center">
+                                    <div class="flex justify-center gap-2">
+                                        {{-- Edit Button --}}
+                                        <a title="Modifier"
+                                           href="#"
+                                           class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
 
-                                <td class="text-center">
-                                    <a title="MODIFIER" class="btn btn-sm btn-icon btn-pure btn-dark on-default button-remove" href="#" data-toggle="tooltip" data-original-title="Remove">
-                                        <i class="icon-pencil" aria-hidden="true"></i>
-                                    </a>
-                                    <a title="ANUULER" class="btn btn-sm btn-icon btn-pure btn-danger on-default button-remove" href="#" data-toggle="tooltip" data-original-title="Remove">
-                                        <i class="icon-trash" aria-hidden="true"></i>
-                                    </a>
+                                        {{-- Delete Button --}}
+                                        <a title="Annuler"
+                                           href="#"
+                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?')"
+                                           class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
-                            @endforeach
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-8 text-center text-slate-500">
+                                    <p class="text-lg">Aucune heure supplémentaire trouvée</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
-
     </div>
 
     @include('tenues.modal_edit')
+
+
+<script>
+function tableSort() {
+    return {
+        sortBy: null,
+        sortDir: 'asc',
+
+        sort(column) {
+            if (this.sortBy === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = column;
+                this.sortDir = 'asc';
+            }
+            this.sortTable();
+        },
+
+        sortTable() {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
+
+            rows.sort((a, b) => {
+                let valueA, valueB;
+
+                // Récupérer les données de la colonne
+                const cells = Array.from(a.querySelectorAll('td'));
+                if (cells.length === 0) return 0;
+
+                // Déterminer l'index de la colonne
+                let colIndex = 0;
+                const headers = document.querySelectorAll('thead th');
+                let clickCount = 0;
+                for (let i = 0; i < headers.length; i++) {
+                    if (headers[i].textContent.toLowerCase().includes(this.sortBy.toLowerCase())) {
+                        colIndex = i;
+                        break;
+                    }
+                }
+
+                valueA = a.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+                valueB = b.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+
+                // Essayer de convertir en date
+                const dateA = new Date(valueA).getTime();
+                const dateB = new Date(valueB).getTime();
+
+                if (!isNaN(dateA) && !isNaN(dateB) && dateA > 0 && dateB > 0) {
+                    return this.sortDir === 'asc' ? dateA - dateB : dateB - dateA;
+                }
+
+                // Comparaison textuelle
+                return this.sortDir === 'asc'
+                    ? String(valueA).localeCompare(String(valueB), 'fr-FR')
+                    : String(valueB).localeCompare(String(valueA), 'fr-FR');
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    }
+}
+</script>
 
 @endsection

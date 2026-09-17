@@ -1,49 +1,98 @@
-<!-- Large Size -->
-<div class="modal fade" id="addForm_reconduireJournalier" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="title" id="largeModalLabel">Action sur un journalier</h4>
-            </div>
-            <form action="{{ url('update/reconduire/uptravailleur') }}" method="POST">
-                {{csrf_field()}}
-                <div class="modal-body">
-                    <input type="hidden" name="id" id="travailid">
-                    <div class="row">
+<!-- Alpine.js Modal pour Reconduction Journalier -->
+<div x-data="modalReconduire()" @open-modal-reconduire.window="openModal($event)" class="fixed inset-0 z-50 flex items-center justify-center" x-show="isOpen" style="display: none;">
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-50" @click="closeModal()"></div>
 
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>Effectuer</label>
-                                <select name="actionid" class="form-control" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    <option selected value="6">RECONDUIRE UN JOURNALIER</option>
-                                    <option value="7">PAYER LA PRECARITE</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>Date de reprise</label>
-                                <input type="date" value="{{ date('Y-m-d') }}"  name="datechoisit" class="form-control" required="">
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>Date fin de contrat</label>
-                                <input type="date" name="datefin" class="form-control" required="">
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
-                </div>
-            </form>
+    <!-- Modal Content -->
+    <div class="relative bg-white rounded-lg shadow-2xl max-w-2xl w-full mx-4 overflow-hidden" @click.stop>
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+            <h3 class="text-lg font-bold text-text-primary">Action sur un journalier</h3>
+            <button @click="closeModal()" class="text-text-secondary hover:text-text-primary text-2xl leading-none">
+                &times;
+            </button>
         </div>
+
+        <!-- Form -->
+        <form action="{{ url('update/reconduire/uptravailleur') }}" method="POST" class="p-6">
+            @csrf
+            <input type="hidden" name="id" x-model="selectedId">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <!-- Action Selection -->
+                <div>
+                    <label for="actionid_rec" class="block text-sm font-medium text-text-primary mb-2">Effectuer</label>
+                    <select name="actionid" id="actionid_rec" x-model="selectedAction"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white"
+                        required>
+                        <option value="">-SÉLECTIONNER-</option>
+                        <option value="6" selected>Reconduire un journalier</option>
+                        <option value="7">Payer la précarité</option>
+                    </select>
+                </div>
+
+                <!-- Date de reprise -->
+                <div>
+                    <label for="datechoisit_rec" class="block text-sm font-medium text-text-primary mb-2">Date de reprise</label>
+                    <input type="date" name="datechoisit" id="datechoisit_rec"
+                        value="{{ date('Y-m-d') }}"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"
+                        required>
+                </div>
+
+                <!-- Date fin de contrat -->
+                <div>
+                    <label for="datefin_rec" class="block text-sm font-medium text-text-primary mb-2">Date fin de contrat</label>
+                    <input type="date" name="datefin" id="datefin_rec"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"
+                        required>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex justify-end gap-3 pt-6 border-t border-slate-200">
+                <button type="button" @click="closeModal()"
+                    class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-text-primary rounded-lg font-medium transition-colors">
+                    Fermer
+                </button>
+                <button type="submit"
+                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+                    Enregistrer
+                </button>
+            </div>
+        </form>
     </div>
 </div>
+
+<script>
+function modalReconduire() {
+    return {
+        isOpen: false,
+        selectedId: null,
+        selectedAction: '6',
+
+        openModal(event) {
+            this.isOpen = true;
+            const detail = event?.detail || {};
+            this.selectedId = detail.id || null;
+            this.selectedAction = '6';
+        },
+
+        closeModal() {
+            this.isOpen = false;
+            this.selectedId = null;
+            this.selectedAction = '6';
+        }
+    }
+}
+
+// Global function to trigger modal
+window.openReconduireModal = function(id) {
+    window.dispatchEvent(new CustomEvent('open-modal-reconduire', { detail: { id: id } }));
+}
+
+// Alias for backwards compatibility
+window.openReconduite = function(id) {
+    window.dispatchEvent(new CustomEvent('open-modal-reconduire', { detail: { id: id } }));
+}
+</script>

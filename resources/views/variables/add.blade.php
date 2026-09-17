@@ -1,140 +1,160 @@
-@extends('erhselect')
+@extends('layouts.erh')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('rhassets/vendor/select2/select2.css') }}">
+    <style>
+        /* Uniformise l'apparence : ajoute la flèche de dropdown sur les multi-select,
+           absente par défaut du thème select2 (contrairement aux select simples). */
+        .select2-container-multi .select2-choices {
+            position: relative;
+            padding-right: 20px;
+        }
+        .select2-container-multi .select2-choices::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 18px;
+            border-left: 1px solid #aaa;
+            border-radius: 0 4px 4px 0;
+            background-color: #ccc;
+            background-image: url('{{ asset('rhassets/vendor/select2/select2.png') }}'), linear-gradient(to top, #ccc 0%, #eee 60%);
+            background-repeat: no-repeat;
+            background-position: 0 center, 0 0;
+            pointer-events: none;
+        }
+    </style>
+@endpush
+
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2><a href="#" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Gestion des variables(manuelle) </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Configuration</li>
-                    <li class="breadcrumb-item active">Ajouter une variable(manuelle)</li>
-                </ul>
-            </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
-            </div>
-        </div>
-    </div>
-
-    <div class="row clearfix">
-
-        <div class="col-lg-12">
-
-            @include('success')
-            @include('errors')
-
-            <div class="card">
-
-                <form action="{{ url('post_variables_manuelle') }}" method="POST" role="form">
-    @csrf
-
-                <div class="body">
-                    <div class="row clearfix">
-
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="variables" class="control-label">Choisir le type</label>
-                                <select name="type_variable" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    <option value="1">DIMANCHE</option>
-                                    <option value="2">FERIE</option>
-                                    <option value="3">JOUR OUVRABLE</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="travailleurid" class="control-label">Employé(s)</label>
-                                <select multiple name="travailleurid[]" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($data_travailleur as $trav)
-                                        <option value="{{ $trav->matricule }}">{{ $trav->nom.' '.$trav->prenom.' '.$trav->matricule }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="cas_variables" class="control-label">Cas</label>
-                                <select name="cas_variables" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    <option value="1">RETARD D'ENROLEMENT</option>
-                                    <option value="2">DEFAUT DE POINTAGE</option>
-                                    <option value="3">OUBLI DE POINTAGE</option>
-                                    <option value="4">DEFAUT D'EMPREINTE</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <label>Date debut</label>
-                            <div class="input-group mb-3">
-                                <input name="debut" style="height: 40px; color: black; font-weight: bold" value="{{ date('Y-m-d') }}" type="date" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <label>Date de fin</label>
-                            <div class="input-group mb-3">
-                                <input name="fin" style="height: 40px; color: black; font-weight: bold" value="{{ date('Y-m-d') }}" type="date" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="periode" class="control-label">Periode</label>
-                                <select name="periode" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    <option value="1">NUIT</option>
-                                    <option value="2">JOUR</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-12 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="justification" class="control-label">Justification</label>
-                                <textarea rows="3" class="form-control" name="justification"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-12 col-sm-10 text-center" style="border: red 2px double; padding-top: 20px; padding-bottom:20px; padding-left: 15px; padding-right: 15px; margin-top: 40px">
-                            <button type="submit" class="btn btn-primary">Enregistrer</button>
-                            <a href="{{ route('listevariables_manuelle') }}">
-                                <button style="padding-left: 35px; padding-right: 35px" type="button" class="btn btn-danger">
-                                    Liste
-                                </button>
-                            </a>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="body" style="display: none">
-                    <div class="row clearfix">
-                        <div class="col-lg-6 col-md-12">
-                            <p><b>Basic Example</b></p>
-                            <div id="nouislider_basic_example"></div>
-                            <div class="m-t-20 font-12"><b>Value: </b><span class="js-nouislider-value"></span></div>
-                        </div>
-                        <div class="col-lg-6 col-md-12">
-                            <p><b>Range Example</b></p>
-                            <div id="nouislider_range_example"></div>
-                            <div class="m-t-20 font-12"><b>Value: </b><span class="js-nouislider-value"></span></div>
-                        </div>
-                    </div>
-                </div>
-
-                </form>
-
-            </div>
+<div class="p-6">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-3xl font-bold text-text-primary">Gestion des variables (manuelle)</h1>
+            <a href="{{ route('listevariables_manuelle') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-200 hover:bg-slate-300 text-text-primary rounded-lg transition">
+                <i class="fa fa-arrow-left"></i> Retour
+            </a>
         </div>
 
+        <!-- Breadcrumb -->
+        <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+            <a href="{{ url('bienvenue') }}" class="hover:text-primary-accent">
+                <i class="fa fa-home"></i> Accueil
+            </a>
+            <span>/</span>
+            <span>Configuration</span>
+            <span>/</span>
+            <span class="text-text-primary font-medium">Ajouter une variable (manuelle)</span>
+        </nav>
     </div>
+
+    <!-- Messages -->
+    @include('success')
+    @include('errors')
+
+    <!-- Form Container -->
+    <div class="bg-white rounded-lg shadow-lg-soft p-8">
+        <h2 class="text-xl font-bold text-text-primary mb-6">Informations de Variable</h2>
+
+        <form action="{{ url('post_variables_manuelle') }}" method="POST" class="form-auth-small">
+            @csrf
+
+            <!-- Fields Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Type Variable -->
+                <div>
+                    <label for="type_variable" class="block text-sm font-medium text-text-primary mb-2">Choisir le type</label>
+                    <select name="type_variable" id="type_variable" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="-DEROULER-">
+                        <option value=""></option>
+                        <option value="1">DIMANCHE</option>
+                        <option value="2">FERIE</option>
+                        <option value="3">JOUR OUVRABLE</option>
+                    </select>
+                </div>
+
+                <!-- Employés -->
+                <div>
+                    <label for="travailleurid" class="block text-sm font-medium text-text-primary mb-2">Employé(s)</label>
+                    <select multiple name="travailleurid[]" id="travailleurid" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="-DEROULER-">
+                        <option value=""></option>
+                        @foreach($data_travailleur as $trav)
+                            <option value="{{ $trav->matricule }}">{{ $trav->nom }} {{ $trav->prenom }} {{ $trav->matricule }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Cas Variables -->
+                <div>
+                    <label for="cas_variables" class="block text-sm font-medium text-text-primary mb-2">Cas</label>
+                    <select name="cas_variables" id="cas_variables" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="-DEROULER-">
+                        <option value=""></option>
+                        <option value="1">RETARD D'ENROLEMENT</option>
+                        <option value="2">DEFAUT DE POINTAGE</option>
+                        <option value="3">OUBLI DE POINTAGE</option>
+                        <option value="4">DEFAUT D'EMPREINTE</option>
+                    </select>
+                </div>
+
+                <!-- Date debut -->
+                <div>
+                    <label for="debut" class="block text-sm font-medium text-text-primary mb-2">Date debut</label>
+                    <input name="debut" id="debut" value="{{ date('Y-m-d') }}" type="date" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white text-text-primary">
+                </div>
+
+                <!-- Date de fin -->
+                <div>
+                    <label for="fin" class="block text-sm font-medium text-text-primary mb-2">Date de fin</label>
+                    <input name="fin" id="fin" value="{{ date('Y-m-d') }}" type="date" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white text-text-primary">
+                </div>
+
+                <!-- Periode -->
+                <div>
+                    <label for="periode" class="block text-sm font-medium text-text-primary mb-2">Periode</label>
+                    <select name="periode" id="periode" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="-DEROULER-">
+                        <option value=""></option>
+                        <option value="1">NUIT</option>
+                        <option value="2">JOUR</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Textarea -->
+            <div class="mb-8">
+                <label for="justification" class="block text-sm font-medium text-text-primary mb-2">Justification</label>
+                <textarea rows="3" name="justification" id="justification" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white text-text-primary"></textarea>
+            </div>
+
+            <!-- Button Group -->
+            <div class="border-t border-slate-200 pt-6">
+                <div class="flex justify-center gap-4">
+                    <button type="submit" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">
+                        Enregistrer
+                    </button>
+                    <a href="{{ route('listevariables_manuelle') }}">
+                        <button type="button" class="px-8 py-3 bg-slate-200 hover:bg-slate-300 text-text-primary font-medium rounded-lg transition">
+                            Liste
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('rhassets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('rhassets/vendor/select2/select2.min.js') }}"></script>
+    <script>
+        $(function () {
+            $('.select2').select2({
+                width: '100%',
+                allowClear: true
+            });
+        });
+    </script>
+@endpush

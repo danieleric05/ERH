@@ -1,127 +1,122 @@
-<!doctype html>
-<html lang="en">
-
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <title>:: ERH :: Application ressources humaines</title>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <meta name="description" content="Lucid Bootstrap 4.1.1 Admin Template">
-    <meta name="author" content="WrapTheme, design by: ThemeMakker.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link rel="icon" href="{{ asset('rhassets/images/logoo.png') }}" type="image/x-icon">
-    <!-- VENDOR CSS -->
-    <link rel="stylesheet" href="{{ asset('rhassets/vendor/bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('rhassets/vendor/font-awesome/css/font-awesome.min.css') }}">
+    <title>@yield('title', 'ERH - RH Digital')</title>
 
-    <link rel="stylesheet" href="{{ asset('rhassets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('rhassets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('rhassets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('rhassets/vendor/sweetalert/sweetalert.css') }}"/>
+    <!-- Polices Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- MAIN CSS -->
-    <link rel="stylesheet" href="{{ asset('rhassets/css/main.css') }}">
-    <link rel="stylesheet" href="{{ asset('rhassets/css/color_skins.css') }}">
-    <link rel="stylesheet" href="{{ asset('rhassets/css/erh.css') }}">
-
-    <style>
-        td.details-control {
-            background: url('{{ asset('rhassets/images/details_open.png') }}') no-repeat center center;
-            cursor: pointer;
+    <!-- Styles Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              'slate-50': '#f8fafc',
+              'slate-800': '#1e293b',
+              'slate-900': '#0f172a',
+              'white': '#ffffff',
+              'plastica-blue': '#0A2463',
+              'primary-accent': '#0e7490',
+              'text-primary': '#0f172a',
+              'text-secondary': '#64748b',
+            },
+            boxShadow: {
+                'lg-soft': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+            }
+          }
         }
-        tr.shown td.details-control {
-            background: url('{{ asset('rhassets/images/details_close.png') }}') no-repeat center center;
+      }
+    </script>
+    
+    <!-- Scripts Alpine.js via CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js"></script>
+
+    @stack('styles')
+    <style>
+        /* Styles pour une sidebar fixe et une gestion du scroll */
+        .sidebar-fixed {
+            height: 100vh; 
+            overflow-y: auto; 
+            position: fixed; 
+            left: 0;
+            top: 0;
+            z-index: 10; 
+        }
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            height: 100vh;
+            overflow-y: auto; 
+        }
+        /* Responsive pour gérer la sidebar avec Alpine.js */
+        /* La sidebar sera cachée par défaut sur mobile et apparaîtra quand sidebarOpen est true */
+        /* Le margin-left du content-wrapper sera ajusté en conséquence */
+        @media (max-width: 768px) { /* breakpoint 'md' de Tailwind par défaut */
+            .sidebar-fixed {
+                transform: translateX(-100%); /* Cache la sidebar par défaut sur mobile */
+                transition: transform 0.3s ease-in-out;
+            }
+            .sidebar-fixed.hidden { /* Cette classe sera appliquée par Alpine.js quand sidebarOpen est false sur mobile */
+                transform: translateX(0); /* Montre la sidebar */
+            }
+            .content-wrapper {
+                margin-left: 0; /* Pas de marge gauche par défaut sur mobile */
+            }
+            /* Lorsque la sidebar est ouverte sur mobile, décaler le contenu */
+            .content-wrapper.sidebar-open-mobile { /* Une classe personnalisée ou contrôlée par Alpine.js */
+                margin-left: 16rem; /* Largeur de la sidebar */
+            }
         }
     </style>
-
 </head>
-<body class="theme-orange">
-
-<!-- Page Loader
-<div class="page-loader-wrapper">
-    <div class="loader">
-        <div class="m-t-5"><img src="{{ asset('rhassets/images/logoo.png') }}" width="270" height="200" alt="Logo-Plastica"></div>
-        <p>Please wait...</p>
-    </div>
-</div>
-Overlay For Sidebars -->
-
-<div id="wrapper">
-
-    <nav class="navbar navbar-fixed-top">
-        <div class="container-fluid">
-            <div class="navbar-btn">
-                <button type="button" class="btn-toggle-offcanvas"><i class="lnr lnr-menu fa fa-bars"></i></button>
+<body class="font-sans bg-slate-50 antialiased">
+    {{-- Le conteneur principal gère l'état de la sidebar avec Alpine.js --}}
+    <div class="flex min-h-screen" x-data="{ sidebarOpen: false }">
+        
+        <!-- Sidebar Partial -->
+        {{-- La visibilité et la marge du contenu dépendent de sidebarOpen --}}
+        {{-- Pour le mobile: hidden par défaut, affiché si sidebarOpen est true --}}
+        {{-- Pour le desktop (md+): toujours visible (block), w-64 --}}
+        <aside id="sidebar" 
+               :class="{ 'hidden': !sidebarOpen && window.innerWidth < 768, 'w-64': sidebarOpen || window.innerWidth >= 768 }" 
+               class="flex-shrink-0 bg-slate-800 text-slate-300 sidebar-fixed transition-all duration-300 ease-in-out md:block">
+            <div class="flex items-center justify-center h-16 bg-slate-900 shadow-sm">
+                <a href="{{ url('/') }}" class="flex items-center justify-center">
+                    <span class="text-white font-bold uppercase text-lg">ERH</span>
+                </a>
             </div>
+            
+            @include('layouts._sidebar') {{-- Inclusion réelle du contenu de la sidebar --}}
+        </aside>
 
-            <div class="navbar-brand">
-                <a href="{{ url('bienvenue') }}"><img src="{{ asset('rhassets/images/logop.png') }}" height="30" alt="Logo" class="img-responsive logo"></a>
-            </div>
+        <!-- Contenu Principal Wrapper -->
+        {{-- La marge gauche est contrôlée par Alpine.js et les classes Tailwind --}}
+        <div class="content-wrapper transition-all duration-300 ease-in-out" 
+             :class="{ 'md:ml-0': !sidebarOpen && window.innerWidth >= 768, 'md:ml-64': sidebarOpen && window.innerWidth >= 768, 'ml-0': !sidebarOpen && window.innerWidth < 768, 'ml-64': sidebarOpen && window.innerWidth < 768 }">
+            
+            <!-- Header Partial -->
+            @include('layouts._header')
 
-            <div class="navbar-right">
-                <div id="navbar-menu">
-                    <ul class="nav navbar-nav">
-                        <!--<li><a href="app-events.html" class="icon-menu d-none d-sm-block d-md-none d-lg-block"><i class="icon-calendar"></i></a></li>
-                        <li><a href="app-chat.html" class="icon-menu d-none d-sm-block"><i class="icon-bubbles"></i></a></li>
-                        <li><a href="app-inbox.html" class="icon-menu d-none d-sm-block"><i class="icon-envelope"></i><span class="notification-dot"></span></a></li>
-                        <li class="dropdown">
-                            <a href="javascript:void(0);" class="dropdown-toggle icon-menu" data-toggle="dropdown">
-                                <i class="icon-bell"></i>
-                                <span class="notification-dot"></span>
-                            </a>
-                        </li>
-                        <li class="dropdown">
-                            <a href="javascript:void(0);" class="dropdown-toggle icon-menu" data-toggle="dropdown"><i class="icon-equalizer"></i></a>
-                        </li>-->
-                        <li><a href="{{ route('logoutUser', Auth::user()->id) }}" class="icon-menu"><i class="icon-login"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    @include('insert.link')
-
-    <div id="main-content">
-        <div class="container-fluid">
-            @yield('content')
+            <!-- Zone de Contenu Principal -->
+            <main class="flex-1 overflow-y-auto p-6 bg-slate-50">
+                @yield('content')
+            </main>
         </div>
     </div>
 
-</div>
-<div class="load">
-    <img src="{{ asset('rhassets/images/load3.gif') }}" class="img-fluid loading">
-</div>
-<!-- Javascript -->
-<script src="{{ asset('rhassets/bundles/libscripts.bundle.js') }}"></script>
-<script src="{{ asset('rhassets/bundles/vendorscripts.bundle.js') }}"></script>
-
-<script src="{{ asset('rhassets/bundles/datatablescripts.bundle.js') }}"></script>
-<script src="{{ asset('rhassets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('rhassets/vendor/jquery-datatable/buttons/buttons.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('rhassets/vendor/jquery-datatable/buttons/buttons.colVis.min.js') }}"></script>
-<script src="{{ asset('rhassets/vendor/jquery-datatable/buttons/buttons.html5.min.js') }}"></script>
-<script src="{{ asset('rhassets/vendor/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
-
-<script src="{{ asset('rhassets/vendor/sweetalert/sweetalert.min.js') }}"></script> <!-- SweetAlert Plugin Js -->
-
-<script src="{{ asset('rhassets/bundles/mainscripts.bundle.js') }}"></script>
-<script src="{{ asset('rhassets/js/pages/tables/jquery-datatable.js') }}"></script>
-
-<script src="{{ asset('erhjs/scriptjs.js') }}"></script>
-<script src="{{ asset('insert/departement.js') }}"></script>
-<script src="{{ asset('insert/equipe.js') }}"></script>
-<script src="{{ asset('insert/fonction.js') }}"></script>
-<script src="{{ asset('insert/pays.js') }}"></script>
-<script src="{{ asset('insert/niveauEtude.js') }}"></script>
-<script src="{{ asset('insert/categorie.js') }}"></script>
-<script src="{{ asset('insert/recrutement.js') }}"></script>
-<script src="{{ asset('insert/accident_travail.js') }}"></script>
-<script src="{{ asset('insert/unites.js') }}"></script>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-
+    @stack('scripts')
 </body>
-
 </html>

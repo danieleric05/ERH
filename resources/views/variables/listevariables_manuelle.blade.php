@@ -1,131 +1,250 @@
-@extends('erh')
+@extends('layouts.erh')
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2>
-                    <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Gestions des variables
-                </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Variables</li>
-                    <li class="breadcrumb-item active">Liste des variables(manuelle)</li>
-                </ul>
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-text-primary mb-4">Gestion des variables manuelles</h1>
+                <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+                    <a href="{{ url('bienvenue') }}" class="hover:text-text-primary">
+                        <i class="fa fa-home"></i> Accueil
+                    </a>
+                    <span class="text-text-secondary">/</span>
+                    <span>Variables</span>
+                    <span class="text-text-secondary">/</span>
+                    <span class="text-text-primary font-semibold">Manuelles</span>
+                </nav>
             </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
+            <div class="flex gap-2">
+                <a href="{{ url('ajouter-variable') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    <i class="fa fa-plus"></i> Ajouter
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="row clearfix">
+    <!-- Messages Section -->
+    @include('success')
+    @include('errors')
 
-        <div class="col-lg-12">
-            <div class="card">
-
-                <a href="{{ url('ajouter-variable') }}" style="float: right" class="btn btn-info m-b-15 m-t-10 m-r-20">
-                    <i class="icon-plus" aria-hidden="true"></i> Ajouter
-                </a>
-
-                <div class="body">
-                    <div class="table-responsive">
-
-                        <table class="table table-hover js-basic-example dataTable table-custom">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>Type</th>
-                                <th>Employés</th>
-                                <th>Cas</th>
-                                <th>Periode</th>
-                                <th>Debut</th>
-                                <th>Fin</th>
-                                <th class="text-center">Etat</th>
-                                <th class="text-center">Options</th>
-                            </tr>
-                            </thead>
-
-                        @foreach($variableM as $vari)
-                            <tr>
-                                <td title="{{ $vari->justification }}">
-                                    @if($vari->type_variable == 1)
-                                        DIMANCHE
-                                    @endif
-                                    @if($vari->type_variable == 2)
-                                        FERIE
-                                    @endif
-                                    @if($vari->type_variable == 3)
-                                        JOUR OUVRABLE
-                                    @endif
+    <!-- Main Content -->
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()"><div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-slate-900 text-white border-b">
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('type')">
+                            <div class="flex items-center gap-2">
+                                Type
+                                <span x-show="sortBy === 'type'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('employs')">
+                            <div class="flex items-center gap-2">
+                                Employés
+                                <span x-show="sortBy === 'employs'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('cas')">
+                            <div class="flex items-center gap-2">
+                                Cas
+                                <span x-show="sortBy === 'cas'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('priode')">
+                            <div class="flex items-center gap-2">
+                                Période
+                                <span x-show="sortBy === 'priode'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('dbut')">
+                            <div class="flex items-center gap-2">
+                                Début
+                                <span x-show="sortBy === 'dbut'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('fin')">
+                            <div class="flex items-center gap-2">
+                                Fin
+                                <span x-show="sortBy === 'fin'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('tat')">
+                            <div class="flex items-center gap-2">
+                                État
+                                <span x-show="sortBy === 'tat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @forelse($variableM ?? [] as $vari)
+                    <tr class="border-b hover:bg-slate-50 transition">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary" title="{{ $vari->justification ?? '' }}">
+                                    @switch($vari->type_variable)
+                                        @case(1)
+                                            <span class="font-medium">Dimanche</span>
+                                            @break
+                                        @case(2)
+                                            <span class="font-medium">Férié</span>
+                                            @break
+                                        @case(3)
+                                            <span class="font-medium">Jour ouvrable</span>
+                                            @break
+                                        @default
+                                            <span class="text-slate-400">-</span>
+                                    @endswitch
                                 </td>
-                                <td>
-                                    @foreach( unserialize($vari->travailleurid) as $servaiable )
-                                        <span title="{{ optional($travailleursByMatricule->get($servaiable))->nom }} {{ optional($travailleursByMatricule->get($servaiable))->prenom }}" class="badge badge-dark" style="font-weight: bold">
-                                            {{ optional($travailleursByMatricule->get($servaiable))->matricule }}
-                                        </span> <br/>
-                                    @endforeach
+                                <td class="px-6 py-4 text-sm">
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach(unserialize($vari->travailleurid) as $matricule)
+                                            @php
+                                                $travailleur = $travailleursByMatricule->get($matricule);
+                                            @endphp
+                                            @if($travailleur)
+                                                <span title="{{ $travailleur->nom }} {{ $travailleur->prenom }}" class="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 rounded-full">
+                                                    {{ $matricule }}
+                                                </span>
+                                            @endif
+                                        @endforeach
+                                    </div>
                                 </td>
-                                <td>
-                                    @if($vari->cas_variables == 1)
-                                        RETARD D'ENROLEMENT
-                                    @endif
-                                    @if($vari->cas_variables == 2)
-                                            DEFAUT DE POINTAGE
-                                    @endif
-                                    @if($vari->cas_variables == 3)
-                                            OUBLI DE POINTAGE
-                                    @endif
-                                    @if($vari->cas_variables == 4)
-                                            DEFAUT D'EMPREINTE
-                                    @endif
+                                <td class="px-6 py-4 text-sm text-text-secondary">
+                                    @switch($vari->cas_variables)
+                                        @case(1)
+                                            Retard d'enrôlement
+                                            @break
+                                        @case(2)
+                                            Défaut de pointage
+                                            @break
+                                        @case(3)
+                                            Oubli de pointage
+                                            @break
+                                        @case(4)
+                                            Défaut d'empreinte
+                                            @break
+                                        @default
+                                            <span class="text-slate-400">-</span>
+                                    @endswitch
                                 </td>
-                                <td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                                     @if($vari->periode == 2)
-                                        JOUR
+                                        <span class="font-medium">Jour</span>
+                                    @elseif($vari->periode == 1)
+                                        <span class="font-medium">Nuit</span>
+                                    @else
+                                        <span class="text-slate-400">-</span>
                                     @endif
-                                    @if($vari->periode == 1)
-                                        NUIT
-                                    @endif
                                 </td>
-                                <td>
-                                    {{ $vari->debut }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
+                                    {{ $vari->debut ?? '-' }}
                                 </td>
-                                <td>
-                                    {{ $vari->fin }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
+                                    {{ $vari->fin ?? '-' }}
                                 </td>
-
-                                <td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
                                     @if($vari->statutid == 1)
-                                        <span class="badge badge-primary">Actif</span>
-                                    @endif
-                                    @if($vari->statutid == 2)
-                                        <span class="badge badge-danger">Inactif</span>
+                                        <span class="px-2 py-1 text-xs font-semibold text-blue-800 bg-blue-100 rounded-full">Actif</span>
+                                    @else
+                                        <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">Inactif</span>
                                     @endif
                                 </td>
+                                <td class="px-6 py-4 text-center">
+                                    <div class="flex justify-center gap-2">
+                                        {{-- Edit Button --}}
+                                        <a title="Modifier"
+                                           href="#"
+                                           class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
 
-                                <td>
-                                    <a title="MODIFIER" class="btn btn-sm btn-icon btn-pure btn-dark on-default button-remove" href="#" data-toggle="tooltip" data-original-title="Remove">
-                                        <i class="icon-pencil" aria-hidden="true"></i>
-                                    </a>
-                                    <a title="ANUULER" class="btn btn-sm btn-icon btn-pure btn-danger on-default button-remove" href="#" data-toggle="tooltip" data-original-title="Remove">
-                                        <i class="icon-trash" aria-hidden="true"></i>
-                                    </a>
+                                        {{-- Delete Button --}}
+                                        <a title="Annuler"
+                                           href="#"
+                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?')"
+                                           class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
-
-                        @endforeach
-
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="px-6 py-8 text-center text-slate-500">
+                                    <p class="text-lg">Aucune variable manuelle trouvée</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
-
     </div>
 
     @include('tenues.modal_edit')
+
+
+<script>
+function tableSort() {
+    return {
+        sortBy: null,
+        sortDir: 'asc',
+
+        sort(column) {
+            if (this.sortBy === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = column;
+                this.sortDir = 'asc';
+            }
+            this.sortTable();
+        },
+
+        sortTable() {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
+
+            rows.sort((a, b) => {
+                let valueA, valueB;
+
+                // Récupérer les données de la colonne
+                const cells = Array.from(a.querySelectorAll('td'));
+                if (cells.length === 0) return 0;
+
+                // Déterminer l'index de la colonne
+                let colIndex = 0;
+                const headers = document.querySelectorAll('thead th');
+                let clickCount = 0;
+                for (let i = 0; i < headers.length; i++) {
+                    if (headers[i].textContent.toLowerCase().includes(this.sortBy.toLowerCase())) {
+                        colIndex = i;
+                        break;
+                    }
+                }
+
+                valueA = a.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+                valueB = b.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
+
+                // Essayer de convertir en date
+                const dateA = new Date(valueA).getTime();
+                const dateB = new Date(valueB).getTime();
+
+                if (!isNaN(dateA) && !isNaN(dateB) && dateA > 0 && dateB > 0) {
+                    return this.sortDir === 'asc' ? dateA - dateB : dateB - dateA;
+                }
+
+                // Comparaison textuelle
+                return this.sortDir === 'asc'
+                    ? String(valueA).localeCompare(String(valueB), 'fr-FR')
+                    : String(valueB).localeCompare(String(valueA), 'fr-FR');
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    }
+}
+</script>
 
 @endsection

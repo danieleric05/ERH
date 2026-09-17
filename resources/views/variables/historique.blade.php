@@ -1,175 +1,121 @@
-@extends('erh')
+@extends('layouts.erh')
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2>
-                    <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Historiques
-                </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Recrutement</li>
-                    <li class="breadcrumb-item active">Historiques des variables</li>
-                </ul>
-            </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
-            </div>
-        </div>
+    <!-- Header Section -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-text-primary mb-4">Historiques des variables</h1>
+        <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+            <a href="{{ url('bienvenue') }}" class="hover:text-text-primary">
+                <i class="fa fa-home"></i> Accueil
+            </a>
+            <span class="text-text-secondary">/</span>
+            <span>Recrutement</span>
+            <span class="text-text-secondary">/</span>
+            <span class="text-text-primary font-semibold">Historiques des variables</span>
+        </nav>
     </div>
 
-    <div class="row clearfix">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="body">
-
-                    <form action="{{ url('post_search_varaiables') }}" method="POST" role="form">
-    @csrf
-
-                        <div class="row clearfix">
-
-                        <div class="col-lg-3 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="variablesid" class="control-label">Variables</label>
-                                <select required name="variablesid" class="form-control select2-active">
-                                    <option value="">-DEROULER-</option>
-                                    <option value="1">DIMANCHE</option>
-                                    <option value="2">FERIE</option>
-                                    <option value="3">JOUR OUVRABLE</option>
-                                    <option value="4">TOUS</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="cas_variables" class="control-label">Cas</label>
-                                <select required name="cas_variables" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    <option value="1">RETARD D'ENROLEMENT</option>
-                                    <option value="2">DEFAUT DE POINTAGE</option>
-                                    <option value="3">OUBLI DE POINTAGE</option>
-                                    <option value="4">DEFAUT D'EMPREINTE</option>
-                                    <option value="5">TOUS</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-2 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="phone" class="control-label">Début</label>
-                                <input required type="date"  value="<?= date('Y-m-d')?>" name="beginn" class="form-control text-uppercase" maxlength="50">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-2 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="phone" class="control-label">Fin</label>
-                                <input required type="date" value="<?= date('Y-m-d')?>" max="<?= date('Y-m-d') ?>" name="endd" class="form-control text-uppercase" maxlength="50">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-2 col-md-6 col-sm-12" style="margin-top: 28px">
-                            <button type="submit" class="btn btn-danger" style="padding-left: 25px; font-weight: bold; font-size: 14px; padding-right: 25px; padding-top: 7px; padding-bottom: 6px">
-                                Rechercher
-                            </button>
-                        </div>
-
-                    </div>
-                    </form>
-
+    <!-- Formulaire de recherche -->
+    <div class="bg-white rounded-lg shadow-lg-soft p-8 mb-8">
+        <form action="{{ url('post_search_varaiables') }}" method="POST">
+            @csrf
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-text-primary mb-2">Variables</label>
+                    <select required name="variablesid" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                        <option value="">-SÉLECTIONNER-</option>
+                        <option value="1">DIMANCHE</option>
+                        <option value="2">FERIE</option>
+                        <option value="3">JOUR OUVRABLE</option>
+                        <option value="4">TOUS</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-primary mb-2">Cas</label>
+                    <select required name="cas_variables" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                        <option value="">-SÉLECTIONNER-</option>
+                        <option value="1">RETARD D'ENROLEMENT</option>
+                        <option value="2">DEFAUT DE POINTAGE</option>
+                        <option value="3">OUBLI DE POINTAGE</option>
+                        <option value="4">DEFAUT D'EMPREINTE</option>
+                        <option value="5">TOUS</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-primary mb-2">Début</label>
+                    <input required type="date" value="{{ date('Y-m-d') }}" name="beginn"
+                           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-primary mb-2">Fin</label>
+                    <input required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}" name="endd"
+                           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
                 </div>
             </div>
-        </div>
+            <button type="submit" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition">
+                Rechercher
+            </button>
+        </form>
     </div>
 
-    <div class="row clearfix">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="body">
-                    <div class="table-responsive">
-                        <table class="table table-hover dataTable table-custom">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>Matricule</th>
-                                <th>Jour</th>
-                                <th>Variables</th>
-                                <th class="text-center">Nombre de jour</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @if(!($recherches))
-                                    AUCUNE DONNÉE DISPONIBLE
-                            @endif
-                            @if($recherches)
-                                @foreach($recherches as $rech)
-
-                                    <?php
-                                    $debut = strtotime($rech->debut);
-                                    $fin = strtotime($rech->fin);
-                                    $dif = ceil(abs($fin - $debut) / 86400) + 1;
-                                    $nb_jour = intval($dif);
-                                    ?>
-
-                                    <tr>
-                                        <td>
-                                            @foreach( unserialize($rech->travailleurid) as $servaiable )
-                                                <span title="{{ optional($travailleursByMatricule->get($servaiable))->nom }} {{ optional($travailleursByMatricule->get($servaiable))->prenom }}" class="badge badge-dark" style="font-weight: bold">
-                                                    {{ optional($travailleursByMatricule->get($servaiable))->matricule }}
-                                                </span> <br/>
-                                            @endforeach
-                                        </td>
-                                        <td>
-                                            @if($rech->type_variable == 1)
-                                                DIMANCHE
-                                            @endif
-                                            @if($rech->type_variable == 2)
-                                                FERIE
-                                            @endif
-                                            @if($rech->type_variable == 3)
-                                                    JOUR OUVRABLE
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($rech->cas_variables == 1)
-                                                RETARD D'ENROLEMENT
-                                            @endif
-                                            @if($rech->cas_variables == 2)
-                                                DEFAUT DE POINTAGE
-                                            @endif
-                                            @if($rech->cas_variables == 3)
-                                                OUBLI DE POINTAGE
-                                            @endif
-                                            @if($rech->cas_variables == 4)
-                                                DEFAUT D'EMPREINTE
-                                            @endif
-                                        </td>
-                                        <td class="text-center">
-                                            {{ $nb_jour }}
-                                        </td>
-                                    </tr>
+    <!-- Résultats -->
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-slate-900 text-white border-b">
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Matricule</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Jour</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Variables</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Nombre de jour</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @if($recherches)
+                    @foreach($recherches as $rech)
+                        @php
+                            $debut = strtotime($rech->debut);
+                            $fin = strtotime($rech->fin);
+                            $nb_jour = intval(ceil(abs($fin - $debut) / 86400) + 1);
+                        @endphp
+                        <tr class="border-b hover:bg-slate-50 transition">
+                            <td class="px-6 py-4">
+                                @foreach(unserialize($rech->travailleurid) as $servaiable)
+                                    @php $tv = $travailleursByMatricule->get($servaiable); @endphp
+                                    <span title="{{ optional($tv)->nom }} {{ optional($tv)->prenom }}"
+                                          class="inline-block px-2 py-1 mb-1 text-xs font-bold rounded-full bg-slate-800 text-white">
+                                        {{ optional($tv)->matricule }}
+                                    </span><br>
                                 @endforeach
-                            @endif
+                            </td>
+                            <td class="px-6 py-4 text-text-primary">
+                                @if($rech->type_variable == 1) DIMANCHE @endif
+                                @if($rech->type_variable == 2) FERIE @endif
+                                @if($rech->type_variable == 3) JOUR OUVRABLE @endif
+                            </td>
+                            <td class="px-6 py-4 text-text-primary">
+                                @if($rech->cas_variables == 1) RETARD D'ENROLEMENT @endif
+                                @if($rech->cas_variables == 2) DEFAUT DE POINTAGE @endif
+                                @if($rech->cas_variables == 3) OUBLI DE POINTAGE @endif
+                                @if($rech->cas_variables == 4) DEFAUT D'EMPREINTE @endif
+                            </td>
+                            <td class="px-6 py-4 text-center text-text-primary">{{ $nb_jour }}</td>
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="4" class="px-6 py-8 text-center text-text-secondary">Aucune donnée disponible</td>
+                    </tr>
+                @endif
+                </tbody>
+            </table>
+        </div>
 
-                            </tbody>
-                        </table>
-
-                        <div class="text-right">
-
-                            <a href="{{ route('excel_download_variables', $code) }}">
-                                <button title="EXCEL" style="padding-left: 20px; padding-right: 20px" type="button" class="btn btn-primary">
-                                    <i class="icon-folder" aria-hidden="true"></i>
-                                </button>
-                            </a>
-
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
+        <div class="px-6 py-4 flex justify-end">
+            <a href="{{ route('excel_download_variables', $code) }}"
+               class="inline-flex items-center gap-2 px-4 py-2 bg-primary-accent text-white font-semibold rounded-lg hover:bg-plastica-blue transition">
+                <i class="icon-folder"></i> EXCEL
+            </a>
         </div>
     </div>
 

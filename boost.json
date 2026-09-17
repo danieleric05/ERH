@@ -1,11 +1,12 @@
 {
-    "cloud": false,
+    "agents": [
+        "junie",
+        "claude_code",
+        "copilot",
+        "gemini"
+    ],
     "guidelines": true,
+    "herd_mcp": false,
     "mcp": true,
-    "nightwatch": false,
-    "sail": false,
-    "skills": [
-        "infer-conventions",
-        "laravel-best-practices"
-    ]
+    "sail": false
 }

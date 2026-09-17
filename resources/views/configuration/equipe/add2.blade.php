@@ -1,142 +1,126 @@
-@extends('erhselect')
+@extends('layouts.erh')
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Liste des équipes </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Configuration</li>
-                    <li class="breadcrumb-item active">Liste des équipes</li>
-                </ul>
-            </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
-            </div>
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex-1">
+            <h1 class="text-3xl font-bold text-text-primary mb-4">Équipes</h1>
+            <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+                <a href="{{ url('bienvenue') }}" class="hover:text-text-primary">
+                    <i class="fa fa-home"></i> Accueil
+                </a>
+                <span class="text-text-secondary">/</span>
+                <span>Configuration</span>
+                <span class="text-text-secondary">/</span>
+                <span class="text-text-primary font-semibold">Équipes</span>
+            </nav>
         </div>
     </div>
 
-    <div class="row clearfix">
+    @include('success')
+    @include('errors')
 
-        <div class="col-lg-12">
-
-            @include('success')
-            @include('errors')
-
-            <div class="card">
-
-                <div class="body">
-                    <form action="{{ url('add/equipes/addequipes') }}" method="POST">
-
-                        <div class="row clearfix">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Identifiant</label>
-                                <input placeholder="Identifiant" name="id" type="text" class="form-control" required="">
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Equipe</label>
-                                <input placeholder="Nom de l'équipe" name="label" type="text" class="form-control" required="">
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Liste des unités</label>
-                                <select name="uniteid" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($unites as $unite)
-                                    <option value="{{ $unite->id }}">{{ $unite->label }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Chef d'equipe</label>
-                                <select name="chefEquipeid" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($Travailleur as $liste)
-                                    <option value="{{ $liste->id }}">{{ $liste->nom }} - {{ $liste->prenom }} - {{ $liste->matricule }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label>Un mot sur l'equipe</label>
-                                <textarea placeholder="Un mot sur l'equipe" class="form-control" name="description" rows="4"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                        <div class="col-lg-12 col-sm-10 text-center" style="border: red 2px double; padding-top: 20px; padding-bottom:20px; padding-left: 15px; padding-right: 15px; margin-top: 40px">
-                            <button type="submit" class="btn btn-primary">Enregistrer</button>
-                        </div>
-                    </form>
+    <!-- Formulaire d'ajout -->
+    <div class="bg-white rounded-lg shadow-lg-soft p-8 mb-8">
+        <h2 class="text-lg font-bold text-text-primary mb-6">Ajouter une équipe</h2>
+        <form action="{{ url('add/equipes/addequipes') }}" method="POST">
+            @csrf
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-text-primary mb-2">Identifiant</label>
+                    <input type="text" name="id" required placeholder="Identifiant"
+                           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
                 </div>
-
-                <div class="body">
-                    <div class="table-responsive">
-
-                        <table class="table table-hover js-basic-example dataTable table-custom">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>Identifiant</th>
-                                <th>Equipes</th>
-                                <th>Chef Equipe</th>
-                                <th>Unite</th>
-                                <th class="text-center">Options</th>
-                            </tr>
-                            </thead>
-
-                            <tbody>
-                            @foreach($data_equipe as $listedata)
-                                <tr>
-                                    <td>{{ $listedata->id }}</td>
-                                    <td>{{ $listedata->label }}</td>
-                                    <td>**********</td>
-                                    @if($listedata->uniteid)
-                                      <td>{{ $label = optional(\App\Unites::where('id', $listedata->uniteid)->first())->label }}</td>
-                                    @endif
-                                    @if(!$listedata->uniteid)
-                                    <td></td>
-                                    @endif
-                                    <td class="actions text-center">
-                                        <a href="{{ url('edit/equipes/data') }}" data-id="{{ $listedata->id }}" id="edit" class="btn btn-sm btn-icon btn-pure btn-dark on-default button-remove" data-toggle="tooltip" data-original-title="Remove" aria-describedby="tooltip270584">
-                                            <i class="icon-pencil" aria-hidden="true"></i>
-                                        </a>
-                                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?')"  href="{{ url('delete/equipes/data') }}"  data-id="{{ $listedata->id }}" id="deleteEquipe" class="btn btn-sm btn-icon btn-pure btn-danger on-default button-remove" data-toggle="tooltip" data-original-title="Remove">
-                                            <i class="icon-trash" aria-hidden="true"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-primary mb-2">Équipe</label>
+                    <input type="text" name="label" required placeholder="Nom de l'équipe"
+                           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-primary mb-2">Unité</label>
+                    <select name="uniteid" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                        <option value="">-SÉLECTIONNER-</option>
+                        @foreach($unites as $unite)
+                            <option value="{{ $unite->id }}">{{ $unite->label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-primary mb-2">Chef d'équipe</label>
+                    <select name="chefEquipeid" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                        <option value="">-SÉLECTIONNER-</option>
+                        @foreach($Travailleur as $liste)
+                            <option value="{{ $liste->id }}">{{ $liste->nom }} - {{ $liste->prenom }} - {{ $liste->matricule }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-text-primary mb-2">Un mot sur l'équipe</label>
+                    <textarea name="description" rows="4" placeholder="Un mot sur l'équipe"
+                              class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"></textarea>
                 </div>
             </div>
-
-            <div class="body" style="display: none">
-                <div class="row clearfix">
-                    <div class="col-lg-6 col-md-12">
-                        <p><b>Basic Example</b></p>
-                        <div id="nouislider_basic_example"></div>
-                        <div class="m-t-20 font-12"><b>Value: </b><span class="js-nouislider-value"></span></div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <p><b>Range Example</b></p>
-                        <div id="nouislider_range_example"></div>
-                        <div class="m-t-20 font-12"><b>Value: </b><span class="js-nouislider-value"></span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+            <button type="submit" class="px-4 py-2 bg-primary-accent text-white font-semibold rounded-lg hover:bg-plastica-blue transition">
+                Enregistrer
+            </button>
+        </form>
     </div>
+
+    <!-- Liste -->
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-slate-900 text-white border-b">
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Identifiant</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Équipe</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Unité</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @forelse($data_equipe as $listedata)
+                    <tr class="border-b hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 text-text-primary">{{ $listedata->id }}</td>
+                        <td class="px-6 py-4 text-text-primary">{{ $listedata->label }}</td>
+                        <td class="px-6 py-4 text-text-secondary text-sm">{{ optional(\App\Unites::where('id', $listedata->departementid)->first())->label }}</td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex justify-center gap-2">
+                                <button type="button" onclick="openEquipeEdit({{ $listedata->id }}, @js($listedata->label), @js((string) $listedata->departementid), @js((string) $listedata->chefEquipe), @js($listedata->description))"
+                                        title="MODIFIER"
+                                        class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button type="button" onclick="deleteEquipe({{ $listedata->id }})"
+                                        title="SUPPRIMER"
+                                        class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="px-6 py-8 text-center text-text-secondary">Aucune équipe</td>
+                    </tr>
+                @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @include('configuration.equipe.edit')
+
+    <script>
+        function deleteEquipe(id) {
+            if (!confirm("Êtes-vous sûr de vouloir supprimer cette équipe ?")) return;
+            fetch('{{ url('delete/equipes/data') }}?id=' + id, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            })
+            .then(r => r.json())
+            .then(data => { if (data === 'success') { window.location.reload(); } else { alert("Erreur lors de la suppression."); } })
+            .catch(() => alert("Erreur lors de la suppression."));
+        }
+    </script>
 
 @endsection

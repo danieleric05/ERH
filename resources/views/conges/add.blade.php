@@ -1,114 +1,125 @@
-@extends('erhselect')
+@extends('layouts.erh')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('rhassets/vendor/select2/select2.css') }}">
+@endpush
+
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2><a href="#" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Gestion des congés </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Configuration</li>
-                    <li class="breadcrumb-item active">Ajouter un congé</li>
-                </ul>
-            </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
-            </div>
+<div class="p-6">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-3xl font-bold text-text-primary">Ajouter un Congé</h1>
+            <a href="{{ route('listeconges') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-200 hover:bg-slate-300 text-text-primary rounded-lg transition">
+                <i class="fa fa-arrow-left"></i> Retour
+            </a>
         </div>
+
+        <!-- Breadcrumb -->
+        <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+            <a href="{{ url('bienvenue') }}" class="hover:text-primary-accent">
+                <i class="fa fa-home"></i> Accueil
+            </a>
+            <span>/</span>
+            <span>Gestion des congés</span>
+            <span>/</span>
+            <span class="text-text-primary font-medium">Ajouter un congé</span>
+        </nav>
     </div>
 
-    <div class="row clearfix">
+    <!-- Messages -->
+    @include('success')
+    @include('errors')
 
-        <div class="col-lg-12">
+    <!-- Form Container -->
+    <div class="bg-white rounded-lg shadow-lg-soft p-8">
+        <h2 class="text-xl font-bold text-text-primary mb-6">Formulaire de demande de congé</h2>
 
-            @include('success')
-            @include('errors')
+        <form action="{{ url('post_conges') }}" method="POST">
+            @csrf
 
-            <div class="card">
+            <div class="border-b border-slate-200 pb-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="travailleurid" class="block text-sm font-medium text-text-primary mb-2">Travailleur</label>
+                        <select required name="travailleurid" id="travailleurid" data-placeholder="-SÉLECTIONNER-">
+                            <option value=""></option>
+                            @foreach($data_travailleur as $trav)
+                                <option value="{{ $trav->id }}">{{ $trav->nom }} {{ $trav->prenom }} ({{ $trav->matricule }})</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                <form action="{{ url('post_conges') }}" method="POST" role="form">
-    @csrf
-
-                <div class="body">
-                    <div class="row clearfix">
-
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="travailleurid" class="control-label">Travailleur</label>
-                                <select required name="travailleurid" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($data_travailleur as $trav)
-                                        <option value="{{ $trav->id }}">{{ $trav->nom.' '.$trav->prenom.' '.$trav->matricule }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="type_conge" class="control-label">Type de congé</label>
-                                <select required name="type_conge" class="form-control show-tick ms select2" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    <option value="1">CONGE ANNUEL</option>
-                                    <option value="2">CONGE MALADIE</option>
-                                    <option value="3">CONGE MATERNITE/PATERNITE</option>
-                                    <option value="4">CONGE SANS SOLDE</option>
-                                    <option value="5">CONGE EXCEPTIONNEL</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <label>Date début</label>
-                            <div class="input-group mb-3">
-                                <input required name="debut" style="height: 40px; color: black; font-weight: bold" value="{{ date('Y-m-d') }}" type="date" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <label>Date de fin</label>
-                            <div class="input-group mb-3">
-                                <input required name="fin" style="height: 40px; color: black; font-weight: bold" value="{{ date('Y-m-d') }}" type="date" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <label>Date de reprise</label>
-                            <div class="input-group mb-3">
-                                <input required name="date_reprise" style="height: 40px; color: black; font-weight: bold" value="{{ date('Y-m-d') }}" type="date" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-12 col-md-12 col-sm-12">
-                            <div class="form-group">
-                                <label for="justification" class="control-label">Justification</label>
-                                <textarea rows="3" class="form-control" name="justification"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-12 col-sm-10 text-center" style="border: red 2px double; padding-top: 20px; padding-bottom:20px; padding-left: 15px; padding-right: 15px; margin-top: 40px">
-                            <button type="submit" class="btn btn-primary">Enregistrer</button>
-                            <a href="{{ route('listeconges') }}">
-                                <button style="padding-left: 35px; padding-right: 35px" type="button" class="btn btn-danger">
-                                    Liste
-                                </button>
-                            </a>
-                            <a href="{{ route('calendrier_conges') }}">
-                                <button style="padding-left: 35px; padding-right: 35px" type="button" class="btn btn-info">
-                                    Calendrier
-                                </button>
-                            </a>
-                        </div>
-
+                    <div>
+                        <label for="type_conge" class="block text-sm font-medium text-text-primary mb-2">Type de congé</label>
+                        <select required name="type_conge" id="type_conge"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                            <option value="">-SÉLECTIONNER-</option>
+                            <option value="1">Congé annuel</option>
+                            <option value="2">Congé maladie</option>
+                            <option value="3">Congé maternité/paternité</option>
+                            <option value="4">Congé sans solde</option>
+                            <option value="5">Congé exceptionnel</option>
+                        </select>
                     </div>
                 </div>
-
-                </form>
-
             </div>
-        </div>
 
+            <div class="border-b border-slate-200 pb-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label for="debut" class="block text-sm font-medium text-text-primary mb-2">Date début</label>
+                        <input required type="date" name="debut" id="debut" value="{{ date('Y-m-d') }}"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
+                    </div>
+
+                    <div>
+                        <label for="fin" class="block text-sm font-medium text-text-primary mb-2">Date de fin</label>
+                        <input required type="date" name="fin" id="fin" value="{{ date('Y-m-d') }}"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
+                    </div>
+
+                    <div>
+                        <label for="date_reprise" class="block text-sm font-medium text-text-primary mb-2">Date de reprise</label>
+                        <input required type="date" name="date_reprise" id="date_reprise" value="{{ date('Y-m-d') }}"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label for="justification" class="block text-sm font-medium text-text-primary mb-2">Justification</label>
+                <textarea rows="3" name="justification" id="justification"
+                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"></textarea>
+            </div>
+
+            <div class="flex justify-center gap-3">
+                <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                    <i class="fa fa-check"></i> Enregistrer
+                </button>
+                <a href="{{ route('listeconges') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-200 text-text-primary rounded-lg hover:bg-slate-300 transition font-semibold">
+                    <i class="fa fa-list"></i> Liste
+                </a>
+                <a href="{{ route('calendrier_conges') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition font-semibold">
+                    <i class="fa fa-calendar"></i> Calendrier
+                </a>
+            </div>
+        </form>
     </div>
+</div>
 
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('rhassets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('rhassets/vendor/select2/select2.min.js') }}"></script>
+    <script>
+        $(function () {
+            $('#travailleurid').select2({
+                width: '100%',
+                allowClear: true
+            });
+        });
+    </script>
+@endpush

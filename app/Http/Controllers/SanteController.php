@@ -68,13 +68,9 @@ class SanteController extends Controller
             $sante->annee = intval($tabDate['0']);
             if($sante->save()){
 
-					$unite = \App\Unites::find($journalierAT->uniteid);
-					$equipe = \App\Equipes::find($journalierAT->equipeid);
-					$fonction = \App\Fonction::find($journalierAT->fonction_entrepriseid);
-
-					$uniteJ = $unite?->label ?? 'Non renseignée';
-					$equipeJ = $equipe?->label ?? 'Non renseignée';
-					$fonctionJ = $fonction?->label ?? 'Non renseignée';
+					$uniteJ = \App\Unites::where('id', $journalierAT->uniteid)->first()->label;
+					$equipeJ = \App\Equipes::where('id', $journalierAT->equipeid)->first()->label;
+					$fonctionJ = \App\Fonction::where('id', $journalierAT->fonction_entrepriseid)->first()->label;
 					// on génère une chaîne de caractères aléatoire qui sera utilisée comme frontière
                     $boundary = "-----=" . md5(uniqid(rand()));
                     $headers  = "From: \"ERH | ACCIDENT DE TRAVAIL \"<infos@plasticaci.com>\n";

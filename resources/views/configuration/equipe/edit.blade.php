@@ -1,57 +1,69 @@
-<!-- Large Size -->
-<div class="modal fade" id="Update_equipe" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="title" id="titeupdate"></h4>
-            </div>
-            <form action="{{ url('update/equipes/updateequipes') }}" method="POST" id="updateequipes">
-                @csrf
-                <div class="modal-body">
-                    <div class="row">
-                        <input type="hidden" name="id" id="equipeid">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Departement</label>
-                                <input placeholder="Departement" id="elabel" name="label" type="text" class="form-control" required="">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="duniteid" class="control-label">Unité</label>
-                                <select name="uniteid" id="euniteid" class="form-control">
-                                    <option value="">-DEOULER-</option>
-                                    @foreach($unites as $liste)
-                                        <option value="{{ $liste->id }}">{{ $liste->label }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Chef d'equipe</label>
-                                <select name="chefEquipeid" id="echefEquipeid" class="form-control" data-placeholder="Select">
-                                    <option value="">-DEROULER-</option>
-                                    @foreach($unites as $liste)
-                                        <option value="{{ $liste->id }}">{{ $liste->label }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label>Description du departement</label>
-                                <textarea placeholder="Description du departement" class="form-control" id="edescription" name="description" rows="4"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Modifier</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
-                </div>
-            </form>
+<div x-data="{ isOpen: false }" @open-modal-equipe-edit.window="isOpen = true" class="fixed inset-0 z-50 flex items-center justify-center" x-show="isOpen" style="display: none;">
+    <div class="fixed inset-0 bg-black bg-opacity-50" @click="isOpen = false"></div>
+    <div class="relative bg-white rounded-lg shadow-2xl max-w-2xl w-full mx-4 overflow-hidden" @click.stop>
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+            <h3 class="text-lg font-bold text-text-primary">Modifier l'équipe</h3>
+            <button @click="isOpen = false" class="text-text-secondary hover:text-text-primary text-2xl leading-none">&times;</button>
         </div>
+        <form onsubmit="return submitEquipeEdit(event)" class="p-6">
+            <input type="hidden" name="id" id="equipeEditId">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-text-primary mb-2">Équipe</label>
+                    <input type="text" name="label" id="equipeEditLabel" required
+                           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-primary mb-2">Unité</label>
+                    <select name="uniteid" id="equipeEditUnite" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                        <option value="">-SÉLECTIONNER-</option>
+                        @foreach($unites as $liste)
+                            <option value="{{ $liste->id }}">{{ $liste->label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-primary mb-2">Chef d'équipe</label>
+                    <select name="chefEquipeid" id="equipeEditChef" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                        <option value="">-SÉLECTIONNER-</option>
+                        @foreach($Travailleur as $liste)
+                            <option value="{{ $liste->id }}">{{ $liste->nom }} - {{ $liste->prenom }} - {{ $liste->matricule }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-text-primary mb-2">Un mot sur l'équipe</label>
+                    <textarea name="description" id="equipeEditDescription" rows="4"
+                              class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3">
+                <button type="button" @click="isOpen = false" class="px-4 py-2 border border-slate-300 rounded-lg text-text-secondary hover:bg-slate-50 transition">Fermer</button>
+                <button type="submit" class="px-4 py-2 bg-primary-accent text-white rounded-lg hover:bg-plastica-blue transition">Modifier</button>
+            </div>
+        </form>
     </div>
 </div>
+
+<script>
+function openEquipeEdit(id, label, uniteid, chefEquipeid, description) {
+    document.getElementById('equipeEditId').value = id;
+    document.getElementById('equipeEditLabel').value = label;
+    document.getElementById('equipeEditUnite').value = uniteid;
+    document.getElementById('equipeEditChef').value = chefEquipeid;
+    document.getElementById('equipeEditDescription').value = description || '';
+    window.dispatchEvent(new CustomEvent('open-modal-equipe-edit'));
+}
+function submitEquipeEdit(e) {
+    e.preventDefault();
+    fetch('{{ url('update/equipes/updateequipes') }}', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+        body: new FormData(e.target),
+    })
+    .then(r => r.json())
+    .then(data => { if (data === 'success') { window.location.reload(); } else { alert("Erreur lors de la modification."); } })
+    .catch(() => alert("Erreur lors de la modification."));
+    return false;
+}
+</script>

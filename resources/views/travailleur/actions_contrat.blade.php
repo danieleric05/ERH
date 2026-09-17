@@ -1,55 +1,65 @@
-@extends('erhform')
+@extends('layouts.erh')
 @section('content')
 
-            <div class="block-header">
-                <div class="row">
-                    <div class="col-lg-6 col-md-8 col-sm-12">
-                        <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-left"></i></a> Modules </h2>
-                        <ul class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#"><i class="icon-home"></i></a></li>
-                            <li class="breadcrumb-item">Recrutement</li>
-                            <li class="breadcrumb-item active">Télecharger un contrat @if($edit->etapeid == 3) de CESSATION @endif @if($edit->etapeid == 4) de CERTIFICAT DE TRAVAIL @endif @if($edit->etapeid == 5) de DECLARATION CNPS @endif</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+<div class="p-6">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-text-primary mb-4">Télécharger le Document</h1>
 
-            <div class="row clearfix">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+            <a href="{{ route('dashboard') }}" class="hover:text-primary-accent">
+                <i class="icon-home"></i> Accueil
+            </a>
+            <span>/</span>
+            <span>Recrutement</span>
+            <span>/</span>
+            <span class="text-text-primary font-medium">
+                Télécharger un document
+                @if($edit->etapeid == 3) de cessation @endif
+                @if($edit->etapeid == 4) de certificat de travail @endif
+                @if($edit->etapeid == 5) de déclaration CNPS @endif
+            </span>
+        </nav>
+    </div>
 
-                @include('success')
-                @include('errors')
+    <!-- Messages -->
+    @include('success')
+    @include('errors')
 
-                <div class="col-lg-12">
-                    <div class="card perso_color_title">
-                        <div class="header">
-                            <h2>Telecharger le contrat</h2>
-                        </div>
-                        <div class="body text-center perso_color">
-                            <a href="{{ route('liste_tous_travailleurs') }}">
-                                <button type="button" class="btn btn-outline-danger">Retour</button>
-                            </a>
-                            @if($edit->etapeid == 3)
-                                <a title="CESSATION" href="{{ route('telechargerContratCessassion',['id'=>$edit->id, 'download'=>'pdf']) }}">
-                                    <button type="button" class="btn btn-outline-primary">TELECHARGER CONTRAT DE CESSATION</button>
-                                </a>
-                                <a title="PRECARITE" href="{{ route('telechargerFichePrecarite',['id'=>$edit->id, 'download'=>'pdf']) }}">
-                                    <button type="button" class="btn btn-outline-primary">TELECHARGER LA FICHE DE PRECARITE</button>
-                                </a>
-                            @endif
-                            @if($edit->etapeid == 4)
-                                <a target="_blank" title="CERTIFICAT DE TRAVAIL" href="{{ route('telechargerContratCertificatTravail',['id'=>$edit->id, 'download'=>'pdf']) }}">
-                                    <button type="button" class="btn btn-outline-secondary">TELECHARGER CERTIFICAT DE TRAVAIL</button>
-                                </a>
-                            @endif
-                            @if($edit->etapeid == 5)
-                                <a  target="_blank" title="DECLARATION CNPS" href="{{ route('telechargerContratDeclarationCnps',['id'=>$edit->id, 'download'=>'pdf']) }}">
-                                    <button type="button" class="btn btn-outline-success">TELECHARGER DECLARATION CNPS</button>
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-                </div>
+    <!-- Content Container -->
+    <div class="bg-white rounded-lg shadow-lg-soft p-8">
+        <h2 class="text-2xl font-bold text-text-primary mb-8 text-center">Télécharger le Document</h2>
 
-            </div>
+        <!-- Action Buttons -->
+        <div class="flex flex-col md:flex-row justify-center gap-4 flex-wrap">
+            <a href="{{ route('liste_tous_travailleurs') }}" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors text-center">
+                Retour
+            </a>
+
+            @if($edit->etapeid == 3)
+                <!-- Cessation -->
+                <a href="{{ route('telechargerContratCessassion',['id'=>$edit->id, 'download'=>'pdf']) }}" title="CESSATION" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center">
+                    Télécharger Contrat de Cessation
+                </a>
+
+            @endif
+
+            @if($edit->etapeid == 4)
+                <!-- Certificat de Travail -->
+                <a href="{{ route('telechargerContratCertificatTravail',['id'=>$edit->id, 'download'=>'pdf']) }}" target="_blank" title="CERTIFICAT DE TRAVAIL" class="px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors text-center">
+                    Télécharger Certificat de Travail
+                </a>
+            @endif
+
+            @if($edit->etapeid == 5)
+                <!-- Déclaration CNPS -->
+                <a href="{{ route('telechargerContratDeclarationCnps',['id'=>$edit->id, 'download'=>'pdf']) }}" target="_blank" title="DECLARATION CNPS" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors text-center">
+                    Télécharger Déclaration CNPS
+                </a>
+            @endif
+        </div>
+    </div>
+</div>
 
 @endsection

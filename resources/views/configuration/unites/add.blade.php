@@ -1,71 +1,69 @@
-@extends('erh')
+@extends('layouts.erh')
 @section('content')
 
-<div class="block-header">
-    <div class="row">
-        <div class="col-lg-6 col-md-8 col-sm-12">
-            <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                    <i class="fa fa-arrow-left"></i></a> Liste des unités </h2>
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                <li class="breadcrumb-item">Configuration</li>
-                <li class="breadcrumb-item active">Liste des unités</li>
-            </ul>
-        </div>
-        <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
-        </div>
-    </div>
-</div>
-
-<div class="row clearfix">
-
-    <div class="col-lg-12">
-
-        @include('success')
-        @include('errors')
-
-        <div class="card">
-
-            <a onclick="addForm_unites()"  style="float: right; color: #fff;" class="btn btn-danger m-b-15 m-t-10 m-r-20">
-                <i class="icon wb-plus" aria-hidden="true"></i> Ajouter une unité
-            </a>
-
-            <div class="body">
-                <div class="table-responsive">
-
-                    <table class="table table-hover js-basic-example dataTable table-custom">
-                        <thead class="thead-dark">
-                        <tr>
-                            <th>Identifiant</th>
-                            <th>Unité</th>
-                            <th class="text-center">Options</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        @foreach($data_unites as $listedata)
-                            <tr>
-                                <td>{{ $listedata->id }}</td>
-                                <td>{{ $listedata->label }}</td>
-                                <td class="actions text-center">
-                                    <a href="{{ url('edit/unites/data') }}" data-id="{{ $listedata->id }}" id="edit" class="btn btn-sm btn-icon btn-pure btn-dark on-default button-remove" data-toggle="tooltip" data-original-title="Modifier" aria-describedby="tooltip270584">
-                                        <i class="icon-pencil" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-text-primary mb-4">Unités</h1>
+                <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+                    <a href="{{ url('bienvenue') }}" class="hover:text-text-primary">
+                        <i class="fa fa-home"></i> Accueil
+                    </a>
+                    <span class="text-text-secondary">/</span>
+                    <span>Configuration</span>
+                    <span class="text-text-secondary">/</span>
+                    <span class="text-text-primary font-semibold">Unités</span>
+                </nav>
+            </div>
+            <div class="flex gap-2">
+                <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal-unite-add'))"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                    <i class="fa fa-plus"></i> Ajouter une unité
+                </button>
             </div>
         </div>
     </div>
 
-</div>
+    @include('success')
+    @include('errors')
 
-@include('configuration.unites.modal_unite')
-@include('configuration.unites.edit')
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-slate-900 text-white border-b">
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Identifiant</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Unité</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @forelse($data_unites as $listedata)
+                    <tr class="border-b hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 text-text-primary">{{ $listedata->id }}</td>
+                        <td class="px-6 py-4 text-text-primary">{{ $listedata->label }}</td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex justify-center gap-2">
+                                <button type="button" onclick="openUniteEdit({{ $listedata->id }}, @js($listedata->label))"
+                                        title="MODIFIER"
+                                        class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3" class="px-6 py-8 text-center text-text-secondary">Aucune unité</td>
+                    </tr>
+                @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 
+    @include('configuration.unites.modal_unite')
+    @include('configuration.unites.edit')
 
 @endsection

@@ -1,92 +1,156 @@
-@extends('erh')
+@extends('layouts.erh')
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2>
-                    <a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Liste des travailleurs non déclarés
-                </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Recrutement</li>
-                    <li class="breadcrumb-item active">Liste des travailleurs non déclarés</li>
-                </ul>
-            </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-text-primary mb-4">Liste des travailleurs non déclarés</h1>
+                <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+                    <a href="{{ url('bienvenue') }}" class="hover:text-text-primary">
+                        <i class="fa fa-home"></i> Accueil
+                    </a>
+                    <span class="text-text-secondary">/</span>
+                    <span>Recrutement</span>
+                    <span class="text-text-secondary">/</span>
+                    <span class="text-text-primary font-semibold">Non déclarés</span>
+                </nav>
             </div>
         </div>
     </div>
-    <div class="row clearfix">
 
-        <div class="col-lg-12">
-            @include('success')
-            @include('errors')
-            <div class="card">
-			
-				
-				<a href="{{ route('liste_travailleurs') }}" style="float: right; padding-left: 15px; padding-right: 15px" class="btn btn-dark m-b-15 m-t-10 m-r-20">
-                    <i class="icon wb-plus" aria-hidden="true"></i> Tous les travailleurs
-                </a>
-                <a href="{{ url('liste-embauches') }}" style="float: right; padding-left: 10px; padding-right: 10px" class="btn btn-success m-b-15 m-t-10 m-r-20">
-                    <i class="icon wb-plus" aria-hidden="true"></i> Travailleurs embauchés
-                </a>
-                <a href="{{ route('liste_cessations') }}" style="float: right; padding-left: 15px; padding-right: 15px" class="btn btn-danger m-b-15 m-t-10 m-r-20">
-                    <i class="icon wb-plus" aria-hidden="true"></i> Travailleurs en cessations
-                </a>
+    @include('travailleur._tabs')
 
-                <div class="body">
-                    <div class="table-responsive">
+    <!-- Messages Section -->
+    @include('success')
+    @include('errors')
 
-                        <table class="table table-hover js-basic-example dataTable table-custom">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>Image</th>
-                                <th>Matricule</th>
-                                <th>Nom & Prénoms</th>
-                                <th>Date d'embauche</th>
-                                <th>Date fin de contrat</th>
-                                <th class="text-center">Options</th>
-                            </tr>
-                            </thead>
+    @php
+        $sortLink = fn($col) => request()->fullUrlWithQuery([
+            'sort' => $col,
+            'dir' => (request('sort') === $col && request('dir') === 'asc') ? 'desc' : 'asc',
+            'page' => 1,
+        ]);
+        $sortIcon = fn($col) => request('sort') === $col
+            ? '<i class="fa fa-arrow-' . (request('dir') === 'asc' ? 'up' : 'down') . ' text-xs"></i>'
+            : '';
+    @endphp
 
-                            <tbody>
-                            @foreach($data_declarations as $listedata)
-                                <tr>
-                                    <td>
-                                        @if(!$listedata->avatar)
-                                            <img src="{{ asset('rhassets/images/images.png') }}" height="50" width="50" class="rounded-circle user-photo">
-                                        @endif
-                                        @if($listedata->avatar)
-                                            <img src="{{ asset('rhassets/images/images.png') }}" height="50" width="50" class="rounded-circle user-photo">
-                                        @endif
-                                    </td>
-                                    <td style="color: black; font-weight: bold">
-                                        <a title="MODIFIER" style="color: red">
-                                        {{ $listedata->matricule }}
-                                        </a>
-                                    </td>
-                                    <td>{{ $listedata->nom.' '.$listedata->prenom }}</td>
+    @include('travailleur._search')
 
-                                    <td>{{ $listedata->date_debut_contrat }}</td>
-                                    <td style="color: red; font-weight: bold">{{ $listedata->date_fin_contrat }}</td>
-                                    
-                                    <td class="actions text-center">
-                                        <a title="AJOUTER SON NUMERO CNPS" target="_blank" href="{{ route('etapedeuxtravailleur', $listedata->id) }}" style="background-color: #9ad722" class="btn btn-sm btn-icon btn-pure btn-danger on-default button-remove">
-                                            <i class="icon-doc" aria-hidden="true"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+    <!-- Main Content -->
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-slate-900 text-white border-b">
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Image</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">
+                            <a href="{{ $sortLink('matricule') }}" class="flex items-center gap-2 hover:text-slate-300">
+                                Matricule {!! $sortIcon('matricule') !!}
+                            </a>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">
+                            <a href="{{ $sortLink('nom') }}" class="flex items-center gap-2 hover:text-slate-300">
+                                Nom & Prénoms {!! $sortIcon('nom') !!}
+                            </a>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Équipe</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">
+                            <a href="{{ $sortLink('embauche') }}" class="flex items-center gap-2 hover:text-slate-300">
+                                Date d'embauche {!! $sortIcon('embauche') !!}
+                            </a>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">
+                            <a href="{{ $sortLink('fin') }}" class="flex items-center gap-2 hover:text-slate-300">
+                                Date fin de contrat {!! $sortIcon('fin') !!}
+                            </a>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">État</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="travailleursTableBody">
+                @forelse($data_declarations ?? [] as $listedata)
+                    <tr class="border-b hover:bg-slate-50 transition">
+                        <td class="px-6 py-4">
+                            <img src="{{ $listedata->photo ? asset('rhassets/images/travailleurs/' . $listedata->photo) : asset('rhassets/images/travailleurs/default.png') }}"
+                                 height="50" width="50"
+                                 class="rounded-full object-cover w-12 h-12"
+                                 alt="Photo {{ $listedata->nom }}">
+                        </td>
+                        <td class="px-6 py-4">
+                            <a href="{{ route('etapedeuxtravailleur', $listedata->id) }}"
+                               title="MODIFIER"
+                               class="text-red-600 font-bold hover:underline">
+                                {{ $listedata->matricule ?? '-' }}
+                            </a>
+                        </td>
+                        <td class="px-6 py-4 text-text-primary">
+                            {{ $listedata->nom ?? '' }} {{ $listedata->prenom ?? '' }}
+                        </td>
+                        <td class="px-6 py-4 text-text-secondary text-sm">
+                            {{ $equipesById->get($listedata->equipeid)?->label ?? '-' }}
+                        </td>
+                        <td class="px-6 py-4 text-text-secondary text-sm">
+                            {{ $listedata->date_debut_contrat ? \Carbon\Carbon::parse($listedata->date_debut_contrat)->format('d/m/Y') : '-' }}
+                        </td>
+                        <td class="px-6 py-4 text-red-600 font-bold text-sm">
+                            {{ $listedata->date_fin_contrat ? \Carbon\Carbon::parse($listedata->date_fin_contrat)->format('d/m/Y') : '-' }}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">DÉCLARATION</span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex justify-center gap-2">
+                                {{-- Modifier --}}
+                                <a href="{{ route('etapedeuxtravailleur', $listedata->id) }}"
+                                   title="MODIFIER"
+                                   class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+
+                                {{-- Ajouter CNPS --}}
+                                <a href="{{ route('etapedeuxtravailleur', $listedata->id) }}"
+                                   title="AJOUTER SON NUMÉRO CNPS"
+                                   class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition">
+                                    <i class="fa fa-file-pdf-o"></i>
+                                </a>
+
+                                {{-- Historiques --}}
+                                <a href="{{ route('historiques_contrat', $listedata->id) }}"
+                                   title="HISTORIQUES"
+                                   class="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition">
+                                    <i class="fa fa-history"></i>
+                                </a>
+
+                                {{-- Supprimer --}}
+                                <a href="javascript:void(0)"
+                                   onclick="if(confirm('Êtes-vous sûr de vouloir supprimer ce travailleur?')) { window.location.href='{{ url('delete/travailleur') }}?id={{ $listedata->id }}'; }"
+                                   title="SUPPRIMER"
+                                   class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" class="px-6 py-8 text-center text-text-secondary">
+                            Tous les travailleurs sont déclarés à la CNPS
+                        </td>
+                    </tr>
+                @endforelse
+                </tbody>
+            </table>
         </div>
-
     </div>
+
+    <div class="mt-6">
+        {{ $data_declarations->links() }}
+    </div>
+
+    @include('travailleur.modal_declaration')
+    @include('travailleur.modal_reconduire')
 
 @endsection

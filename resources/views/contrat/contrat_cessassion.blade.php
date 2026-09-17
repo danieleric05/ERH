@@ -2,11 +2,19 @@
 <head>
     <meta charset="utf-8">
     <title>Fiche d'inscription - <?php echo $travailleur->nom ?></title>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
         body{
             font-family: Tahoma, Helvetica, Arial;
             font-size: 14px;
+        }
+        .container {
+            padding: 0 15px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-left {
+            text-align: left;
         }
     </style>
 </head>
@@ -67,7 +75,7 @@
 
             Adresse postale : ___________ Téléphone : ___________ Céllulaire : ___<u><b>+225 <?= $travailleur->telephone ?></b></u>____ <br/>
 
-            <i><b>Situation matrimoniale</b></i> : (1) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@if($travailleur->situation_mat == 'Célibataire') <b style="font-weight: bold; color: black">X</b> @endif célibataire &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @if($travailleur->situation_mat == 'Marié(e)') <b style="font-weight: bold; color: black">X</b> @endif marié(e) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; séparé(é) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; veuf(veuve) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; divorcé(e)
+            <i><b>Situation matrimoniale</b></i> : (1) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@if(in_array($travailleur->situation_mat, ['Celibataire', 'Célibataire'])) <b style="font-weight: bold; color: black">X</b> @endif célibataire &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @if(in_array($travailleur->situation_mat, ['Marie', 'Marié(e)'])) <b style="font-weight: bold; color: black">X</b> @endif marié(e) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; séparé(é) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; veuf(veuve) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; divorcé(e)
                 <br/>
                 <br/>
                 <b style="font-size: 18px; font-weight: bold"><u>EMPLOI</u></b><br/>

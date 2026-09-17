@@ -169,7 +169,7 @@ class ConfigController extends Controller
             $Equipe = new Equipes();
             $Equipe->id = intval($get->id);
             $Equipe->label = strtoupper($get->label);
-            $Equipe->uniteid = $get->uniteid;
+            $Equipe->departementid = $get->uniteid;
             $Equipe->chefEquipe = $get->chefEquipeid;
             $Equipe->description = $get->description;
             $Equipe->userid = Auth::user()->id;
@@ -197,7 +197,7 @@ class ConfigController extends Controller
 
         $update = Equipes::where("id", $get->id)->update([
             "label" => $get->label,
-            "uniteid" => $get->uniteid,
+            "departementid" => $get->uniteid,
             "chefEquipe" => $get->chefEquipeid,
             "description" => $get->description,
             "userid" => Auth::user()->id,
@@ -344,6 +344,7 @@ class ConfigController extends Controller
     public function addpays(Request $get){
         $insert = Pays::insert([
             "label" => $get->label,
+            "nationalite" => $get->nationalite,
             "userid" => Auth::user()->id,
             "created_at" => Carbon::now(),
         ]);
@@ -366,6 +367,7 @@ class ConfigController extends Controller
 
         $update = Pays::where("id", $get->id)->update([
             "label" => $get->label,
+            "nationalite" => $get->nationalite,
             "userid" => Auth::user()->id,
             "updated_at" => Carbon::now()
         ]);

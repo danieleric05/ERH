@@ -1,77 +1,88 @@
-@extends('erh')
+@extends('layouts.erh')
 @section('content')
 
-    <div class="block-header">
-        <div class="row">
-            <div class="col-lg-6 col-md-8 col-sm-12">
-                <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth">
-                        <i class="fa fa-arrow-left"></i></a> Liste des departements </h2>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('bienvenue') }}"><i class="icon-home"></i></a></li>
-                    <li class="breadcrumb-item">Configuration</li>
-                    <li class="breadcrumb-item active">Liste des departements</li>
-                </ul>
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-text-primary mb-4">Départements</h1>
+                <nav class="flex items-center space-x-2 text-sm text-text-secondary">
+                    <a href="{{ url('bienvenue') }}" class="hover:text-text-primary">
+                        <i class="fa fa-home"></i> Accueil
+                    </a>
+                    <span class="text-text-secondary">/</span>
+                    <span>Configuration</span>
+                    <span class="text-text-secondary">/</span>
+                    <span class="text-text-primary font-semibold">Départements</span>
+                </nav>
             </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 text-right">
-
+            <div class="flex gap-2">
+                <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal-departement-add'))"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                    <i class="fa fa-plus"></i> Ajouter un département
+                </button>
             </div>
         </div>
     </div>
 
-    <div class="row clearfix">
+    @include('success')
+    @include('errors')
 
-        <div class="col-lg-12">
-
-            @include('success')
-            @include('errors')
-
-            <div class="card">
-
-                <a onclick="addForm_recrutement()"  style="float: right; color: #fff;" class="btn btn-danger m-b-15 m-t-10 m-r-20">
-                    <i class="icon wb-plus" aria-hidden="true"></i> Ajouter un departement
-                </a>
-
-                <div class="body">
-                    <div class="table-responsive">
-
-                        <table class="table table-hover js-basic-example dataTable table-custom" id="showAllDataHere">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>Identifiant</th>
-                                <th>Departement</th>
-                                <th>Unité</th>
-                                <th class="text-center">Options</th>
-                            </tr>
-                            </thead>
-
-                            <tbody>
-                            @foreach($data_departement as $listedata)
-                                <tr>
-                                    <td>{{ $listedata->id }}</td>
-                                    <td>{{ $listedata->label }}</td>
-                                    <td>{{ optional($unitesById->get($listedata->uniteid))->label }}</td>
-                                    <td class="actions text-center">
-                                        <a href="{{ url('edit/departements/data') }}" data-id="{{ $listedata->id }}" id="edit" class="btn btn-sm btn-icon btn-pure btn-dark on-default button-remove" data-toggle="tooltip" data-original-title="Remove" aria-describedby="tooltip270584">
-                                            <i class="icon-pencil" aria-hidden="true"></i>
-                                        </a>
-                                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?')"  href="{{ url('delete/departements/data') }}"  data-id="{{ $listedata->id }}" id="deleteDeparte" class="btn btn-sm btn-icon btn-pure btn-danger on-default button-remove" data-toggle="tooltip" data-original-title="Remove" aria-describedby="tooltip270584">
-                                            <i class="icon-trash" aria-hidden="true"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-slate-900 text-white border-b">
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Identifiant</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Département</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Unité</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @forelse($data_departement as $listedata)
+                    <tr class="border-b hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 text-text-primary">{{ $listedata->id }}</td>
+                        <td class="px-6 py-4 text-text-primary">{{ $listedata->label }}</td>
+                        <td class="px-6 py-4 text-text-secondary text-sm">{{ optional($unitesById->get($listedata->uniteid))->label }}</td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex justify-center gap-2">
+                                <button type="button" onclick="openDepartementEdit({{ $listedata->id }}, @js($listedata->label), @js((string) $listedata->uniteid), @js($listedata->description))"
+                                        title="MODIFIER"
+                                        class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button type="button" onclick="deleteDepartement({{ $listedata->id }})"
+                                        title="SUPPRIMER"
+                                        class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="px-6 py-8 text-center text-text-secondary">Aucun département</td>
+                    </tr>
+                @endforelse
+                </tbody>
+            </table>
         </div>
-
     </div>
-
-    <div id="getalldata" data-url="{{ url('departements') }}"></div>
 
     @include('configuration.departement.modal_add')
     @include('configuration.departement.edit')
+
+    <script>
+        function deleteDepartement(id) {
+            if (!confirm("Êtes-vous sûr de vouloir supprimer ce département ?")) return;
+            fetch('{{ url('delete/departements/data') }}?id=' + id, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            })
+            .then(r => r.json())
+            .then(data => { if (data === 'success') { window.location.reload(); } else { alert("Erreur lors de la suppression."); } })
+            .catch(() => alert("Erreur lors de la suppression."));
+        }
+    </script>
 
 @endsection

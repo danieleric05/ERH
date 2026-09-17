@@ -24,8 +24,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        // Cesse automatiquement les contrats à durée déterminée (Journalier/CDD/Stage) arrivés
+        // à échéance sans reconduction, chaque nuit à 1h.
+        $schedule->command('erh:cesser-contrats-expires --apply')
+                 ->dailyAt('01:00')
+                 ->withoutOverlapping();
     }
 
     /**

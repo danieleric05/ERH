@@ -16,7 +16,13 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name',
+        'email',
+        'password',
+        'pseudo',
+        'idrole',
+        'statut_id',
+        'derniere_cnx',
     ];
 
     /**
@@ -35,5 +41,28 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'derniere_cnx' => 'datetime',
+        'idrole' => 'integer',
+        'statut_id' => 'integer',
     ];
+
+    /**
+     * Check if user account is active.
+     *
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->statut_id === 1;
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'idrole');
+    }
+
+    public function unite()
+    {
+        return $this->belongsTo(Unite::class, 'idunite');
+    }
 }
