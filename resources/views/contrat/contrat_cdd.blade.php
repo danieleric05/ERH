@@ -101,7 +101,7 @@
 
     <!-- En-tete du document -->
     <div class="header">
-        <img src="{{ base_path('../rhassets/images/contrat_CDD.png') }}" style="width: 100%;">
+        <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 100%;">
     </div>
 
     <div class="section">

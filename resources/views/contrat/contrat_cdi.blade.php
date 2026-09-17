@@ -111,7 +111,7 @@
     <table class="header-table">
         <tr>
             <td rowspan="2" style="width: 20%;">
-                <img src="{{ base_path('../rhassets/images/contrat_CDI.png') }}">
+                <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 100%;">
             </td>
             <td style="width: 55%;">
                 <span class="bold">Direction des Ressources Humaines</span><br>
