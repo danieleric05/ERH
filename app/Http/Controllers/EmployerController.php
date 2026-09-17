@@ -368,7 +368,7 @@ class EmployerController extends Controller
         $verif_mat = Travailleur::where('matricule', strtoupper($request->matricule))->first();
 
         if ($verif_mat) {
-            return Redirect::back()->withErrors("Désoler ce matricule a été deja utilisé.");
+            return Redirect::back()->withInput()->withErrors("Désoler ce matricule a été deja utilisé, veuillez en choisir un autre.");
         } else {
 
             $chaine = $request->matricule;
@@ -581,7 +581,7 @@ class EmployerController extends Controller
         $verif_mat = Travailleur::where('matricule', strtoupper($request->matricule))->first();
 
         if ($verif_mat) {
-            return Redirect::back()->withErrors("Désoler ce matricule a été deja utilisé.");
+            return Redirect::back()->withInput()->withErrors("Désoler ce matricule a été deja utilisé, veuillez en choisir un autre.");
         } else {
 
             $chaine = $request->matricule;

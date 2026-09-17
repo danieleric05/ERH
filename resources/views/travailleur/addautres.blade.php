@@ -51,10 +51,10 @@
                 <div>
                     <label for="matricule" class="block text-sm font-medium text-text-primary mb-2">Matricule</label>
                     <input required type="text" name="matricule" id="matricule"
-                        value="A000"
+                        value="{{ old('matricule', 'A000') }}"
                         placeholder="Le matricule"
                         class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-bold text-text-primary"
-                        maxlength="50" readonly>
+                        maxlength="50">
                 </div>
 
                 <!-- Nom -->
