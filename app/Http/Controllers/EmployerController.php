@@ -661,12 +661,15 @@ class EmployerController extends Controller
 
     public function post_edit_travailleur($id, Request $request)
     {
-        //dd($request->paysid);
-        /* $cmpte = Travailleur::where('matricule', '!=', $request->matricule)->first();
-        dd('okkkkk');
-        if($cmpte){
-            return Redirect::back()->withErrors("Désoler le matricule existe deja dans la base de donnée, veuillez modifier a nouveau.");
-        } else{*/
+        $travail = Travailleur::find($id);
+
+        $nouveauMatricule = strtoupper($request->matricule);
+        if ($nouveauMatricule !== $travail->matricule) {
+            $verif_mat = Travailleur::where('matricule', $nouveauMatricule)->where('id', '!=', $id)->first();
+            if ($verif_mat) {
+                return Redirect::back()->withInput()->withErrors("Désolé, ce matricule est déjà utilisé par un autre travailleur.");
+            }
+        }
 
         //$datefincontrat = date( "Y-m-d", strtotime( "$request->dateembauche +330 day" ) );
         $chaine = $request->matricule;
@@ -677,8 +680,7 @@ class EmployerController extends Controller
         $prenom_un = substr(strtoupper($request->prenom), 0, 19);
         $prenom_deux = substr(strtoupper($request->prenom), 19, $nbre_car);
 
-        $travail = Travailleur::find($id);
-        $travail->matricule = $request->matricule;
+        $travail->matricule = $nouveauMatricule;
         $travail->civilite = $request->civilite;
         $travail->nom = strtoupper($request->nom);
         $travail->prenom = $prenom_un;

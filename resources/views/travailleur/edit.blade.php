@@ -74,10 +74,10 @@
                     <!-- Matricule -->
                     <div>
                         <label for="matricule" class="block text-sm font-medium text-text-primary mb-2">Matricule</label>
-                        <input type="text" name="matricule" id="matricule"
-                            value="{{ $edit->matricule }}"
-                            class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-gray-50 text-text-primary font-bold"
-                            readonly>
+                        <input required type="text" name="matricule" id="matricule"
+                            value="{{ old('matricule', $edit->matricule) }}"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg text-text-primary font-bold"
+                            maxlength="50">
                     </div>
 
                     <!-- Nom -->
