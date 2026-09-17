@@ -324,6 +324,7 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
     Route::get("/liste-travailleurs-etapes-deux", [RecruController::class, 'listetravailleurs'])->name("listetravailleurs");
     Route::get("/liste-tous-les-travailleurs", [RecruController::class, 'liste_tous_travailleurs'])->name("liste_tous_travailleurs");
     Route::get("/tous-les-travailleurs", [RecruController::class, 'liste_travailleurs'])->name("liste_travailleurs");
+    Route::get("/travailleurs/autocomplete", [RecruController::class, 'autocompleteTravailleurs'])->name("travailleurs.autocomplete");
     Route::get("/liste-certificat-de-travails", [RecruController::class, 'liste_certificat_travail'])->name("liste_certificat_travail");
     Route::get("/historiques-travailleurs", [RecruController::class, 'historique'])->name("historiques");
     Route::get("/patient-recu/{id}", [RecruController::class, 'patientrexu'])->name("patientrexu");

@@ -35,25 +35,7 @@
                 : '';
         @endphp
 
-        {{-- Search Form + taille de page --}}
-        <div class="mb-6 flex justify-end items-center gap-3">
-            <form method="GET" action="{{ route('liste_travailleurs') }}">
-                <select name="per_page" onchange="this.form.submit()" class="px-3 py-2 border border-slate-300 rounded-lg text-sm">
-                    @foreach([25, 50, 100, 200] as $n)
-                        <option value="{{ $n }}" @selected((int) request('per_page', 50) === $n)>{{ $n }} / page</option>
-                    @endforeach
-                </select>
-                @if(request('search'))<input type="hidden" name="search" value="{{ request('search') }}">@endif
-                @if(request('sort'))<input type="hidden" name="sort" value="{{ request('sort') }}">@endif
-                @if(request('dir'))<input type="hidden" name="dir" value="{{ request('dir') }}">@endif
-            </form>
-            <form action="{{ route('liste_travailleurs') }}" method="GET" class="flex items-center max-w-lg">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher par nom, prénom, matricule..." class="w-full px-4 py-2 border border-slate-300 rounded-l-lg focus:ring-primary-accent focus:border-primary-accent transition-shadow" autocomplete="off">
-                <button type="submit" class="px-4 py-2 bg-primary-accent text-white font-semibold rounded-r-lg hover:bg-plastica-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-accent transition-colors">
-                    <i class="fa fa-search"></i>
-                </button>
-            </form>
-        </div>
+        @include('travailleur._search')
 
         {{-- Tableau --}}
         <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden">

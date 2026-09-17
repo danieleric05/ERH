@@ -150,8 +150,40 @@ class RecruController extends Controller
         return view('travailleur.liste_tous_travailleur', compact('data_Travailleur', 'cessesReels'));
     }
 
-    public function liste_certificat_travail(){
-        $data_certificat_travail = Travailleur::where('etapeid', '!=' ,3)->where('etapeid',4)->orderBy('id', 'DESC')->get();
+    public function autocompleteTravailleurs(Request $request){
+        $q = trim((string) $request->input('q', ''));
+        if (mb_strlen($q) < 2) {
+            return response()->json([]);
+        }
+        $results = Travailleur::where(function($query) use ($q) {
+                $query->where('nom', 'like', "%{$q}%")
+                      ->orWhere('prenom', 'like', "%{$q}%")
+                      ->orWhere('matricule', 'like', "%{$q}%");
+            })
+            ->limit(8)
+            ->get(['id', 'matricule', 'nom', 'prenom']);
+
+        return response()->json($results);
+    }
+
+    public function liste_certificat_travail(Request $request){
+        $query = Travailleur::where('etapeid', '!=' ,3)->where('etapeid',4);
+
+        if (!empty($request->input('search'))) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('nom', 'like', "%{$search}%")
+                  ->orWhere('prenom', 'like', "%{$search}%")
+                  ->orWhere('matricule', 'like', "%{$search}%");
+            });
+        }
+
+        $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];
+        $sort = $sortable[$request->input('sort')] ?? 'id';
+        $dir = $request->input('dir') === 'asc' ? 'asc' : 'desc';
+        $perPage = in_array((int) $request->input('per_page'), [25, 50, 100, 200]) ? (int) $request->input('per_page') : 50;
+
+        $data_certificat_travail = $query->orderBy($sort, $dir)->paginate($perPage)->appends($request->query());
         $equipesById = Equipes::whereIn('id', $data_certificat_travail->pluck('equipeid'))->get()->keyBy('id');
         return view('travailleur.liste_certificat_travail', compact('data_certificat_travail', 'equipesById'));
     }
