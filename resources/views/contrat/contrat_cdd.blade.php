@@ -16,13 +16,22 @@
             line-height: 1.4;
         }
 
-        .header {
-            text-align: center;
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 15px;
         }
 
-        .header img {
-            max-width: 100%;
+        .header-table td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: center;
+            font-size: 10px;
+            vertical-align: middle;
+        }
+
+        .header-table img {
+            max-width: 80px;
             height: auto;
         }
 
@@ -91,23 +100,56 @@
     if(in_array($travailleur->civilite, ['Mlle', 'Mlle.', 'Mademoiselle'])) $civilite = 'Mademoiselle';
     elseif(in_array($travailleur->civilite, ['Mme', 'Mme.', 'Madame'])) $civilite = 'Madame';
 
-    $nomComplet = strtoupper($travailleur->nom ?? '') . ' ' . strtoupper($travailleur->prenom ?? '') . ' ' . strtoupper($travailleur->prenom_suite ?? '');
+    $nomComplet = trim(strtoupper($travailleur->nom ?? '') . ' ' . strtoupper($travailleur->prenom ?? '') . ' ' . strtoupper($travailleur->prenom_suite ?? ''));
     $fonction = $travailleur->fonction_entrepriseid ? (\App\Fonction::where('id', $travailleur->fonction_entrepriseid)->first()?->label ?? '') : '';
     $categorie = $travailleur->categorieid ? (\App\Categories::where('id', $travailleur->categorieid)->first()?->label ?? '2') : '2';
-    $unite = $travailleur->uniteid ? (\App\Unites::where('id', $travailleur->uniteid)->first()?->label ?? '') : '';
     $commune = $travailleur->communeid ? (\App\Commune::where('id', $travailleur->communeid)->first()?->label ?? '') : '';
     $nationalite = $travailleur->nationaliteid ? (\App\Pays::where('id', $travailleur->nationaliteid)->value('nationalite') ?? 'IVOIRIENNE') : 'IVOIRIENNE';
+
+    $primePhrase = $travailleur->prime_transport
+        ? ' Une prime mensuelle nette de transport de <span class="bold">' . number_format($travailleur->prime_transport, 0, ',', ' ') . ' F</span> CFA.'
+        : '';
+
+    // Durée du CDD en mois, écrite en toutes lettres (Code du Travail exige une durée déterminée précise)
+    $moisEnLettres = [1=>'Un',2=>'Deux',3=>'Trois',4=>'Quatre',5=>'Cinq',6=>'Six',7=>'Sept',8=>'Huit',9=>'Neuf',10=>'Dix',11=>'Onze',12=>'Douze',13=>'Treize',14=>'Quatorze',15=>'Quinze',16=>'Seize',17=>'Dix-sept',18=>'Dix-huit',19=>'Dix-neuf',20=>'Vingt',21=>'Vingt-et-un',22=>'Vingt-deux',23=>'Vingt-trois',24=>'Vingt-quatre',25=>'Vingt-cinq',26=>'Vingt-six',27=>'Vingt-sept',28=>'Vingt-huit',29=>'Vingt-neuf',30=>'Trente',31=>'Trente-et-un',32=>'Trente-deux',33=>'Trente-trois',34=>'Trente-quatre',35=>'Trente-cinq',36=>'Trente-six'];
+    $dureeMois = 0;
+    if ($travailleur->date_debut_contrat && $travailleur->date_fin_contrat) {
+        try {
+            $dureeMois = (int) round(\Carbon\Carbon::parse($travailleur->date_debut_contrat)->diffInMonths(\Carbon\Carbon::parse($travailleur->date_fin_contrat)));
+        } catch (\Throwable $e) {
+            $dureeMois = 0;
+        }
+    }
+    $dureeMoisLettres = $moisEnLettres[$dureeMois] ?? null;
     @endphp
 
     <!-- En-tete du document -->
-    <div class="header">
-        <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 100%;">
-    </div>
+    <table class="header-table">
+        <tr>
+            <td rowspan="2" style="width: 20%;">
+                <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 100%;">
+            </td>
+            <td style="width: 55%;">
+                <span class="bold">Direction des Ressources Humaines</span><br>
+                Enregistrement<br>
+                <span class="bold" style="font-size: 12px;">CONTRAT DE TRAVAIL À DURÉE DÉTERMINÉE À TERME PRÉCIS</span>
+            </td>
+            <td style="width: 25%;">
+                Ref: ENR-RH-022<br>
+                Version: 01<br>
+                Du: 09/08/2021
+            </td>
+        </tr>
+        <tr>
+            <td>Gérer les ressources humaines</td>
+            <td>Page: 1/4</td>
+        </tr>
+    </table>
 
     <div class="section">
         <span class="bold underline">Entre les soussignés,</span>
         <br><br>
-        1) La Société dénommée &laquo; <span class="bold">PLASTICA CI</span> &raquo;, Société par Actions Simplifiée Unipersonnelle (SASU) au capital de deux milliards (2.000.000.000) FRANCS CFA, dont le siège social est fixé à ABIDJAN Zone Industrielle de KOUMASSI, 05 Boîte Postale 2160 Abidjan 05, immatriculée au Registre de Commerce et du Crédit Mobilier d'ABIDJAN sous le numéro CI-ABJ-1999-B-249382, déclarée à la CNPS sous le numéro <span class="bold">82408</span>.
+        1) La Société dénommée &laquo; <span class="bold">PLASTICA CI</span> &raquo;, Société par Actions Simplifiée Unipersonnelle (SASU) au capital de deux milliards (2 000.000.000) FRANCS CFA, dont le siège social est fixé à ABIDJAN Zone Industrielle de KOUMASSI, 05 Boîte Postale 2160 Abidjan 05, immatriculée au Registre de Commerce et du Crédit Mobilier d'ABIDJAN sous le numéro CI-ABJ-1999-B-249382, déclarée à la CNPS sous le numéro <span class="bold">82408</span>.
         <br><br>
         Représentée par Monsieur <span class="bold">BADREDDINE Abbas</span>, Gérant, demeurant en son siège.
         <br><br>
@@ -148,82 +190,91 @@
         <p class="article-title">Article 1er - TEXTES RÉGISSANT LE PRÉSENT CONTRAT</p>
         La SASU PLASTICA CI engage en qualité de <span class="bold">{{ $fonction }}</span> <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> sous réserve des résultats de la visite médicale d'embauche et conformément aux :
         <br><br>
-        a) dispositions de la loi N° 2015-532 du 20 juillet 2015 portant Code du Travail et des textes réglementaires pris pour son application.
+        a) dispositions de la loi N° 2015 – 532 du 20 juillet 2015 portant Code du Travail et des textes réglementaires pris pour son application.
         <br><br>
-        b) dispositions de la Convention Collective Interprofessionnelle de Côte d'Ivoire en date du 20 Juillet 1977, ensemble ses avenants et annexes et décisions de commissions mixtes qui ont modifié et complété cette convention ou qui viendraient à la modifier ou à la compléter.
+        b) dispositions de la Convention Collective Interprofessionnelle de Côte d'Ivoire en date du 20 Juillet 1977, ensemble les avenants et décisions de commissions mixtes qui ont modifié et complété cette convention ou qui viendraient à la modifier ou à la compléter.
         <br><br>
-        c) dispositions du Règlement Intérieur de PLASTICA CI dont le Travailleur reconnaît avoir pris connaissance.
+        c) dispositions du Règlement Intérieur de la SASU PLASTICA CI dont le Travailleur déclare reconnaître avoir pris connaissance.
         <br><br>
-        d) Consignes techniques d'exploitation et de fabrication de PLASTICA CI, telles qu'elles lui seront inculquées par la Direction de PLASTICA CI et par ses supérieurs hiérarchiques.
+        d) Consignes techniques d'exploitation et de fabrication de la SASU PLASTICA CI, telles qu'elles lui seront inculquées par la Direction de PLASTICA CI et par ses supérieurs hiérarchiques.
     </div>
 
     <div class="section">
-        <p class="article-title">Article 2 - NATURE ET DURÉE DU CONTRAT</p>
-        Le présent contrat est conclu pour une durée déterminée de <span class="bold">12 (douze) mois</span>, du <span class="bold">{{ $tabDateDebut[2] }}/{{ $tabDateDebut[1] }}/{{ $tabDateDebut[0] }}</span> au <span class="bold">{{ $tabDateFin[2] }}/{{ $tabDateFin[1] }}/{{ $tabDateFin[0] }}</span>.
-        <br><br>
-        À son terme, le présent contrat pourra être renouvelé par voie d'avenant, conformément aux dispositions du Code du Travail et de la Convention Collective Interprofessionnelle de Côte d'Ivoire.
-    </div>
-
-    <div class="section">
-        <p class="article-title">Article 3 - PÉRIODE D'ESSAI</p>
-        Les trois (03) premiers mois du présent contrat sont considérés comme période d'essai. Durant cette période, chacune des parties pourra rompre le contrat sans préavis ni indemnité, conformément aux dispositions du Code du Travail.
-    </div>
-
-    <div class="section">
-        <p class="article-title">Article 4 - FONCTIONS</p>
-        Le Travailleur est engagé en qualité de <span class="bold">{{ $fonction }}</span>, catégorie <span class="bold">{{ $categorie }}</span>.
-        <br><br>
-        Il exercera ses fonctions au sein de l'unité <span class="bold">{{ $unite }}</span> ou de tout autre service de l'entreprise où ses compétences seraient requises.
-    </div>
-
-    <div class="section">
-        <p class="article-title">Article 5 - LIEU DE TRAVAIL</p>
-        Le Travailleur exercera ses fonctions à ABIDJAN, Zone Industrielle de KOUMASSI, siège social de la SASU PLASTICA CI, ou en tout autre lieu où l'employeur pourrait être amené à exercer ses activités.
-    </div>
-
-    <div class="section">
-        <p class="article-title">Article 6 - HORAIRES DE TRAVAIL</p>
-        Le Travailleur exerce son activité en équipe tournante de 06H à 14H ou de 14H à 22H ou de 22H à 06H ou de 07H à 15H ou de 08H à 16H ou autres horaires variables, dans la limite de quarante (40) heures par semaine.
-    </div>
-
-    <div class="section">
-        <p class="article-title">Article 7 - RÉMUNÉRATION</p>
-        @php
-            $primePhrase = $travailleur->prime_transport
-                ? ', ainsi qu\'une prime mensuelle nette de transport de <span class="bold">' . number_format($travailleur->prime_transport, 0, ',', ' ') . ' F</span> CFA'
-                : '';
-        @endphp
-        @if($travailleur->type_remuneration == 2)
-            En contrepartie de son travail, le Travailleur percevra une rémunération mensuelle de base de <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA, à laquelle s'ajoute un sursalaire de <span class="bold">{{ number_format($travailleur->sursalaire ?? 0, 0, ',', ' ') }} F</span> CFA{!! $primePhrase !!}.
+        <p class="article-title">Article 2 - DURÉE DU CONTRAT ET PÉRIODE D'ESSAI</p>
+        Le présent contrat de Travail est à <span class="bold">DURÉE DÉTERMINÉE</span> de
+        @if($dureeMoisLettres)
+            <span class="bold">{{ $dureeMois }} ({{ $dureeMoisLettres }}) mois</span>
         @else
-            En contrepartie de son travail, le Travailleur percevra une rémunération mensuelle nette de <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA{!! $primePhrase !!}.
+            <span class="bold">{{ $dureeMois }} mois</span>
         @endif
-        <br><br>
-        Le salaire sera payé mensuellement, par virement bancaire ou tout autre moyen de paiement légal.
+        qui commenceront à courir à partir du <span class="bold">{{ $tabDateDebut[2] }}/{{ $tabDateDebut[1] }}/{{ $tabDateDebut[0] }}</span> pour se terminer le <span class="bold">{{ $tabDateFin[2] }}/{{ $tabDateFin[1] }}/{{ $tabDateFin[0] }}</span>.
     </div>
 
     <div class="section">
-        <p class="article-title">Article 8 - OBLIGATIONS DU TRAVAILLEUR</p>
-        Le Travailleur s'engage à :
+        <p class="article-title">Article 3 - CLASSEMENT CATÉGORIEL</p>
+        Le salarié est classé en Catégorie <span class="bold">{{ $categorie }}</span> des Ouvriers et Employés de la Convention Collective Interprofessionnelle de Côte d'Ivoire en date du 20 Juillet 1977.
+    </div>
+
+    <div class="section">
+        <p class="article-title">Article 4 - RÉMUNÉRATION MENSUELLE</p>
+        @if($travailleur->type_remuneration == 2)
+            La rémunération mensuelle de base de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA.
+            <br>
+            Un sursalaire de <span class="bold">{{ number_format($travailleur->sursalaire ?? 0, 0, ',', ' ') }} F</span> CFA.
+        @else
+            La rémunération mensuelle nette de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA.
+        @endif
+        {!! $primePhrase !!}
+    </div>
+
+    <div class="section">
+        <p class="article-title">Article 5 - HORAIRES DE TRAVAIL</p>
+        Le salarié s'engage par les présentes à respecter les horaires de travail de l'employeur comme ci-dessous définis :
+        <br>
+        Les jours de travail : Lundi au Samedi ;
+        <br>
+        Durée maximale légale de la journée de travail : 08 heures par jour (article 21-1 du Code du Travail).
+        <br><br>
+        Toutefois, l'Employeur peut à tout moment demander au travailleur d'effectuer des heures supplémentaires pour nécessité de service.
+    </div>
+
+    <div class="section">
+        <p class="article-title">Article 6 - EXERCICE DES FONCTIONS DU SALARIE</p>
+        Le salarié exercera ses fonctions dans le respect du présent contrat de travail, du règlement intérieur, des consignes et ordres de services qui lui seront donnés par l'employeur.
+        <br><br>
+        Le salarié exercera son travail sur le site du siège social de la société PLASTICA CI. Il peut cependant avoir à exercer sur tout autre site auquel l'employeur pourra l'affecter pour des nécessités de service dont l'employeur est seul Juge.
+    </div>
+
+    <div class="section">
+        <p class="article-title">Article 7 - OBLIGATIONS PROFESSIONNELLES DU SALARIE</p>
+        Le salarié s'engage expressément à exécuter toutes les obligations qui lui sont prescrites par son employeur dans le cadre de ses fonctions :
         <div class="obligations-list">
-            - Exécuter consciencieusement les tâches qui lui seront confiées ;<br>
-            - Respecter les consignes de travail, de sécurité et d'hygiène ;<br>
-            - Observer une discrétion absolue sur les affaires de l'entreprise ;<br>
-            - Ne pas exercer d'activité concurrente pendant la durée du contrat ;<br>
-            - Respecter le Règlement Intérieur de l'entreprise.
+            * Dans les limites de son contrat, le travailleur doit toute son activité professionnelle à la SASU PLASTICA CI. Il doit notamment fournir le travail pour lequel il a été embauché, l'exécuter lui-même et avec soin (Article 16.3 Code du Travail) et réaliser les objectifs professionnels qui lui seront fixés par l'employeur.<br>
+            * Respecter et appliquer consciencieusement toutes les instructions de travail, tous les plans de travail, les missions et consignes particulières de travail, qui lui seront données verbalement ou par écrit, par l'employeur.<br>
+            * Toujours avoir au service de la SASU PLASTICA CI, un comportement exemplaire et honorable.<br>
+            * Se conformer strictement aux notes de service et au Règlement Intérieur de la SASU PLASTICA CI.<br>
+            * Observer une absolue obligation de confidentialité en s'interdisant la divulgation de toute information, procédure ou procédé de fabrication ou de commercialisation qui serait de nature à servir ou favoriser des intérêts concurrentiels à la SASU PLASTICA CI, et s'interdire, en dehors de son temps de travail à PLASTICA CI, d'exercer toute activité à caractère professionnel susceptible de concurrencer son employeur PLASTICA CI ou de nuire à la bonne exécution des services contractuellement convenus avec la SASU PLASTICA CI.<br>
+            * Se soumettre une fois par an, à la visite médicale systématique prévue par le Code du Travail.
         </div>
+        <br>
+        Tout manquement à une ou l'autre de ses obligations professionnelles par l'Employé(e) au cours du présent contrat de travail, constituera une faute dont la gravité, à l'appréciation de l'employeur, peut justifier le licenciement immédiat du salarié.
     </div>
 
     <div class="section">
-        <p class="article-title">Article 9 - RUPTURE DU CONTRAT</p>
-        Le présent contrat prendra fin de plein droit à l'échéance du terme prévu.
+        <p class="article-title">Article 8 - RUPTURE ANTICIPÉE</p>
+        À l'appréciation de l'employeur, toute faute lourde du salarié peut justifier la rupture anticipée du présent contrat de travail par l'employeur, sans préavis ni indemnité d'aucune sorte.
         <br><br>
-        Toutefois, il pourra être rompu avant terme en cas de faute grave ou lourde de l'une des parties, de force majeure, ou d'un commun accord entre les parties, conformément aux dispositions du Code du Travail.
+        Au demeurant, chacune des parties pourra, en cours d'exécution du présent contrat, prendre l'initiative de sa rupture anticipée sous réserve d'observer et notifier à l'autre partie, le préavis applicable à la catégorie professionnelle dont relève l'employé.
     </div>
 
     <div class="section">
-        <p class="article-title">Article 10 - CONGÉS PAYÉS</p>
+        <p class="article-title">Article 9 - CONGÉS PAYÉS</p>
         Le travailleur aura droit à un congé annuel de 2,2 jours ouvrables par mois de travail, le droit de jouissance aux congés étant acquis après une durée de service effectif égale à un (01) an, soit douze (12) mois et conformément à la réglementation du travail en Côte d'Ivoire.
+    </div>
+
+    <div class="section">
+        <p class="article-title">Article 10 - ACCIDENT DU TRAVAIL ET MALADIES PROFESSIONNELLES</p>
+        En cas d'accident survenu dans le travail ou de maladie professionnelle, les droits et obligations de chacune des parties seront réglés conformément aux textes qui régissent la matière. Il en est de même pour les maladies non professionnelles occasionnant l'absence du travailleur à son poste.
     </div>
 
     <div class="section">
@@ -241,20 +292,24 @@
     <div class="section">
         <p class="article-title">Article 13 - DIFFÉRENDS</p>
         Tous différends qui pourraient s'élever à l'occasion de l'exécution du présent contrat seront réglés conformément aux dispositions des textes législatifs ou réglementaires en vigueur et à celles de la Convention Collective Interprofessionnelle de Côte d'Ivoire et des modifications éventuelles ultérieures de ces textes, et à défaut, aux usages locaux réglant les rapports des employeurs et salariés auxquels les parties déclarent formellement se soumettre.
-        <br><br>
-        Fait à Abidjan en deux (02) exemplaires originaux, le <span class="bold">{{ $tabDateDebut[2] }}/{{ $tabDateDebut[1] }}/{{ $tabDateDebut[0] }}</span>
+    </div>
+
+    <div class="section">
+        Fait à Abidjan, le <span class="bold">{{ $tabDateDebut[2] }}/{{ $tabDateDebut[1] }}/{{ $tabDateDebut[0] }}</span> en deux (02) exemplaires originaux de quatre (04) pages.
     </div>
 
     <table class="signatures">
         <tr>
             <td class="text-left">
-                <span class="bold">LE TRAVAILLEUR</span><br>
-                <i>(Lu et approuvé)</i><br><br><br><br>
+                <span class="bold">Le Travailleur</span><br>
+                <span class="bold">{{ $civilite }} {{ $nomComplet }}</span><br>
+                <i>(Signature précédée de la mention "Date, Lu et approuvé")</i><br><br><br><br>
                 _______________________
             </td>
             <td class="text-right">
-                <span class="bold">L'EMPLOYEUR</span><br>
-                <i>Pour la SASU PLASTICA CI</i><br><br><br><br>
+                <span class="bold">L'Employeur</span><br>
+                <span class="bold">Abbas BADREDDINE</span><br>
+                <i>(Le P.D.G)</i><br><br><br><br>
                 _______________________
             </td>
         </tr>
