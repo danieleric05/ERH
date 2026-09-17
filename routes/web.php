@@ -30,7 +30,7 @@ Route::get("/", function () {
     return view("login");
 });
 Route::get("/se-connecter", [HomeController::class, 'logining'])->name("login");
-Route::post("post_login", [HomeController::class, 'post_login']);
+Route::post("post_login", [HomeController::class, 'post_login'])->middleware('throttle:5,1');
 
 // Routes nécessitant une authentification
 Route::middleware(['auth'])->group(function () {
