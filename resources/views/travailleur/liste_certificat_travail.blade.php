@@ -19,6 +19,8 @@
         </div>
     </div>
 
+    @include('travailleur._tabs')
+
     <!-- Messages Section -->
     @include('success')
     @include('errors')

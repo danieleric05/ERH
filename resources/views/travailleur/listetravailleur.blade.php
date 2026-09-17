@@ -5,7 +5,7 @@
     <div class="mb-8">
         <div class="flex items-center justify-between">
             <div class="flex-1">
-                <h1 class="text-3xl font-bold text-text-primary mb-4">Liste des travailleurs actifs</h1>
+                <h1 class="text-3xl font-bold text-text-primary mb-4">Journaliers</h1>
                 <nav class="flex items-center space-x-2 text-sm text-text-secondary">
                     <a href="{{ url('bienvenue') }}" class="hover:text-text-primary">
                         <i class="fa fa-home"></i> Accueil
@@ -13,31 +13,13 @@
                     <span class="text-text-secondary">/</span>
                     <span>Recrutement</span>
                     <span class="text-text-secondary">/</span>
-                    <span class="text-text-primary font-semibold">Liste des travailleurs</span>
+                    <span class="text-text-primary font-semibold">Journaliers</span>
                 </nav>
             </div>
         </div>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="mb-6 flex flex-wrap gap-2">
-        <a href="{{ route('liste_travailleurs') }}"
-           class="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-800 transition text-sm font-medium">
-            <i class="fa fa-users"></i> Tous les travailleurs
-        </a>
-        <a href="{{ url('liste-embauches') }}"
-           class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium">
-            <i class="fa fa-user-plus"></i> Embauchés
-        </a>
-        <a href="{{ route('liste_declarations') }}"
-           class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
-            <i class="fa fa-file-text"></i> Non déclarés
-        </a>
-        <a href="{{ route('liste_cessations') }}"
-           class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm font-medium">
-            <i class="fa fa-ban"></i> En cessations
-        </a>
-    </div>
+    @include('travailleur._tabs')
 
     <!-- Messages Section -->
     @include('success')

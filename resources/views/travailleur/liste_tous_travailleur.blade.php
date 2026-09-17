@@ -4,7 +4,7 @@
     <div class="px-6 py-8">
         {{-- En-tête avec Breadcrumb et Titre --}}
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-3xl font-bold text-text-primary">Liste des travailleurs actifs</h1>
+            <h1 class="text-3xl font-bold text-text-primary">Tous les travailleurs</h1>
             <nav class="text-sm font-medium text-slate-500" aria-label="Breadcrumb">
                 <ol class="flex items-center space-x-2">
                     <li><a href="{{ url('bienvenue') }}" class="text-primary-accent hover:text-plastica-blue"><i class="fa fa-home"></i></a></li>
@@ -22,21 +22,7 @@
         @include('success')
         @include('errors')
 
-        {{-- Boutons de navigation --}}
-        <div class="flex flex-wrap gap-3 mb-6">
-            <a href="{{ route('liste_travailleurs') }}" class="inline-flex items-center px-4 py-2 bg-slate-700 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-slate-800 transition-colors">
-                <i class="fa fa-users mr-2"></i> Tous les travailleurs
-            </a>
-            <a href="{{ url('liste-embauches') }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 transition-colors">
-                <i class="fa fa-user-plus mr-2"></i> Travailleurs embauchés
-            </a>
-            <a href="{{ route('liste_cessations') }}" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 transition-colors">
-                <i class="fa fa-ban mr-2"></i> Cessations
-            </a>
-            <a href="{{ route('liste_declarations') }}" class="inline-flex items-center px-4 py-2 bg-primary-accent border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-plastica-blue transition-colors">
-                <i class="fa fa-exclamation-circle mr-2"></i> Non déclarés
-            </a>
-        </div>
+        @include('travailleur._tabs')
 
         @php
             $sortLink = fn($col) => request()->fullUrlWithQuery([

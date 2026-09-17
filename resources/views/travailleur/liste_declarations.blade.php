@@ -19,21 +19,7 @@
         </div>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="mb-6 flex flex-wrap gap-2">
-        <a href="{{ route('liste_travailleurs') }}"
-           class="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-800 transition text-sm font-medium">
-            <i class="fa fa-users"></i> Tous les travailleurs
-        </a>
-        <a href="{{ url('liste-embauches') }}"
-           class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium">
-            <i class="fa fa-user-plus"></i> Embauchés
-        </a>
-        <a href="{{ route('liste_cessations') }}"
-           class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm font-medium">
-            <i class="fa fa-ban"></i> En cessations
-        </a>
-    </div>
+    @include('travailleur._tabs')
 
     <!-- Messages Section -->
     @include('success')
