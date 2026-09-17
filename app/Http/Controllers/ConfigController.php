@@ -344,6 +344,7 @@ class ConfigController extends Controller
     public function addpays(Request $get){
         $insert = Pays::insert([
             "label" => $get->label,
+            "nationalite" => $get->nationalite,
             "userid" => Auth::user()->id,
             "created_at" => Carbon::now(),
         ]);
@@ -366,6 +367,7 @@ class ConfigController extends Controller
 
         $update = Pays::where("id", $get->id)->update([
             "label" => $get->label,
+            "nationalite" => $get->nationalite,
             "userid" => Auth::user()->id,
             "updated_at" => Carbon::now()
         ]);
