@@ -264,8 +264,8 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
             ->limit(10)
             ->get();
 
-        $maj_big = ''; 
-        if ($data_journalier) { 
+        $maj_big = '';
+        if ($data_journalier) {
             foreach ($mat_journalier as $jour) {
                 if ($data_journalier->matricule < $jour->matricule) {
                     $maj_big = substr($jour->matricule, 4);
@@ -275,11 +275,43 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
             }
         }
 
+        // Même calcul que ci-dessus, pour le préfixe "E" (Embauché CDD/CDI).
+        // Préfixe réel "E0" (2 caractères), contre "J000" (4) pour les journaliers.
+        $termE = "E";
+        $data_embauche = \App\Travailleur::where(
+            "matricule",
+            "like",
+            "%" . $termE . "%",
+        )
+            ->latest("id")
+            ->first();
+
+        $mat_embauche = \App\Travailleur::where(
+            "matricule",
+            "like",
+            "%" . $termE . "%",
+        )
+            ->orderBy("id", "DESC")
+            ->limit(10)
+            ->get();
+
+        $maj_big_e = '';
+        if ($data_embauche) {
+            foreach ($mat_embauche as $emb) {
+                if ($data_embauche->matricule < $emb->matricule) {
+                    $maj_big_e = substr($emb->matricule, 2);
+                } else {
+                    $maj_big_e = substr($data_embauche->matricule, 2);
+                }
+            }
+        }
+
         return view(
             "travailleur.add",
             compact(
                 "data_journalier",
                 "maj_big",
+                "maj_big_e",
                 "data_typecontrat",
                 "data_pays",
                 "data_unites",
