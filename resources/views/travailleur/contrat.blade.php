@@ -32,20 +32,36 @@
                 Retour
             </a>
 
-            @if($edit_travailleur->idtype_contrat == 2)
-                <!-- CDD -->
-                <a href="{{ route('telechargerContratCDD',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}" target="_blank" title="CONTRAT CDD" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center">
-                    Télécharger Contrat CDD
+            @php
+                // Le préfixe du matricule (J/E) fait foi pour Journalier vs Embauché
+                // ailleurs dans l'app ; idtype_contrat n'est pas toujours renseigné
+                // (77 Embauchés avaient idtype_contrat=NULL au 2026-09-17), donc ne
+                // jamais défaut vers "Journalier" pour un matricule "E" au risque de
+                // générer le mauvais type de contrat.
+                $estJournalier = strtoupper(substr($edit_travailleur->matricule ?? '', 0, 1)) === 'J';
+            @endphp
+            @if($estJournalier)
+                <!-- Journalier -->
+                <a href="{{ route('telechargerContratJournalier',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}" target="_blank" title="CONTRAT JOURNALIER" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center">
+                    Télécharger Contrat Journalier
                 </a>
             @elseif($edit_travailleur->idtype_contrat == 3)
                 <!-- CDI -->
                 <a href="{{ route('telechargerContratCDI',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}" target="_blank" title="CONTRAT CDI" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center">
                     Télécharger Contrat CDI
                 </a>
+            @elseif($edit_travailleur->idtype_contrat == 2)
+                <!-- CDD -->
+                <a href="{{ route('telechargerContratCDD',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}" target="_blank" title="CONTRAT CDD" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center">
+                    Télécharger Contrat CDD
+                </a>
             @else
-                <!-- Journalier (default) -->
-                <a href="{{ route('telechargerContratJournalier',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}" target="_blank" title="CONTRAT JOURNALIER" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center">
-                    Télécharger Contrat Journalier
+                <!-- Type de contrat non renseigné : proposer les deux plutôt que deviner -->
+                <a href="{{ route('telechargerContratCDD',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}" target="_blank" title="CONTRAT CDD" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center">
+                    Télécharger Contrat CDD
+                </a>
+                <a href="{{ route('telechargerContratCDI',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}" target="_blank" title="CONTRAT CDI" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center">
+                    Télécharger Contrat CDI
                 </a>
             @endif
         </div>

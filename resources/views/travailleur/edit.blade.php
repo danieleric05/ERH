@@ -385,6 +385,54 @@
                 </div>
             </div>
 
+            <!-- SECTION 3.5: Rémunération (CDD/CDI) -->
+            <div class="mb-8" x-data="{ typeRem: '{{ old('type_remuneration', $edit->type_remuneration) }}' }">
+                <h3 class="text-lg font-semibold text-text-primary mb-4 pb-2 border-b border-slate-200">Rémunération</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    <!-- Type de rémunération -->
+                    <div>
+                        <label for="type_remuneration" class="block text-sm font-medium text-text-primary mb-2">Type de rémunération</label>
+                        <select name="type_remuneration" id="type_remuneration" x-model="typeRem"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
+                            <option value="">-SÉLECTIONNER-</option>
+                            <option value="1">Salaire net (montant unique)</option>
+                            <option value="2">Salaire de base + sursalaire</option>
+                        </select>
+                    </div>
+
+                    <!-- Salaire de base / net -->
+                    <div>
+                        <label for="salaire_base" class="block text-sm font-medium text-text-primary mb-2">
+                            <span x-show="typeRem == 2">Salaire de base</span>
+                            <span x-show="typeRem != 2">Salaire net</span>
+                        </label>
+                        <input type="number" step="0.01" name="salaire_base" id="salaire_base"
+                            value="{{ old('salaire_base', $edit->salaire_base) }}"
+                            placeholder="Montant en FCFA"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-bold text-text-primary">
+                    </div>
+
+                    <!-- Sursalaire (visible seulement si type = base + sursalaire) -->
+                    <div x-show="typeRem == 2" x-cloak>
+                        <label for="sursalaire" class="block text-sm font-medium text-text-primary mb-2">Sursalaire</label>
+                        <input type="number" step="0.01" name="sursalaire" id="sursalaire"
+                            value="{{ old('sursalaire', $edit->sursalaire) }}"
+                            placeholder="Montant en FCFA"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-bold text-text-primary">
+                    </div>
+
+                    <!-- Prime de transport -->
+                    <div>
+                        <label for="prime_transport" class="block text-sm font-medium text-text-primary mb-2">Prime de transport (nette)</label>
+                        <input type="number" step="0.01" name="prime_transport" id="prime_transport"
+                            value="{{ old('prime_transport', $edit->prime_transport) }}"
+                            placeholder="Montant en FCFA"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-bold text-text-primary">
+                    </div>
+                </div>
+            </div>
+
             <!-- SECTION 4: Documents -->
             <div class="mb-8">
                 <h3 class="text-lg font-semibold text-text-primary mb-4 pb-2 border-b border-slate-200">Documents (Facultatif)</h3>

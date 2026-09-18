@@ -112,31 +112,37 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         <div class="bg-white rounded-lg shadow-lg-soft p-5 border-t-4 border-plastica-blue">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="flex-shrink-0 text-plastica-blue text-2xl"><i class="fa fa-user"></i></div>
-                <div class="flex-1">
-                    <div class="text-sm font-medium text-text-secondary">Nombre d'embauchés</div>
-                    <h5 class="text-xl font-bold text-text-primary">{{ $data_embauche ?? 0 }}</h5>
+            <a href="{{ route('liste_embauches') }}" class="block hover:opacity-80 transition">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="flex-shrink-0 text-plastica-blue text-2xl"><i class="fa fa-user"></i></div>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-text-secondary">Nombre d'embauchés</div>
+                        <h5 class="text-xl font-bold text-text-primary">{{ $data_embauche ?? 0 }}</h5>
+                    </div>
                 </div>
-            </div>
+            </a>
             <hr class="my-4 border-slate-200">
-            <div class="flex items-center space-x-4">
-                <div class="flex-shrink-0 text-plastica-blue text-2xl"><i class="fa fa-users"></i></div>
-                <div class="flex-1">
-                    <div class="text-sm font-medium text-text-secondary">Nombre de journaliers</div>
-                    <h5 class="text-xl font-bold text-text-primary">{{ $data_journalier ?? 0 }}</h5>
+            <a href="{{ route('liste_tous_travailleurs') }}" class="block hover:opacity-80 transition">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0 text-plastica-blue text-2xl"><i class="fa fa-users"></i></div>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-text-secondary">Nombre de journaliers</div>
+                        <h5 class="text-xl font-bold text-text-primary">{{ $data_journalier ?? 0 }}</h5>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="bg-white rounded-lg shadow-lg-soft p-5 border-t-4 border-plastica-blue">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="flex-shrink-0 text-plastica-blue text-2xl"><i class="fa fa-university"></i></div>
-                <div class="flex-1">
-                    <div class="text-sm font-medium text-text-secondary">Journaliers non déclarés</div>
-                    <h5 class="text-xl font-bold text-text-primary">{{ count($count_journaler_non_declare ?? []) }}</h5>
+            <a href="{{ route('liste_declarations') }}" class="block hover:opacity-80 transition">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="flex-shrink-0 text-plastica-blue text-2xl"><i class="fa fa-university"></i></div>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-text-secondary">Journaliers non déclarés</div>
+                        <h5 class="text-xl font-bold text-text-primary">{{ count($count_journaler_non_declare ?? []) }}</h5>
+                    </div>
                 </div>
-            </div>
+            </a>
             <hr class="my-4 border-slate-200">
             <a href="{{ url('journaliers-fin-contrat') }}" class="block text-red-600 font-bold hover:text-red-800">
                 <div class="flex items-center space-x-4">
@@ -190,31 +196,37 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         <div class="bg-white rounded-lg shadow-lg-soft p-5 border-t-4 border-plastica-blue">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="flex-shrink-0 text-plastica-blue text-2xl"><i class="fa fa-user"></i></div>
-                <div class="flex-1">
-                    <div class="text-sm font-medium text-text-secondary">Nombre d'embauchés</div>
-                    <h5 class="text-xl font-bold text-text-primary">{{ $data_embauche ?? 0 }}</h5>
+            <a href="{{ route('liste_embauches') }}" class="block hover:opacity-80 transition">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="flex-shrink-0 text-plastica-blue text-2xl"><i class="fa fa-user"></i></div>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-text-secondary">Nombre d'embauchés</div>
+                        <h5 class="text-xl font-bold text-text-primary">{{ $data_embauche ?? 0 }}</h5>
+                    </div>
                 </div>
-            </div>
+            </a>
             <hr class="my-4 border-slate-200">
-            <div class="flex items-center space-x-4">
-                <div class="flex-shrink-0 text-plastica-blue text-2xl"><i class="fa fa-users"></i></div>
-                <div class="flex-1">
-                    <div class="text-sm font-medium text-text-secondary">Nombre de journaliers</div>
-                    <h5 class="text-xl font-bold text-text-primary">{{ $data_journalier ?? 0 }}</h5>
+            <a href="{{ route('liste_tous_travailleurs') }}" class="block hover:opacity-80 transition">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0 text-plastica-blue text-2xl"><i class="fa fa-users"></i></div>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-text-secondary">Nombre de journaliers</div>
+                        <h5 class="text-xl font-bold text-text-primary">{{ $data_journalier ?? 0 }}</h5>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="bg-white rounded-lg shadow-lg-soft p-5 border-t-4 border-plastica-blue">
-            <div class="flex items-center space-x-4 mb-4">
-                <div class="flex-shrink-0 text-plastica-blue text-2xl"><i class="fa fa-university"></i></div>
-                <div class="flex-1">
-                    <div class="text-sm font-medium text-text-secondary">Journaliers non déclarés</div>
-                    <h5 class="text-xl font-bold text-text-primary">{{ count($count_journaler_non_declare ?? []) }}</h5>
+            <a href="{{ route('liste_declarations') }}" class="block hover:opacity-80 transition">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="flex-shrink-0 text-plastica-blue text-2xl"><i class="fa fa-university"></i></div>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-text-secondary">Journaliers non déclarés</div>
+                        <h5 class="text-xl font-bold text-text-primary">{{ count($count_journaler_non_declare ?? []) }}</h5>
+                    </div>
                 </div>
-            </div>
+            </a>
             <hr class="my-4 border-slate-200">
             <a href="{{ url('journaliers-fin-contrat') }}" class="block text-red-600 font-bold hover:text-red-800">
                 <div class="flex items-center space-x-4">

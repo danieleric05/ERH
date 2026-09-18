@@ -31,7 +31,8 @@
     <div class="bg-white rounded-lg shadow-lg-soft p-8">
         <h2 class="text-xl font-bold text-text-primary mb-6">Étape 1 : Enregistrement du travailleur</h2>
 
-        <form action="{{ url('post_travailleur') }}" method="POST" x-data="initializeForm()">
+        <form action="{{ url('post_travailleur') }}" method="POST"
+              x-data="initializeForm(@js('J000' . (intval($maj_big) + 1)), @js('E0' . (intval($maj_big_e) + 1)))">
             @csrf
 
             <!-- Grid Layout -->
@@ -202,16 +203,24 @@
 </div>
 
 <script>
-function initializeForm() {
+function initializeForm(suggestionJournalier, suggestionEmbauche) {
     return {
         showEmbaucheContrat: false,
         showEmbaucheJournalier: false,
         showFinContrat: false,
         handleContractTypeChange(event) {
             const value = event.target.value;
-            this.showEmbaucheContrat = value === '2' || value === '3'; // CDD or CDI
-            this.showEmbaucheJournalier = value === '1'; // Journalier
+            // Types réels (e_typecontrat) : 1=STAGE, 2=CDD, 3=CDI, 4=JOURNALIER
+            this.showEmbaucheContrat = value === '2' || value === '3'; // CDD ou CDI
+            this.showEmbaucheJournalier = value === '4'; // Journalier (était '1' par erreur, id réel du STAGE)
             this.showFinContrat = value !== '';
+
+            const matricule = document.getElementById('matricule');
+            if (this.showEmbaucheContrat) {
+                matricule.value = suggestionEmbauche;
+            } else if (this.showEmbaucheJournalier) {
+                matricule.value = suggestionJournalier;
+            }
         }
     }
 }
