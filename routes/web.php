@@ -394,7 +394,7 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
 
     /** VARIABLES */
     Route::get("/variables", function () {
-        return view("variables.variables", compact("data_travailleur"));
+        return view("variables.variables");
     });
     Route::get("/ajouter-variable", function () {
         $data_travailleur = \App\Travailleur::where("etapeid", "!=", 3)
