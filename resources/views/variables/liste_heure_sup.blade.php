@@ -29,6 +29,9 @@
     @include('success')
     @include('errors')
 
+    @include('variables._paie_liste', ['routeListe' => 'listevariables_heure_supp', 'titre' => 'Heures supplémentaires et primes de nuit'])
+
+    <h2 class="text-lg font-semibold text-text-primary mb-3">Saisies individuelles d'heures supplémentaires</h2>
     <!-- Main Content -->
     <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()"><div class="overflow-x-auto">
             <table class="w-full">
@@ -89,7 +92,8 @@
                                         <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">Inactif</span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 text-center">
+                                <td class="px-6 py-4 text-center whitespace-nowrap">
+                                    <a href="{{ route('variables_modifier', $vari->id) }}" title="Modifier" class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition"><i class="fa fa-edit"></i></a>
                                     @if($vari->statutid == 1)
                                         <form method="POST" action="{{ route('variables_annuler', $vari->id) }}" onsubmit="return confirm('Annuler cette variable ?')" class="inline">
                                             @csrf

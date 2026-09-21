@@ -41,6 +41,13 @@ class CatalogueVariablesPaie
         'RAPPEL_NON_IMPOSABLE'=> ['libelle' => 'Rappel salaire non imposable',         'unite' => self::UNITE_MONTANT, 'colonne' => 40, 'visible' => true],
     ];
 
+    /** Regroupement des variables visibles pour les listes : présence, heures supplémentaires, autres. */
+    public const GROUPES = [
+        'presence' => ['ABSENCE_INJUSTIFIEE', 'ABSENCE_JUSTIFIEE', 'ARRET_MALADIE', 'SANCTION'],
+        'hs' => ['HS_15_SAMEDI', 'HS_75', 'HS_100', 'PRIME_NUIT'],
+        'autres' => ['MUTUELLE', 'RAPPEL_JOURS', 'RAPPEL_SALAIRE', 'DEJA_PERCU', 'ALLOCATION_FAMILIALE', 'PRIME_TRANSPORT', 'PRIME_RESPONSABILITE', 'PRIME_ANCIENNETE', 'REMBOURSEMENT_PRET', 'PRIME_RENDEMENT', 'RAPPEL_NON_IMPOSABLE'],
+    ];
+
     public const NB_SEMAINES = 5;
 
     /** Dernière colonne lue dans le fichier (index 0 = A). */
@@ -52,6 +59,17 @@ class CatalogueVariablesPaie
     public static function libelle(string $code): string
     {
         return self::CODES[$code]['libelle'] ?? $code;
+    }
+
+    /** Codes d'un groupe (presence | hs | autres). */
+    public static function codesDuGroupe(string $groupe): array
+    {
+        return self::GROUPES[$groupe] ?? [];
+    }
+
+    public static function estHebdo(string $code): bool
+    {
+        return !empty(self::CODES[$code]['hebdo']);
     }
 
     /** Codes affichés dans l'application (les colonnes à confirmer sont importées mais masquées). */

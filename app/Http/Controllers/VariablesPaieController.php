@@ -29,7 +29,7 @@ class VariablesPaieController extends Controller
         [$annee, $mois] = $this->periode($request);
         $recherche = strtoupper(trim((string) $request->query('q', '')));
 
-        [$valeurs, $sources] = $this->valeursDuMois($annee, $mois);
+        [$valeurs, $sources] = VariablesPaieAuto::valeursDuMois($annee, $mois);
 
         $matricules = array_keys($valeurs);
         $travailleurs = Travailleur::whereIn('matricule', $matricules)->get(['id', 'matricule', 'nom', 'prenom', 'prenom_suite'])->keyBy('matricule');
@@ -97,6 +97,80 @@ class VariablesPaieController extends Controller
             ->withSuccess(Cat::libelle($code) . " enregistré pour $matricule.");
     }
 
+    /** Écran de modification d'une variable pour un travailleur et un mois (une ligne par semaine si hebdomadaire). */
+    public function edit(Request $request)
+    {
+        $data = $request->validate([
+            'matricule' => 'required|string|max:20',
+            'annee' => 'required|integer|between:2019,2100',
+            'mois' => 'required|integer|between:1,12',
+            'code' => 'required|string',
+        ]);
+        $code = $data['code'];
+        if (!in_array($code, Cat::visibles(), true)) {
+            abort(404);
+        }
+        $matricule = strtoupper(trim($data['matricule']));
+        $def = Cat::CODES[$code];
+
+        $enregistrees = VariablePaie::where('matricule', $matricule)->where('annee', $data['annee'])
+            ->where('mois', $data['mois'])->where('code', $code)->orderBy('semaine')->get()->keyBy('semaine');
+        $calcul = VariablesPaieAuto::pourMois((int) $data['annee'], (int) $data['mois'])[$matricule][$code] ?? null;
+        $travailleur = Travailleur::where('matricule', $matricule)->first();
+
+        return view('variables.paie_modifier', [
+            'matricule' => $matricule, 'annee' => (int) $data['annee'], 'mois' => (int) $data['mois'],
+            'code' => $code, 'def' => $def, 'hebdo' => Cat::estHebdo($code),
+            'nbSemaines' => Cat::NB_SEMAINES, 'enregistrees' => $enregistrees, 'calcul' => $calcul, 'travailleur' => $travailleur,
+        ]);
+    }
+
+    /** Enregistre toutes les semaines du formulaire : une case vide supprime la valeur enregistrée. */
+    public function update(Request $request)
+    {
+        $data = $request->validate([
+            'matricule' => 'required|string|max:20',
+            'annee' => 'required|integer|between:2019,2100',
+            'mois' => 'required|integer|between:1,12',
+            'code' => 'required|string',
+            'valeurs' => 'required|array',
+            'valeurs.*' => 'nullable|numeric|min:0',
+        ]);
+        $code = $data['code'];
+        if (!in_array($code, Cat::visibles(), true)) {
+            return Redirect::back()->withErrors('Variable inconnue.');
+        }
+        $matricule = strtoupper(trim($data['matricule']));
+        $travailleur = Travailleur::where('matricule', $matricule)->first();
+        $hebdo = Cat::estHebdo($code);
+        $cle = ['matricule' => $matricule, 'annee' => $data['annee'], 'mois' => $data['mois'], 'code' => $code];
+
+        foreach ($data['valeurs'] as $semaine => $valeur) {
+            $semaine = $hebdo ? (int) $semaine : 0;
+            if ($hebdo && ($semaine < 1 || $semaine > Cat::NB_SEMAINES)) {
+                continue;
+            }
+            $ligne = VariablePaie::where($cle)->where('semaine', $semaine);
+            if ($valeur === null || $valeur === '') {
+                $ligne->delete();
+                continue;
+            }
+            $existante = $ligne->first();
+            if ($existante && (float) $existante->valeur === (float) $valeur) {
+                continue;   // inchangée : on garde la source d'origine (import)
+            }
+            VariablePaie::updateOrCreate($cle + ['semaine' => $semaine], [
+                'travailleurid' => $travailleur->id ?? null,
+                'valeur' => $valeur,
+                'source' => 'manuel',
+                'userid' => Auth::id(),
+            ]);
+        }
+
+        return Redirect::route('variables_paie', ['annee' => $data['annee'], 'mois' => $data['mois']])
+            ->withSuccess(Cat::libelle($code) . " mis à jour pour $matricule.");
+    }
+
     public function destroy(Request $request)
     {
         $data = $request->validate([
@@ -133,7 +207,7 @@ class VariablesPaieController extends Controller
     public function export(Request $request)
     {
         [$annee, $mois] = $this->periode($request);
-        [$valeurs] = $this->valeursDuMois($annee, $mois);
+        [$valeurs] = VariablesPaieAuto::valeursDuMois($annee, $mois);
         $travailleurs = Travailleur::whereIn('matricule', array_keys($valeurs))->get()->keyBy('matricule');
         $codes = array_intersect_key(Cat::CODES, array_flip(Cat::visibles()));
 
@@ -170,37 +244,5 @@ class VariablesPaieController extends Controller
         $mois = (int) $request->query('mois', date('n'));
 
         return [$annee, max(1, min(12, $mois))];
-    }
-
-    /**
-     * @return array{0: array<string, array<string, float>>, 1: array<string, array<string, string>>}
-     *         valeurs[matricule][code] et sources[matricule][code] ('enregistre' | 'auto')
-     */
-    private function valeursDuMois(int $annee, int $mois): array
-    {
-        $valeurs = [];
-        $sources = [];
-
-        foreach (VariablesPaieAuto::pourMois($annee, $mois) as $matricule => $codes) {
-            foreach ($codes as $code => $v) {
-                $valeurs[$matricule][$code] = $v;
-                $sources[$matricule][$code] = 'auto';
-            }
-        }
-
-        $enregistrees = VariablePaie::where('annee', $annee)->where('mois', $mois)
-            ->whereIn('code', Cat::visibles())->get(['matricule', 'code', 'valeur']);
-        $sommes = [];
-        foreach ($enregistrees as $e) {
-            $sommes[$e->matricule][$e->code] = ($sommes[$e->matricule][$e->code] ?? 0) + $e->valeur;
-        }
-        foreach ($sommes as $matricule => $codes) {
-            foreach ($codes as $code => $v) {
-                $valeurs[$matricule][$code] = $v;          // l'enregistré l'emporte sur le calcul
-                $sources[$matricule][$code] = 'enregistre';
-            }
-        }
-
-        return [$valeurs, $sources];
     }
 }

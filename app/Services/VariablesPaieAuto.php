@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Support\CatalogueVariablesPaie as Cat;
+use App\VariablePaie;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -64,5 +66,86 @@ class VariablesPaieAuto
         }
 
         return $out;
+    }
+
+    /**
+     * Valeurs d'un mois : enregistrées (import ou saisie) sinon calculées.
+     *
+     * @return array{0: array<string, array<string, float>>, 1: array<string, array<string, string>>}
+     *         valeurs[matricule][code] et sources[matricule][code] ('enregistre' | 'auto')
+     */
+    public static function valeursDuMois(int $annee, int $mois): array
+    {
+        $valeurs = [];
+        $sources = [];
+
+        foreach (self::pourMois($annee, $mois) as $matricule => $codes) {
+            foreach ($codes as $code => $v) {
+                $valeurs[$matricule][$code] = $v;
+                $sources[$matricule][$code] = 'auto';
+            }
+        }
+
+        $sommes = [];
+        foreach (VariablePaie::where('annee', $annee)->where('mois', $mois)->whereIn('code', Cat::visibles())->get(['matricule', 'code', 'valeur']) as $e) {
+            $sommes[$e->matricule][$e->code] = ($sommes[$e->matricule][$e->code] ?? 0) + $e->valeur;
+        }
+        foreach ($sommes as $matricule => $codes) {
+            foreach ($codes as $code => $v) {
+                $valeurs[$matricule][$code] = $v;          // l'enregistré l'emporte sur le calcul
+                $sources[$matricule][$code] = 'enregistre';
+            }
+        }
+
+        return [$valeurs, $sources];
+    }
+
+    /** Dernière période (annee, mois) qui contient des valeurs enregistrées pour ces codes, sinon le mois courant. */
+    public static function periodeParDefaut(array $codes): array
+    {
+        $d = VariablePaie::whereIn('code', $codes)->orderByDesc('annee')->orderByDesc('mois')->first(['annee', 'mois']);
+
+        return $d ? [(int) $d->annee, (int) $d->mois] : [(int) date('Y'), (int) date('n')];
+    }
+
+    /**
+     * Lignes d'un groupe de variables (presence | hs | autres) pour un mois, prêtes pour une liste.
+     * Chaque ligne : matricule, nom, code, libelle, unite, total, source ('auto' | 'enregistre'),
+     * semaines [n => valeur] (variables hebdomadaires enregistrées).
+     */
+    public static function lignesDuGroupe(string $groupe, int $annee, int $mois): array
+    {
+        $codes = Cat::codesDuGroupe($groupe);
+        [$valeurs, $sources] = self::valeursDuMois($annee, $mois);
+
+        $semaines = [];
+        foreach (VariablePaie::where('annee', $annee)->where('mois', $mois)->whereIn('code', $codes)->where('semaine', '>', 0)->get(['matricule', 'code', 'semaine', 'valeur']) as $l) {
+            $semaines[$l->matricule][$l->code][$l->semaine] = $l->valeur;
+        }
+
+        $travailleurs = \App\Travailleur::whereIn('matricule', array_keys($valeurs))->get()->keyBy('matricule');
+        $lignes = [];
+        foreach ($valeurs as $matricule => $parCode) {
+            foreach ($codes as $code) {
+                if (!isset($parCode[$code])) {
+                    continue;
+                }
+                $tr = $travailleurs->get($matricule);
+                $lignes[] = (object) [
+                    'matricule' => $matricule,
+                    'nom' => $tr ? trim($tr->nom . ' ' . $tr->prenoms_complets) : '(matricule inconnu)',
+                    'connu' => (bool) $tr,
+                    'code' => $code,
+                    'libelle' => Cat::libelle($code),
+                    'unite' => Cat::CODES[$code]['unite'],
+                    'total' => $parCode[$code],
+                    'source' => $sources[$matricule][$code],
+                    'semaines' => $semaines[$matricule][$code] ?? [],
+                ];
+            }
+        }
+        usort($lignes, fn ($a, $b) => [$a->matricule, $a->libelle] <=> [$b->matricule, $b->libelle]);
+
+        return $lignes;
     }
 }

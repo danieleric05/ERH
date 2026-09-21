@@ -105,7 +105,7 @@
                             @php $v = $l['valeurs'][$c] ?? null; $src = $l['sources'][$c] ?? null; @endphp
                             <td class="px-3 py-2 text-right whitespace-nowrap">
                                 @if($v !== null)
-                                    <span class="{{ $src === 'auto' ? 'text-sky-700' : 'font-medium text-slate-800' }}" title="{{ $src === 'auto' ? 'Calculé depuis les autres modules' : 'Enregistré' }}">{{ $fmt($v, $def['unite']) }}@if($src === 'auto')<sup class="text-sky-500"> auto</sup>@endif</span>
+                                    <a href="{{ route('variables_paie_edit', ['matricule' => $l['matricule'], 'annee' => $annee, 'mois' => $mois, 'code' => $c]) }}" class="hover:underline {{ $src === 'auto' ? 'text-sky-700' : 'font-medium text-slate-800' }}" title="{{ $src === 'auto' ? 'Calculé depuis les autres modules — cliquer pour modifier' : 'Enregistré — cliquer pour modifier' }}">{{ $fmt($v, $def['unite']) }}@if($src === 'auto')<sup class="text-sky-500"> auto</sup>@endif</a>
                                 @endif
                             </td>
                         @endforeach
