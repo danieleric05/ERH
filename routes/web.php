@@ -485,6 +485,12 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
     Route::post("/variables/{id}/annuler", [VariablesController::class, 'annuler_variable'])->name("variables_annuler");
     Route::post("/autres-variables/{id}/annuler", [VariablesController::class, 'annuler_autre_variable'])->name("autres_variables_annuler");
 
+    /** IMPORT TRAVAILLEURS ET CONTRATS (Répertoire CDD : stagiaires, CDD, CDI, journaliers) */
+    Route::get("/import-contrats", [\App\Http\Controllers\ImportContratsController::class, 'index'])->name("import_contrats");
+    Route::post("/import-contrats", [\App\Http\Controllers\ImportContratsController::class, 'importer'])->name("import_contrats_post");
+    Route::get("/import-contrats/modele", [\App\Http\Controllers\ImportContratsController::class, 'modele'])->name("import_contrats_modele");
+    Route::get("/import-contrats/rapport/{fichier}", [\App\Http\Controllers\ImportContratsController::class, 'rapport'])->name("import_contrats_rapport");
+
     /** VARIABLES DE PAIE (remplace le fichier Excel) */
     Route::get("/variables-paie", [\App\Http\Controllers\VariablesPaieController::class, 'index'])->name("variables_paie");
     Route::post("/variables-paie/valeur", [\App\Http\Controllers\VariablesPaieController::class, 'store'])->name("variables_paie_store");

@@ -139,4 +139,24 @@ class Travailleur extends Model
 
         return $prenom . (mb_strlen($prenom) >= 19 ? '' : ' ') . $suite;
     }
+
+    /** Largeur (en chiffres) du numéro pour chaque série de matricule : E01921, J0008081, S00001. */
+    private const LARGEUR_MATRICULE = ['E' => 5, 'J' => 7, 'S' => 5];
+
+    /**
+     * Prochain matricule libre d'une série (E = CDD/CDI, J = journaliers, S = stagiaires).
+     * On repart du plus grand numéro existant de la série.
+     */
+    public static function prochainMatricule(string $prefixe): string
+    {
+        $prefixe = strtoupper($prefixe);
+        $max = 0;
+        foreach (self::where('matricule', 'like', $prefixe . '%')->pluck('matricule') as $m) {
+            if (preg_match('/^' . $prefixe . '(\d+)$/', $m, $r)) {
+                $max = max($max, (int) $r[1]);
+            }
+        }
+
+        return $prefixe . str_pad((string) ($max + 1), self::LARGEUR_MATRICULE[$prefixe] ?? 5, '0', STR_PAD_LEFT);
+    }
 }
