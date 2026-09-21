@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\AutresVariables;
 use App\Travailleur;
+use App\Services\VariablesPaieAuto;
+use App\Support\CatalogueVariablesPaie as Cat;
 use App\Variables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -106,24 +108,66 @@ class VariablesController extends Controller
 
     public function listevariables_manuelle(){
         $variableM = Variables::Where('cause', 1)->orderBy('id', 'DESC')->get();
-        $matricules = $variableM->flatMap(fn($vari) => unserialize($vari->travailleurid))->unique();
+        $matricules = $variableM->flatMap(fn($vari) => $vari->matricules)->unique();
         $travailleursByMatricule = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
         return view("variables.listevariables_manuelle", compact('variableM', 'travailleursByMatricule'));
     }
 
     public function listevariables_heure_supp(){
         $variableHS = Variables::Where('cause', 2)->orderBy('id', 'DESC')->get();
-        return view("variables.liste_heure_sup", compact('variableHS'));
+        $employes = Travailleur::whereIn('id', $variableHS->flatMap(fn($v) => $v->employes_hs)->unique())->get()->keyBy('id');
+        return view("variables.liste_heure_sup", compact('variableHS', 'employes'));
     }
 
-    public function listevariables_automatique(){
-                $variableHS = Variables::Where('cause', 2)->orderBy('id', 'DESC')->get();
-                return view("variables.listevariables_automatique", compact('variableHS'));
+    /**
+     * Variables calculées automatiquement pour un mois (arrêts maladie, absences justifiées,
+     * sanctions), à partir des autres modules. Aucune saisie : tout vient des données existantes.
+     */
+    public function listevariables_automatique(Request $request){
+        $annee = (int) $request->query('annee', date('Y'));
+        $mois = max(1, min(12, (int) $request->query('mois', date('n'))));
+
+        $calcul = VariablesPaieAuto::pourMois($annee, $mois);
+        $travailleurs = Travailleur::whereIn('matricule', array_keys($calcul))->get()->keyBy('matricule');
+
+        $variableA = [];
+        foreach ($calcul as $matricule => $codes) {
+            foreach ($codes as $code => $jours) {
+                $t = $travailleurs->get($matricule);
+                $variableA[] = (object) [
+                    'matricule' => $matricule,
+                    'employe' => $t ? trim($t->nom . ' ' . $t->prenoms_complets) : '(matricule inconnu)',
+                    'variable' => Cat::libelle($code),
+                    'nombre_jour' => $jours,
+                    'statutid' => 1,
+                ];
+            }
+        }
+        usort($variableA, fn($a, $b) => [$a->matricule, $a->variable] <=> [$b->matricule, $b->variable]);
+
+        return view("variables.listevariables_automatique", compact('variableA', 'annee', 'mois'));
     }
 
+    /** Liste des « autres variables » (rappel de salaire, primes, loyer, remboursement de prêt…). */
     public function listevariables_autres_variables(){
-        $data_travailleur = Travailleur::where('etapeid', '!=', 3)->where('statutid', '!=', 4)->orderBy('id', 'DESC')->get();
-        return view('variables.autres_variables', compact('data_travailleur'));
+        $autres = AutresVariables::orderBy('id', 'DESC')->get();
+        $employes = Travailleur::whereIn('id', $autres->flatMap(fn($a) => $a->employes)->unique())->get()->keyBy('id');
+        return view('variables.liste_autres_variables', compact('autres', 'employes'));
+    }
+
+    /** Annule (désactive) une variable sans la supprimer : statutid 2 = inactif. */
+    public function annuler_variable($id){
+        $variable = Variables::findOrFail($id);
+        $variable->statutid = 2;
+        $variable->save();
+        return Redirect::back()->withSuccess("Variable annulée.");
+    }
+
+    public function annuler_autre_variable($id){
+        $variable = AutresVariables::findOrFail($id);
+        $variable->statutid = 2;
+        $variable->save();
+        return Redirect::back()->withSuccess("Variable annulée.");
     }
 
 }

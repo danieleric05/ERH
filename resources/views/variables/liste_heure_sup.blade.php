@@ -62,26 +62,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                        @php
-                            $allEmployerIds = [];
-                            foreach ($variableHS ?? [] as $var) {
-                                $allEmployerIds = array_merge($allEmployerIds, unserialize($var->employer_hs));
-                            }
-                            $allEmployers = \App\Travailleur::whereIn('id', array_unique($allEmployerIds))->get()->keyBy('id');
-                        @endphp
                         @forelse($variableHS ?? [] as $vari)
                             <tr class="border-b hover:bg-slate-50 transition">
                                 <td class="px-6 py-4 text-sm">
                                     <div class="flex flex-wrap gap-1">
-                                        @foreach(unserialize($vari->employer_hs) as $employerId)
+                                        @foreach($vari->employes_hs as $employerId)
                                             @php
-                                                $travailleur = $allEmployers->get($employerId);
+                                                $travailleur = $employes->get($employerId);
                                             @endphp
-                                            @if($travailleur)
-                                                <span title="{{ $travailleur->nom ?? '' }} {{ $travailleur->prenom ?? '' }}" class="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 rounded-full">
-                                                    {{ $travailleur->matricule ?? '' }}
-                                                </span>
-                                            @endif
+                                            <span title="{{ $travailleur ? $travailleur->nom . ' ' . $travailleur->prenoms_complets : 'Travailleur introuvable' }}" class="px-2 py-1 text-xs font-semibold {{ $travailleur ? 'text-gray-800 bg-gray-100' : 'text-amber-800 bg-amber-100' }} rounded-full">
+                                                {{ $travailleur->matricule ?? '#' . $employerId }}
+                                            </span>
                                         @endforeach
                                     </div>
                                 </td>
@@ -99,22 +90,12 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <div class="flex justify-center gap-2">
-                                        {{-- Edit Button --}}
-                                        <a title="Modifier"
-                                           href="#"
-                                           class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-
-                                        {{-- Delete Button --}}
-                                        <a title="Annuler"
-                                           href="#"
-                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?')"
-                                           class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
-                                    </div>
+                                    @if($vari->statutid == 1)
+                                        <form method="POST" action="{{ route('variables_annuler', $vari->id) }}" onsubmit="return confirm('Annuler cette variable ?')" class="inline">
+                                            @csrf
+                                            <button type="submit" title="Annuler" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"><i class="fa fa-ban"></i></button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @empty

@@ -478,6 +478,8 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
     Route::get("/liste-variables-heure-supplementaire", [VariablesController::class, 'listevariables_heure_supp'])->name("listevariables_heure_supp");
     Route::get("/liste-variables-autres-variables", [VariablesController::class, 'listevariables_autres_variables'])->name("listevariables_autres_variables");
     Route::get("/historiques-variables", [EmployerController::class, 'historiques_variables'])->name("historiques_variables");
+    Route::post("/variables/{id}/annuler", [VariablesController::class, 'annuler_variable'])->name("variables_annuler");
+    Route::post("/autres-variables/{id}/annuler", [VariablesController::class, 'annuler_autre_variable'])->name("autres_variables_annuler");
 
     /** VARIABLES DE PAIE (remplace le fichier Excel) */
     Route::get("/variables-paie", [\App\Http\Controllers\VariablesPaieController::class, 'index'])->name("variables_paie");

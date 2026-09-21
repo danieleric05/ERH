@@ -283,7 +283,7 @@ class EmployerController extends Controller
     {
         $code = '';
         $recherches  = Variables::where('cause', 1)->where('debut', date('Y-m-d'))->orderBy('id', 'DESC')->get();
-        $matricules = $recherches->flatMap(fn($rech) => unserialize($rech->travailleurid))->unique();
+        $matricules = $recherches->flatMap(fn($rech) => $rech->matricules)->unique();
         $travailleursByMatricule = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
         return view("variables.historique", compact('recherches', 'code', 'travailleursByMatricule'));
     }
