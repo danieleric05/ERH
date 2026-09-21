@@ -125,7 +125,7 @@ class VariablesPaieController extends Controller
         $rapport = $service->importer($request->file('fichier')->getRealPath(), $simulation, null, Auth::id());
 
         $valeurs = array_sum(array_column($rapport, 'cellules'));
-        $inconnus = array_sum(array_map(fn ($r) => count($r['matricules_inconnus'] ?? []), $rapport));
+        $inconnus = count(array_unique(array_merge([], ...array_values(array_map(fn ($r) => $r["matricules_inconnus"] ?? [], $rapport)))));
         $mois = count(array_filter($rapport, fn ($r) => !isset($r['ignoree'])));
         $msg = ($simulation ? 'SIMULATION (rien enregistré) : ' : 'Import terminé : ') . "$valeurs valeurs sur $mois mois, $inconnus matricules absents de la base.";
 
