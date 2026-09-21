@@ -124,6 +124,10 @@
                     <i class="fa fa-chevron-down transition-transform duration-300" :class="{'rotate-180': openMenus.variables}"></i>
                 </button>
                 <div x-show="openMenus.variables" x-transition class="ml-4 space-y-1 mt-2">
+                    <a href="{{ route('variables_paie') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm font-medium">
+                        <i class="fa fa-table mr-3 w-4"></i>
+                        Variables de paie
+                    </a>
                     <a href="{{ url('ajouter-variable') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-plus mr-3 w-4"></i>
                         Ajouter variable
@@ -395,6 +399,10 @@
                     <i class="fa fa-chevron-down transition-transform duration-300" :class="{'rotate-180': openMenus.variables}"></i>
                 </button>
                 <div x-show="openMenus.variables" x-transition class="ml-4 space-y-1 mt-2">
+                    <a href="{{ route('variables_paie') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm font-medium">
+                        <i class="fa fa-table mr-3 w-4"></i>
+                        Variables de paie
+                    </a>
                     <a href="{{ url('ajouter-variable') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-plus mr-3 w-4"></i>
                         Ajouter variable

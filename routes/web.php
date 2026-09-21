@@ -478,6 +478,13 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
     Route::get("/liste-variables-heure-supplementaire", [VariablesController::class, 'listevariables_heure_supp'])->name("listevariables_heure_supp");
     Route::get("/liste-variables-autres-variables", [VariablesController::class, 'listevariables_autres_variables'])->name("listevariables_autres_variables");
     Route::get("/historiques-variables", [EmployerController::class, 'historiques_variables'])->name("historiques_variables");
+
+    /** VARIABLES DE PAIE (remplace le fichier Excel) */
+    Route::get("/variables-paie", [\App\Http\Controllers\VariablesPaieController::class, 'index'])->name("variables_paie");
+    Route::post("/variables-paie/valeur", [\App\Http\Controllers\VariablesPaieController::class, 'store'])->name("variables_paie_store");
+    Route::post("/variables-paie/supprimer", [\App\Http\Controllers\VariablesPaieController::class, 'destroy'])->name("variables_paie_destroy");
+    Route::post("/variables-paie/import", [\App\Http\Controllers\VariablesPaieController::class, 'import'])->name("variables_paie_import");
+    Route::get("/variables-paie/export", [\App\Http\Controllers\VariablesPaieController::class, 'export'])->name("variables_paie_export");
     // ARCHIVÉ - Précarité : Route::get("/liste-precarites", [EmployerController::class, 'listeprecarites'])->name("listeprecarites");
 
     /** SANCTION */
