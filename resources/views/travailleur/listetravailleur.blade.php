@@ -88,7 +88,7 @@
                         <td class="px-6 py-4 text-text-primary"
                             :title="$listedata->numero_securite ? 'DECL. CNPS' : ''">
                             <div>{{ $listedata->nom ?? '' }}</div>
-                            <div>{{ $listedata->prenom ?? '' }} {{ $listedata->prenom_suite ?? '' }}</div>
+                            <div>{{ $listedata->prenoms_complets }}</div>
                         </td>
                         <td class="px-6 py-4 text-text-secondary text-sm">
                             {{ $listedata->date_debut_contrat ? \Carbon\Carbon::parse($listedata->date_debut_contrat)->format('d/m/Y') : '-' }}

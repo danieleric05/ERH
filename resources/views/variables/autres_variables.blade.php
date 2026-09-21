@@ -45,7 +45,7 @@
                 <i class="fa fa-home"></i> Accueil
             </a>
             <span>/</span>
-            <span>Configuration</span>
+            <a href="{{ route('listevariables_autres_variables') }}" class="hover:text-primary-accent">Variables</a>
             <span>/</span>
             <span class="text-text-primary font-medium">Ajouter autres variables</span>
         </nav>

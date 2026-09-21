@@ -17,7 +17,7 @@
                 <i class="fa fa-home"></i> Accueil
             </a>
             <span>/</span>
-            <span>Santé</span>
+            <a href="{{ route('listesconsultation') }}" class="hover:text-primary-accent">Consultations</a>
             <span>/</span>
             <span class="text-text-primary font-medium">Ajouter une consultation</span>
         </nav>

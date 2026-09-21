@@ -22,7 +22,7 @@
                 <i class="fa fa-home"></i> Accueil
             </a>
             <span>/</span>
-            <span>Gestion des congés</span>
+            <a href="{{ route('listeconges') }}" class="hover:text-primary-accent">Gestion des congés</a>
             <span>/</span>
             <span class="text-text-primary font-medium">Ajouter un congé</span>
         </nav>

@@ -9,15 +9,23 @@
 <div class="p-6">
     <!-- Header Section -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-text-primary mb-4">Ajouter un Travailleur</h1>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+            <h1 class="text-3xl font-bold text-text-primary">Ajouter un Travailleur</h1>
+            <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('liste_tous_travailleurs') }}"
+               class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-text-primary rounded-lg text-sm font-medium transition flex items-center gap-2 self-start md:self-auto">
+                <i class="fa fa-arrow-left"></i> Retour
+            </a>
+        </div>
 
         <!-- Breadcrumb -->
         <nav class="flex items-center space-x-2 text-sm text-text-secondary">
-            <a href="{{ route('dashboard') }}" class="hover:text-primary-accent">
+            <a href="{{ route('dashboard') }}" class="hover:text-primary-accent flex items-center gap-1">
                 <i class="icon-home"></i> Accueil
             </a>
             <span>/</span>
-            <span>Recrutement</span>
+            <a href="{{ route('liste_tous_travailleurs') }}" class="hover:text-primary-accent">
+                Travailleurs
+            </a>
             <span>/</span>
             <span class="text-text-primary font-medium">Ajouter travailleur</span>
         </nav>
@@ -194,8 +202,8 @@
                 <button type="submit" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
                     Enregistrer
                 </button>
-                <a href="{{ route('listetravailleurs') }}" class="px-8 py-3 bg-gray-200 hover:bg-gray-300 text-text-primary rounded-lg font-medium transition-colors">
-                    Liste
+                <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('liste_tous_travailleurs') }}" class="px-8 py-3 bg-gray-200 hover:bg-gray-300 text-text-primary rounded-lg font-medium transition-colors flex items-center gap-2">
+                    <i class="fa fa-arrow-left"></i> Retour
                 </a>
             </div>
         </form>

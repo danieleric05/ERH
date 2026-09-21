@@ -3,21 +3,31 @@
 
 <div class="px-6 py-8">
     {{-- En-tête avec breadcrumb --}}
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div>
             <h1 class="text-3xl font-bold text-text-primary">Recherche & Historique</h1>
             <nav class="text-sm font-medium text-slate-500 mt-2" aria-label="Breadcrumb">
                 <ol class="flex items-center space-x-2">
-                    <li><a href="{{ url('bienvenue') }}" class="text-primary-accent hover:text-plastica-blue"><i class="icon-home"></i></a></li>
+                    <li><a href="{{ url('bienvenue') }}" class="text-primary-accent hover:text-plastica-blue flex items-center gap-1"><i class="icon-home"></i> Accueil</a></li>
                     <li class="flex items-center">
                         <svg class="h-5 w-5 text-slate-400 mx-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                         </svg>
-                        <span class="text-text-secondary">Recherches</span>
+                        <a href="{{ route('liste_tous_travailleurs') }}" class="text-primary-accent hover:text-plastica-blue">Travailleurs</a>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="h-5 w-5 text-slate-400 mx-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-text-secondary">Recherche & Historique</span>
                     </li>
                 </ol>
             </nav>
         </div>
+        <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('liste_tous_travailleurs') }}"
+           class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-text-primary rounded-lg text-sm font-medium transition flex items-center gap-2 self-start md:self-auto">
+            <i class="fa fa-arrow-left"></i> Retour
+        </a>
     </div>
 
     {{-- Formulaire de recherche --}}
