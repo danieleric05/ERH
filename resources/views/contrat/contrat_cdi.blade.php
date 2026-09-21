@@ -99,7 +99,7 @@
     if(in_array($travailleur->civilite, ['Mlle', 'Mlle.', 'Mademoiselle'])) $civilite = 'Mademoiselle';
     elseif(in_array($travailleur->civilite, ['Mme', 'Mme.', 'Madame'])) $civilite = 'Madame';
 
-    $nomComplet = strtoupper($travailleur->nom ?? '') . ' ' . strtoupper($travailleur->prenom ?? '') . ' ' . strtoupper($travailleur->prenom_suite ?? '');
+    $nomComplet = strtoupper($travailleur->nom ?? '') . ' ' . strtoupper($travailleur->prenoms_complets);
     $fonction = $travailleur->fonction_entrepriseid ? (\App\Fonction::where('id', $travailleur->fonction_entrepriseid)->first()?->label ?? '') : '';
     $categorie = $travailleur->categorieid ? (\App\Categories::where('id', $travailleur->categorieid)->first()?->label ?? '2') : '2';
     $unite = $travailleur->uniteid ? (\App\Unites::where('id', $travailleur->uniteid)->first()?->label ?? '') : '';

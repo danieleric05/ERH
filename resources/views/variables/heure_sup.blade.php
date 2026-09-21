@@ -17,7 +17,7 @@
                 <i class="fa fa-home"></i> Accueil
             </a>
             <span>/</span>
-            <span>Configuration</span>
+            <a href="{{ route('listevariables_heure_supp') }}" class="hover:text-primary-accent">Heures Supplémentaires</a>
             <span>/</span>
             <span class="text-text-primary font-medium">Ajouter une variable (heure supplémentaire)</span>
         </nav>

@@ -766,11 +766,10 @@ class EmployerController extends Controller
 
         $travail->save();
 
-        if ($travail->etapeid == 2) {
-            return Redirect::route('lientelechargerContrat', $id)->withSuccess("Fin de l'enregistrement du travailleur : " . strtoupper($request->nom . ' ' . $request->prenom) . " Vous pouvez télécharger son contrat .");
-        } else {
-            return Redirect::back()->withSuccess("La modification a été effectuée avec succès.");
-        }
+        return Redirect::back()
+            ->withSuccess("Les informations du travailleur " . strtoupper($request->nom . ' ' . $request->prenom) . " ont été enregistrées avec succès.")
+            ->with('download_contrat_url', $travail->contrat_url)
+            ->with('download_contrat_libelle', 'Télécharger ' . $travail->contrat_libelle . ' (PDF)');
 
         //}
 
@@ -867,8 +866,10 @@ class EmployerController extends Controller
         $travail->ip = $_SERVER['REMOTE_ADDR'];
 
         if ($travail->save()) {
-
-            return Redirect::back()->withSuccess("La modification a été effectuée avec succès.");
+            return Redirect::back()
+                ->withSuccess("La modification a été effectuée avec succès.")
+                ->with('download_contrat_url', $travail->contrat_url)
+                ->with('download_contrat_libelle', 'Télécharger ' . $travail->contrat_libelle . ' (PDF)');
         }
 
         //}

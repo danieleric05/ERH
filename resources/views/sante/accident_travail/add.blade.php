@@ -17,7 +17,7 @@
                 <i class="fa fa-home"></i> Accueil
             </a>
             <span>/</span>
-            <span>Santé</span>
+            <a href="{{ route('listesaccident') }}" class="hover:text-primary-accent">Accidents de travail</a>
             <span>/</span>
             <span class="text-text-primary font-medium">Ajouter un accident de travail</span>
         </nav>

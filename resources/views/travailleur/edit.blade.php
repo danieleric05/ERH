@@ -4,17 +4,45 @@
 <div class="p-6">
     <!-- Header Section -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-text-primary mb-4">Modifier Travailleur</h1>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+            <div>
+                <h1 class="text-3xl font-bold text-text-primary">
+                    Modifier Travailleur : <span class="text-primary-accent">{{ $edit->nom }} {{ $edit->prenoms_complets }}</span>
+                </h1>
+                <p class="text-sm text-text-secondary mt-1">
+                    Matricule : <span class="font-semibold text-slate-700">{{ $edit->matricule }}</span>
+                    @if($edit->idtype_contrat == 2)
+                        <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">CDD</span>
+                    @elseif($edit->idtype_contrat == 3)
+                        <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">CDI</span>
+                    @else
+                        <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Journalier</span>
+                    @endif
+                </p>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="{{ $edit->contrat_url }}" target="_blank"
+                   class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition flex items-center gap-2 shadow-sm">
+                    <i class="fa fa-download"></i> Télécharger {{ $edit->contrat_libelle }}
+                </a>
+                <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('liste_tous_travailleurs') }}"
+                   class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-text-primary rounded-lg text-sm font-medium transition flex items-center gap-2">
+                    <i class="fa fa-arrow-left"></i> Retour
+                </a>
+            </div>
+        </div>
 
         <!-- Breadcrumb -->
         <nav class="flex items-center space-x-2 text-sm text-text-secondary">
-            <a href="{{ route('dashboard') }}" class="hover:text-primary-accent">
+            <a href="{{ route('dashboard') }}" class="hover:text-primary-accent flex items-center gap-1">
                 <i class="icon-home"></i> Accueil
             </a>
             <span>/</span>
-            <span>Recrutement</span>
+            <a href="{{ route('liste_tous_travailleurs') }}" class="hover:text-primary-accent">
+                Travailleurs
+            </a>
             <span>/</span>
-            <span class="text-text-primary font-medium">Ajouter travailleur : Étape 2</span>
+            <span class="text-text-primary font-medium">Modifier {{ $edit->matricule }}</span>
         </nav>
     </div>
 
@@ -51,15 +79,11 @@
                         @if($edit->photo)
                             <div class="mt-3 flex items-center gap-3">
                                 <p class="text-xs text-green-600">Photo actuelle : {{ $edit->photo }}</p>
-                                <form action="{{ route('delete_photo_travailleur', $edit->id) }}" method="POST"
-                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette photo ?');"
-                                      class="inline-block">
-                                    @csrf
-                                    <button type="submit"
-                                            class="px-3 py-1.5 text-xs bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
-                                        <i class="fa fa-trash"></i> Supprimer la photo
-                                    </button>
-                                </form>
+                                <button type="button"
+                                        onclick="if(confirm('Êtes-vous sûr de vouloir supprimer cette photo ?')) { document.getElementById('form-delete-photo').submit(); }"
+                                        class="px-3 py-1.5 text-xs bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                                    <i class="fa fa-trash"></i> Supprimer la photo
+                                </button>
                             </div>
                         @endif
                     </div>
@@ -94,7 +118,7 @@
                     <div>
                         <label for="prenom" class="block text-sm font-medium text-text-primary mb-2">Prénoms</label>
                         <input type="text" name="prenom" id="prenom"
-                            value="{{ $edit->prenom . $edit->prenom_suite }}"
+                            value="{{ $edit->prenoms_complets }}"
                             placeholder="Prénoms"
                             class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-bold text-text-primary uppercase"
                             maxlength="150"
@@ -404,17 +428,27 @@
             </div>
 
             <!-- Buttons -->
-            <div class="flex justify-center gap-4 pt-6 border-t border-slate-200">
-                <button type="submit" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
-                    Finaliser l'inscription
+            <div class="flex flex-wrap justify-center gap-4 pt-6 border-t border-slate-200">
+                <button type="submit" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+                    <i class="fa fa-save"></i> Enregistrer les modifications
                 </button>
-                <a href="{{ route('listetravailleurs') }}" class="px-8 py-3 bg-gray-200 hover:bg-gray-300 text-text-primary rounded-lg font-medium transition-colors">
-                    Liste
+                <a href="{{ $edit->contrat_url }}" target="_blank"
+                   class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+                    <i class="fa fa-download"></i> Télécharger {{ $edit->contrat_libelle }}
+                </a>
+                <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('liste_tous_travailleurs') }}" class="px-8 py-3 bg-gray-200 hover:bg-gray-300 text-text-primary rounded-lg font-medium transition-colors flex items-center gap-2">
+                    <i class="fa fa-arrow-left"></i> Retour
                 </a>
             </div>
         </form>
     </div>
 </div>
+
+@if($edit->photo)
+<form id="form-delete-photo" action="{{ route('delete_photo_travailleur', $edit->id) }}" method="POST" class="hidden">
+    @csrf
+</form>
+@endif
 
 <script>
 function previewPhoto(input) {
