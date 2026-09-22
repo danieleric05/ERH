@@ -636,6 +636,7 @@ class EmployerController extends Controller
 
             // Gestion de l'upload de la photo après le premier save
             if ($request->hasFile('photo')) {
+                $request->validate(['photo' => 'image|mimes:jpeg,jpg,png,gif|max:5120']);
                 try {
                     $photo = $request->file('photo');
                     $photoName = time() . '_' . $travail->matricule . '.' . $photo->getClientOriginalExtension();
@@ -745,6 +746,7 @@ class EmployerController extends Controller
 
         // Gestion de l'upload de la photo
         if ($request->hasFile('photo')) {
+            $request->validate(['photo' => 'image|mimes:jpeg,jpg,png,gif|max:5120']);
             try {
                 // Supprimer l'ancienne photo si elle existe et n'est pas la photo par défaut
                 if ($travail->photo && $travail->photo !== 'default.png') {
