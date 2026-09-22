@@ -88,4 +88,75 @@ class Travailleur extends Model
                   });
             });
     }
+
+    /**
+     * URL de téléchargement direct du contrat PDF
+     *
+     * @return string
+     */
+    public function getContratUrlAttribute(): string
+    {
+        if ($this->idtype_contrat == 2) {
+            return route('telechargerContratCDD', ['id' => $this->id, 'download' => 'pdf']);
+        } elseif ($this->idtype_contrat == 3) {
+            return route('telechargerContratCDI', ['id' => $this->id, 'download' => 'pdf']);
+        } else {
+            return route('telechargerContratJournalier', ['id' => $this->id, 'download' => 'pdf']);
+        }
+    }
+
+    /**
+     * Libellé lisible du type de contrat
+     *
+     * @return string
+     */
+    public function getContratLibelleAttribute(): string
+    {
+        if ($this->idtype_contrat == 2) {
+            return 'Contrat CDD';
+        } elseif ($this->idtype_contrat == 3) {
+            return 'Contrat CDI';
+        } else {
+            return 'Contrat Journalier';
+        }
+    }
+
+    /**
+     * Prénoms complets. Sage coupe le prénom à 19 caractères : dans ce cas
+     * prenom_suite prolonge le mot coupé (aucune espace). Sinon (données
+     * historiques) prenom_suite est un prénom distinct, séparé par une espace.
+     *
+     * @return string
+     */
+    public function getPrenomsCompletsAttribute(): string
+    {
+        $prenom = (string) $this->prenom;
+        $suite  = trim((string) $this->prenom_suite);
+
+        if ($suite === '' || strtoupper($suite) === 'NULL') {
+            return $prenom;
+        }
+
+        return $prenom . (mb_strlen($prenom) >= 19 ? '' : ' ') . $suite;
+    }
+
+    /** Largeur (en chiffres) du numéro pour chaque série de matricule : E01921, J0008081, S00001. */
+    private const LARGEUR_MATRICULE = ['E' => 5, 'J' => 7, 'S' => 5];
+
+    /**
+     * Prochain matricule libre d'une série (E = CDD/CDI, J = journaliers, S = stagiaires).
+     * On repart du plus grand numéro existant de la série.
+     */
+    public static function prochainMatricule(string $prefixe): string
+    {
+        $prefixe = strtoupper($prefixe);
+        $max = 0;
+        foreach (self::where('matricule', 'like', $prefixe . '%')->pluck('matricule') as $m) {
+            if (preg_match('/^' . $prefixe . '(\d+)$/', $m, $r)) {
+                $max = max($max, (int) $r[1]);
+            }
+        }
+
+        return $prefixe . str_pad((string) ($max + 1), self::LARGEUR_MATRICULE[$prefixe] ?? 5, '0', STR_PAD_LEFT);
+    }
 }

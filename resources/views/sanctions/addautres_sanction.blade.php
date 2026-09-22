@@ -22,7 +22,7 @@
                 <i class="fa fa-home"></i> Accueil
             </a>
             <span>/</span>
-            <span>Gestion RH</span>
+            <a href="{{ route('listesanctions') }}" class="hover:text-primary-accent">Sanctions</a>
             <span>/</span>
             <span class="text-text-primary font-medium">Ajouter une sanction (non inscrit)</span>
         </nav>

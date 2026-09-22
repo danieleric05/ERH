@@ -478,6 +478,27 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
     Route::get("/liste-variables-heure-supplementaire", [VariablesController::class, 'listevariables_heure_supp'])->name("listevariables_heure_supp");
     Route::get("/liste-variables-autres-variables", [VariablesController::class, 'listevariables_autres_variables'])->name("listevariables_autres_variables");
     Route::get("/historiques-variables", [EmployerController::class, 'historiques_variables'])->name("historiques_variables");
+    Route::get("/variables/{id}/modifier", [VariablesController::class, 'modifier_variable'])->name("variables_modifier");
+    Route::post("/variables/{id}/modifier", [VariablesController::class, 'maj_variable'])->name("variables_maj");
+    Route::get("/autres-variables/{id}/modifier", [VariablesController::class, 'modifier_autre_variable'])->name("autres_variables_modifier");
+    Route::post("/autres-variables/{id}/modifier", [VariablesController::class, 'maj_autre_variable'])->name("autres_variables_maj");
+    Route::post("/variables/{id}/annuler", [VariablesController::class, 'annuler_variable'])->name("variables_annuler");
+    Route::post("/autres-variables/{id}/annuler", [VariablesController::class, 'annuler_autre_variable'])->name("autres_variables_annuler");
+
+    /** IMPORT TRAVAILLEURS ET CONTRATS (Répertoire CDD : stagiaires, CDD, CDI, journaliers) */
+    Route::get("/import-contrats", [\App\Http\Controllers\ImportContratsController::class, 'index'])->name("import_contrats");
+    Route::post("/import-contrats", [\App\Http\Controllers\ImportContratsController::class, 'importer'])->name("import_contrats_post");
+    Route::get("/import-contrats/modele", [\App\Http\Controllers\ImportContratsController::class, 'modele'])->name("import_contrats_modele");
+    Route::get("/import-contrats/rapport/{fichier}", [\App\Http\Controllers\ImportContratsController::class, 'rapport'])->name("import_contrats_rapport");
+
+    /** VARIABLES DE PAIE (remplace le fichier Excel) */
+    Route::get("/variables-paie", [\App\Http\Controllers\VariablesPaieController::class, 'index'])->name("variables_paie");
+    Route::post("/variables-paie/valeur", [\App\Http\Controllers\VariablesPaieController::class, 'store'])->name("variables_paie_store");
+    Route::get("/variables-paie/modifier", [\App\Http\Controllers\VariablesPaieController::class, 'edit'])->name("variables_paie_edit");
+    Route::post("/variables-paie/modifier", [\App\Http\Controllers\VariablesPaieController::class, 'update'])->name("variables_paie_update");
+    Route::post("/variables-paie/supprimer", [\App\Http\Controllers\VariablesPaieController::class, 'destroy'])->name("variables_paie_destroy");
+    Route::post("/variables-paie/import", [\App\Http\Controllers\VariablesPaieController::class, 'import'])->name("variables_paie_import");
+    Route::get("/variables-paie/export", [\App\Http\Controllers\VariablesPaieController::class, 'export'])->name("variables_paie_export");
     // ARCHIVÉ - Précarité : Route::get("/liste-precarites", [EmployerController::class, 'listeprecarites'])->name("listeprecarites");
 
     /** SANCTION */
@@ -687,6 +708,8 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
     Route::get("/telecharger-contrat-journalier/{id}", [EmployerController::class, 'telechargerContratJournalier'])->name("telechargerContratJournalier");
     Route::get("/telecharger-contrat-cdd/{id}", [EmployerController::class, 'telechargerContratCDD'])->name("telechargerContratCDD");
     Route::get("/telecharger-contrat-cdi/{id}", [EmployerController::class, 'telechargerContratCDI'])->name("telechargerContratCDI");
+    Route::get("/telecharger-contrat-essai/{id}", [EmployerController::class, 'telechargerContratEssai'])->name("telechargerContratEssai");
+    Route::get("/telecharger-convention-stage/{id}", [EmployerController::class, 'telechargerContratStage'])->name("telechargerContratStage");
     Route::get("/telecharger-cessassion-contrat/{id}", [EmployerController::class, 'telechargerContratCessassion'])->name("telechargerContratCessassion");
     Route::get("/telecharger-certificat-contrat-travail/{id}", [EmployerController::class, 'telechargerContratCertificatTravail'])->name("telechargerContratCertificatTravail");
     Route::get("/telecharger-sanctions/{mat}/{idsanct}", [EmployerController::class, 'telechargerSanctions'])->name("telechargerSanctions");

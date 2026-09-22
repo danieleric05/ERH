@@ -59,7 +59,7 @@
                 <br/>
                 <?php $tabDate = explode("-", $travailleur->date_naissance); ?>
                 <?php $tabDateP = explode("-", $travailleur->pieceidentite_livrele); ?>
-                2) <b> @if($travailleur->civilite == 'Monsieur') M. @endif @if($travailleur->civilite == 'Mademoiselle') Mlle. @endif @if($travailleur->civilite == 'Madame') Mme. @endif  <?= $travailleur->nom.' '.$travailleur->prenom.''.$travailleur->prenom_suite ?></b>  demeurant à  <b><?php echo $comm = \App\Commune::where('id', $travailleur->communeid)->first()?->label ?? ''; ?></b> <br/>
+                2) <b> @if($travailleur->civilite == 'Monsieur') M. @endif @if($travailleur->civilite == 'Mademoiselle') Mlle. @endif @if($travailleur->civilite == 'Madame') Mme. @endif  <?= $travailleur->nom.' '.$travailleur->prenoms_complets ?></b>  demeurant à  <b><?php echo $comm = \App\Commune::where('id', $travailleur->communeid)->first()?->label ?? ''; ?></b> <br/>
                 Situation matrimoniale     …<b>{{ ucfirst(strtolower($travailleur->situation_mat)) }}</b>…    Nom du (de la) conjoint (e)…………. <br/>
                 @if($travailleur->nationaliteid)
                     De nationalit&eacute;    <b>{{ \App\Pays::where('id', $travailleur->nationaliteid)->value('nationalite') ?? \App\Pays::where('id', $travailleur->nationaliteid)->value('label') }}</b> <br/>
@@ -99,7 +99,7 @@
                 <br/>
                 <br/>
 
-                <b> @if($travailleur->civilite == 'Monsieur') M. @endif @if($travailleur->civilite == 'Mademoiselle') Mlle. @endif @if($travailleur->civilite == 'Madame') Mme. @endif <?= strtoupper($travailleur->nom).' '.strtoupper($travailleur->prenom).''.strtoupper($travailleur->prenom_suite ?? '') ?></b>  dénommé(e) dans le présent contrat le "Travailleur occasionnel" ou « le Travailleur Journalier»,
+                <b> @if($travailleur->civilite == 'Monsieur') M. @endif @if($travailleur->civilite == 'Mademoiselle') Mlle. @endif @if($travailleur->civilite == 'Madame') Mme. @endif <?= strtoupper($travailleur->nom).' '.strtoupper($travailleur->prenoms_complets) ?></b>  dénommé(e) dans le présent contrat le "Travailleur occasionnel" ou « le Travailleur Journalier»,
                 <br/>
                 <br/>
                 <span class="text-left">D’AUTRE PART</span>

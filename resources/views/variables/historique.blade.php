@@ -80,11 +80,11 @@
                         @endphp
                         <tr class="border-b hover:bg-slate-50 transition">
                             <td class="px-6 py-4">
-                                @foreach(unserialize($rech->travailleurid) as $servaiable)
+                                @foreach($rech->matricules as $servaiable)
                                     @php $tv = $travailleursByMatricule->get($servaiable); @endphp
-                                    <span title="{{ optional($tv)->nom }} {{ optional($tv)->prenom }}"
-                                          class="inline-block px-2 py-1 mb-1 text-xs font-bold rounded-full bg-slate-800 text-white">
-                                        {{ optional($tv)->matricule }}
+                                    <span title="{{ $tv ? $tv->nom . ' ' . $tv->prenoms_complets : 'Matricule inconnu' }}"
+                                          class="inline-block px-2 py-1 mb-1 text-xs font-bold rounded-full {{ $tv ? 'bg-slate-800 text-white' : 'bg-amber-100 text-amber-800' }}">
+                                        {{ $servaiable }}
                                     </span><br>
                                 @endforeach
                             </td>

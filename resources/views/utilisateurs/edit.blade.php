@@ -17,7 +17,7 @@
                 <i class="fa fa-home"></i> Accueil
             </a>
             <span>/</span>
-            <span>Administration</span>
+            <a href="{{ route('utilisateurs.index') }}" class="hover:text-primary-accent">Utilisateurs</a>
             <span>/</span>
             <span class="text-text-primary font-medium">Modifier {{ $edit->pseudo }}</span>
         </nav>

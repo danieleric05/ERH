@@ -1,173 +1,18 @@
 @extends('layouts.erh')
 @section('content')
 
-    <!-- Header Section -->
-    <div class="mb-8">
-        <div class="flex items-center justify-between">
-            <div class="flex-1">
-                <h1 class="text-3xl font-bold text-text-primary mb-4">Gestion des variables automatiques</h1>
-                <nav class="flex items-center space-x-2 text-sm text-text-secondary">
-                    <a href="{{ url('bienvenue') }}" class="hover:text-text-primary">
-                        <i class="fa fa-home"></i> Accueil
-                    </a>
-                    <span class="text-text-secondary">/</span>
-                    <span>Variables</span>
-                    <span class="text-text-secondary">/</span>
-                    <span class="text-text-primary font-semibold">Automatiques</span>
-                </nav>
-            </div>
-        </div>
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-text-primary mb-2">Absences, arrêts maladie et sanctions</h1>
+        <p class="text-sm text-text-secondary">Valeurs enregistrées (fichier importé ou saisie) ou, à défaut, calculées depuis Santé, Autorisations et Sanctions.</p>
+        <nav class="flex items-center space-x-2 text-sm text-text-secondary mt-2">
+            <a href="{{ url('bienvenue') }}" class="hover:text-text-primary"><i class="fa fa-home"></i> Accueil</a>
+            <span>/</span><span>Variables</span>
+            <span>/</span><span class="text-text-primary font-semibold">Automatiques</span>
+        </nav>
     </div>
 
-    <!-- Messages Section -->
     @include('success')
     @include('errors')
 
-    <!-- Main Content -->
-    <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()"><div class="overflow-x-auto">
-            <table class="w-full">
-                <thead>
-                    <tr class="bg-slate-900 text-white border-b">
-                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('employs')">
-                            <div class="flex items-center gap-2">
-                                Employés
-                                <span x-show="sortBy === 'employs'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
-                            </div>
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('variables')">
-                            <div class="flex items-center gap-2">
-                                Variables
-                                <span x-show="sortBy === 'variables'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
-                            </div>
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('nombredejours')">
-                            <div class="flex items-center gap-2">
-                                Nombre de jours
-                                <span x-show="sortBy === 'nombredejours'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
-                            </div>
-                        </th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold cursor-pointer hover:bg-slate-800 transition select-none" @click="sort('tat')">
-                            <div class="flex items-center gap-2">
-                                État
-                                <span x-show="sortBy === 'tat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
-                            </div>
-                        </th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @forelse($variableA ?? [] as $vari)
-                    <tr class="border-b hover:bg-slate-50 transition">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary">
-                                    {{ $vari->employe ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                                    {{ $vari->variable ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                                    {{ $vari->nombre_jour ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    @if($vari->statutid == 1)
-                                        <span class="px-2 py-1 text-xs font-semibold text-blue-800 bg-blue-100 rounded-full">Actif</span>
-                                    @else
-                                        <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">Inactif</span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <div class="flex justify-center gap-2">
-                                        {{-- Edit Button --}}
-                                        <a title="Modifier"
-                                           href="#"
-                                           class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-
-                                        {{-- Delete Button --}}
-                                        <a title="Annuler"
-                                           href="#"
-                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?')"
-                                           class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="px-6 py-8 text-center text-slate-500">
-                                    <p class="text-lg">Aucune variable automatique trouvée</p>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    @include('tenues.modal_edit')
-
-
-<script>
-function tableSort() {
-    return {
-        sortBy: null,
-        sortDir: 'asc',
-
-        sort(column) {
-            if (this.sortBy === column) {
-                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
-            } else {
-                this.sortBy = column;
-                this.sortDir = 'asc';
-            }
-            this.sortTable();
-        },
-
-        sortTable() {
-            const tbody = document.querySelector('tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr:not(:last-child)'));
-
-            rows.sort((a, b) => {
-                let valueA, valueB;
-
-                // Récupérer les données de la colonne
-                const cells = Array.from(a.querySelectorAll('td'));
-                if (cells.length === 0) return 0;
-
-                // Déterminer l'index de la colonne
-                let colIndex = 0;
-                const headers = document.querySelectorAll('thead th');
-                let clickCount = 0;
-                for (let i = 0; i < headers.length; i++) {
-                    if (headers[i].textContent.toLowerCase().includes(this.sortBy.toLowerCase())) {
-                        colIndex = i;
-                        break;
-                    }
-                }
-
-                valueA = a.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
-                valueB = b.querySelector('td:nth-child(' + (colIndex + 1) + ')')?.textContent.trim() || '';
-
-                // Essayer de convertir en date
-                const dateA = new Date(valueA).getTime();
-                const dateB = new Date(valueB).getTime();
-
-                if (!isNaN(dateA) && !isNaN(dateB) && dateA > 0 && dateB > 0) {
-                    return this.sortDir === 'asc' ? dateA - dateB : dateB - dateA;
-                }
-
-                // Comparaison textuelle
-                return this.sortDir === 'asc'
-                    ? String(valueA).localeCompare(String(valueB), 'fr-FR')
-                    : String(valueB).localeCompare(String(valueA), 'fr-FR');
-            });
-
-            rows.forEach(row => tbody.appendChild(row));
-        }
-    }
-}
-</script>
-
+    @include('variables._paie_liste', ['routeListe' => 'listevariables_automatique', 'titre' => 'Présence'])
 @endsection

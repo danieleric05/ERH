@@ -17,7 +17,7 @@
                 <i class="fa fa-home"></i> Accueil
             </a>
             <span>/</span>
-            <span>Configuration</span>
+            <a href="{{ route('listetenues') }}" class="hover:text-primary-accent">Tenues</a>
             <span>/</span>
             <span class="text-text-primary font-medium">Attribuer une tenue</span>
         </nav>

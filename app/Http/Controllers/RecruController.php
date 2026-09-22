@@ -1111,132 +1111,38 @@ class RecruController extends Controller
 
     public function excel_download_variables($code)
     {
-        if($code){
-
-            $tabCodes = explode("+", $code);
-
-            if(count($tabCodes)){
-
-                $recherches = Variables::where('debut', '>=', $tabCodes['0'])
-                    ->where('debut', '<=', $tabCodes['1'])
-                    ->where('cause', 1)
-                    ->get();
-
-                $customer_array[] = array('Matricule', 'Nom', 'Prénom', 'Jour', 'Variables', 'Nombre de jour');
-
-                foreach($recherches as $customer) {
-
-                    $debut = strtotime($customer->debut);
-                    $fin = strtotime($customer->fin);
-                    $dif = ceil(abs($fin - $debut) / 86400) + 1;
-
-                    $nb_jour = intval($dif);
-
-                    if($customer->type_variable == 1){
-                        $jour = "DIMANCHE";
-                    }elseif ($customer->type_variable == 2){
-                        $jour = "FERIE";
-                    }elseif ($customer->cas_variables == 3){
-                        $jour = "JOUR OUVRABLE";
-                    }
-
-                    if($customer->cas_variables == 1){
-                        $variables = "RETARD D'ENROLEMENT";
-                    }elseif ($customer->cas_variables == 2){
-                        $variables = "DEFAUT DE POINTAGE";
-                    }elseif ($customer->cas_variables == 3){
-                        $variables = "OUBLI DE POINTAGE";
-                    }elseif ($customer->cas_variables == 3){
-                        $variables = "DEFAUT D'EMPREINTE";
-                    }
-
-                    foreach (unserialize($customer->travailleurid) as $servaiable){
-                        $travailleurVar = \App\Travailleur::where('matricule', $servaiable)->first();
-
-                        if (!$travailleurVar) {
-                            continue;
-                        }
-
-                        $customer_array[] = array(
-                            'Matricule'  => $travailleurVar->matricule,
-                            'Nom'  => $travailleurVar->nom,
-                            'Prénom'  => $travailleurVar->prenom,
-                            'Jour'  => $jour,
-                            'Variables'  => $variables,
-                            'Nombre de jour'  => $nb_jour,
-                        );
-
-                    }
-
-                }
-
-
-            }else{
-
-                //if()
-                $recherches = Variables::where('debut', '>=', $tabCodes['0'])
-                    ->where('debut', '<=', $tabCodes['1'])
-                    ->where('cas_variables', $tabCodes['2'])
-                    ->where('cause', 1)
-                    ->where('type_variable', $tabCodes['3'])
-                    ->get();
-
-                $customer_array[] = array('Matricule', 'Nom', 'Prénom', 'Jour', 'Variables', 'Nombre de jour');
-
-                foreach($recherches as $customer) {
-
-                    $debut = strtotime($customer->debut);
-                    $fin = strtotime($customer->fin);
-                    $dif = ceil(abs($fin - $debut) / 86400) + 1;
-
-                    $nb_jour = intval($dif);
-
-                    if($customer->type_variable == 1){
-                        $jour = "DIMANCHE";
-                    }elseif ($customer->type_variable == 2){
-                        $jour = "FERIE";
-                    }elseif ($customer->cas_variables == 3){
-                        $jour = "JOUR OUVRABLE";
-                    }
-
-                    if($customer->cas_variables == 1){
-                        $variables = "RETARD D'ENROLEMENT";
-                    }elseif ($customer->cas_variables == 2){
-                        $variables = "DEFAUT DE POINTAGE";
-                    }elseif ($customer->cas_variables == 3){
-                        $variables = "OUBLI DE POINTAGE";
-                    }elseif ($customer->cas_variables == 3){
-                        $variables = "DEFAUT D'EMPREINTE";
-                    }
-
-                    foreach (unserialize($customer->travailleurid) as $servaiable){
-                        $travailleurVar = \App\Travailleur::where('matricule', $servaiable)->first();
-
-                        if (!$travailleurVar) {
-                            continue;
-                        }
-
-                        $customer_array[] = array(
-                            'Matricule'  => $travailleurVar->matricule,
-                            'Nom'  => $travailleurVar->nom,
-                            'Prénom'  => $travailleurVar->prenom,
-                            'Jour'  => $jour,
-                            'Variables'  => $variables,
-                            'Nombre de jour'  => $nb_jour,
-                        );
-
-                    }
-
-                }
-
-
-            }
-
-                return Excel::download(new ArrayExport($customer_array, 'Liste des Variables'), 'liste_des_variables.xlsx');
-
-
+        // code = début+fin[+cas+jour] (cas 5 et jour 4 = TOUS)
+        $t = explode("+", (string) $code);
+        if (count($t) < 2 || !strtotime($t[0]) || !strtotime($t[1])) {
+            return Redirect::back()->withErrors("Période invalide pour l'export.");
         }
 
+        $recherches = Variables::pointage($t[0], $t[1], $t[3] ?? null, $t[2] ?? null)->orderBy('debut')->get();
+        $matricules = $recherches->flatMap(fn($v) => $v->matricules)->unique();
+        $travailleurs = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
+
+        $customer_array[] = array('Matricule', 'Nom', 'Prénom', 'Jour', 'Variables', 'Nombre de jour');
+
+        foreach($recherches as $variable) {
+            $nb_jour = intval(ceil(abs(strtotime($variable->fin) - strtotime($variable->debut)) / 86400)) + 1;
+
+            foreach ($variable->matricules as $matricule) {
+                $trav = $travailleurs->get($matricule);
+                if (!$trav) {
+                    continue;
+                }
+                $customer_array[] = array(
+                    'Matricule'  => $trav->matricule,
+                    'Nom'  => $trav->nom,
+                    'Prénom'  => $trav->prenoms_complets,
+                    'Jour'  => $variable->jour_libelle ?? '-',
+                    'Variables'  => $variable->cas_libelle ?? '-',
+                    'Nombre de jour'  => $nb_jour,
+                );
+            }
+        }
+
+        return Excel::download(new ArrayExport($customer_array, 'Variables'), 'variables.xlsx');
     }
 
     public function excel_download_fin_contrat(){
@@ -1302,47 +1208,23 @@ class RecruController extends Controller
 
     public function post_search_varaiables(Request $request){
 
-        if($request){
+        $request->validate([
+            'variablesid' => 'required|integer|between:1,4',
+            'cas_variables' => 'required|integer|between:1,5',
+            'beginn' => 'required|date',
+            'endd' => 'required|date|after_or_equal:beginn',
+        ]);
 
-            if( ($request->variablesid == 4) &&  ($request->cas_variables == 5) ){
+        // « TOUS » (jour = 4, cas = 5) ne filtre pas ; le code sert à l'export Excel de la même recherche
+        $code = $request->beginn . '+' . $request->endd . '+' . $request->cas_variables . '+' . $request->variablesid;
 
-                $debut = $request->beginn; $fin = $request->endd;
-                $code = $chaine=$debut.'+'.$fin;
+        $recherches = Variables::pointage($request->beginn, $request->endd, $request->variablesid, $request->cas_variables)
+            ->orderBy('id', 'DESC')->get();
 
-                $recherches = Variables::where('debut', '>=', $request->beginn)
-                    ->where('debut', '<=', $request->endd)
-                    ->where('cause', 1)
-                    ->get();
+        $matricules = $recherches->flatMap(fn($rech) => $rech->matricules)->unique();
+        $travailleursByMatricule = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
 
-                $matricules = $recherches->flatMap(fn($rech) => unserialize($rech->travailleurid))->unique();
-                $travailleursByMatricule = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
-
-                return view('variables.historique', compact('recherches', 'code', 'travailleursByMatricule'));
-
-            }else{
-
-                $debut = $request->beginn; $fin = $request->endd; $cas = $request->cas_variables ; $variab = $request->variablesid;
-                $code = $chaine=$debut.'+'.$fin.'+'.$cas.'+'.$variab;
-
-                $recherches = Variables::where('debut', '>=', $request->beginn)
-                    ->where('debut', '<=', $request->endd)
-                    ->where('cas_variables', $request->cas_variables)
-                    ->where('cause', 1)
-                    ->where('type_variable', $request->variablesid)
-                    ->get();
-
-                $matricules = $recherches->flatMap(fn($rech) => unserialize($rech->travailleurid))->unique();
-                $travailleursByMatricule = Travailleur::whereIn('matricule', $matricules)->get()->keyBy('matricule');
-
-                return view('variables.historique', compact('recherches', 'code', 'travailleursByMatricule'));
-
-
-            }
-
-
-        }else{
-            return view('error_277.277', compact('recherches', 'type'));
-        }
+        return view('variables.historique', compact('recherches', 'code', 'travailleursByMatricule'));
 
     }
 

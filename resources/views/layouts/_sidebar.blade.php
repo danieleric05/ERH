@@ -45,6 +45,10 @@
                     <i class="fa fa-chevron-down transition-transform duration-300" :class="{'rotate-180': openMenus.recrutement}"></i>
                 </button>
                 <div x-show="openMenus.recrutement" x-transition class="ml-4 space-y-1 mt-2">
+                    <a href="{{ route('import_contrats') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
+                        <i class="fa fa-upload mr-3 w-4"></i>
+                        Import contrats / stagiaires
+                    </a>
                     <a href="{{ url('ajouter-travailleur-etape-un') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-plus mr-3 w-4"></i>
                         Recrutement 1ère Étape
@@ -124,6 +128,10 @@
                     <i class="fa fa-chevron-down transition-transform duration-300" :class="{'rotate-180': openMenus.variables}"></i>
                 </button>
                 <div x-show="openMenus.variables" x-transition class="ml-4 space-y-1 mt-2">
+                    <a href="{{ route('variables_paie') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm font-medium">
+                        <i class="fa fa-table mr-3 w-4"></i>
+                        Variables de paie
+                    </a>
                     <a href="{{ url('ajouter-variable') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-plus mr-3 w-4"></i>
                         Ajouter variable
@@ -316,6 +324,10 @@
                     <i class="fa fa-chevron-down transition-transform duration-300" :class="{'rotate-180': openMenus.recrutement}"></i>
                 </button>
                 <div x-show="openMenus.recrutement" x-transition class="ml-4 space-y-1 mt-2">
+                    <a href="{{ route('import_contrats') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
+                        <i class="fa fa-upload mr-3 w-4"></i>
+                        Import contrats / stagiaires
+                    </a>
                     <a href="{{ url('ajouter-travailleur-etape-un') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-plus mr-3 w-4"></i>
                         Recrutement 1ère Étape
@@ -395,6 +407,10 @@
                     <i class="fa fa-chevron-down transition-transform duration-300" :class="{'rotate-180': openMenus.variables}"></i>
                 </button>
                 <div x-show="openMenus.variables" x-transition class="ml-4 space-y-1 mt-2">
+                    <a href="{{ route('variables_paie') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm font-medium">
+                        <i class="fa fa-table mr-3 w-4"></i>
+                        Variables de paie
+                    </a>
                     <a href="{{ url('ajouter-variable') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-plus mr-3 w-4"></i>
                         Ajouter variable
@@ -612,6 +628,10 @@
                     <i class="fa fa-chevron-down transition-transform duration-300" :class="{'rotate-180': openMenus.recrutement}"></i>
                 </button>
                 <div x-show="openMenus.recrutement" x-transition class="ml-4 space-y-1 mt-2">
+                    <a href="{{ route('import_contrats') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
+                        <i class="fa fa-upload mr-3 w-4"></i>
+                        Import contrats / stagiaires
+                    </a>
                     <a href="{{ route('liste_tous_travailleurs') }}" class="flex items-center px-4 py-2 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors text-sm">
                         <i class="fa fa-users mr-3 w-4"></i>
                         Liste des travailleurs

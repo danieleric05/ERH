@@ -29,6 +29,9 @@
     @include('success')
     @include('errors')
 
+    @include('variables._paie_liste', ['routeListe' => 'listevariables_heure_supp', 'titre' => 'Heures supplémentaires et primes de nuit'])
+
+    <h2 class="text-lg font-semibold text-text-primary mb-3">Saisies individuelles d'heures supplémentaires</h2>
     <!-- Main Content -->
     <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden" x-data="tableSort()"><div class="overflow-x-auto">
             <table class="w-full">
@@ -62,26 +65,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                        @php
-                            $allEmployerIds = [];
-                            foreach ($variableHS ?? [] as $var) {
-                                $allEmployerIds = array_merge($allEmployerIds, unserialize($var->employer_hs));
-                            }
-                            $allEmployers = \App\Travailleur::whereIn('id', array_unique($allEmployerIds))->get()->keyBy('id');
-                        @endphp
                         @forelse($variableHS ?? [] as $vari)
                             <tr class="border-b hover:bg-slate-50 transition">
                                 <td class="px-6 py-4 text-sm">
                                     <div class="flex flex-wrap gap-1">
-                                        @foreach(unserialize($vari->employer_hs) as $employerId)
+                                        @foreach($vari->employes_hs as $employerId)
                                             @php
-                                                $travailleur = $allEmployers->get($employerId);
+                                                $travailleur = $employes->get($employerId);
                                             @endphp
-                                            @if($travailleur)
-                                                <span title="{{ $travailleur->nom ?? '' }} {{ $travailleur->prenom ?? '' }}" class="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 rounded-full">
-                                                    {{ $travailleur->matricule ?? '' }}
-                                                </span>
-                                            @endif
+                                            <span title="{{ $travailleur ? $travailleur->nom . ' ' . $travailleur->prenoms_complets : 'Travailleur introuvable' }}" class="px-2 py-1 text-xs font-semibold {{ $travailleur ? 'text-gray-800 bg-gray-100' : 'text-amber-800 bg-amber-100' }} rounded-full">
+                                                {{ $travailleur->matricule ?? '#' . $employerId }}
+                                            </span>
                                         @endforeach
                                     </div>
                                 </td>
@@ -98,23 +92,14 @@
                                         <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">Inactif</span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 text-center">
-                                    <div class="flex justify-center gap-2">
-                                        {{-- Edit Button --}}
-                                        <a title="Modifier"
-                                           href="#"
-                                           class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-
-                                        {{-- Delete Button --}}
-                                        <a title="Annuler"
-                                           href="#"
-                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?')"
-                                           class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
-                                    </div>
+                                <td class="px-6 py-4 text-center whitespace-nowrap">
+                                    <a href="{{ route('variables_modifier', $vari->id) }}" title="Modifier" class="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition"><i class="fa fa-edit"></i></a>
+                                    @if($vari->statutid == 1)
+                                        <form method="POST" action="{{ route('variables_annuler', $vari->id) }}" onsubmit="return confirm('Annuler cette variable ?')" class="inline">
+                                            @csrf
+                                            <button type="submit" title="Annuler" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"><i class="fa fa-ban"></i></button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
