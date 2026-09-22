@@ -708,6 +708,8 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
     Route::get("/telecharger-contrat-journalier/{id}", [EmployerController::class, 'telechargerContratJournalier'])->name("telechargerContratJournalier");
     Route::get("/telecharger-contrat-cdd/{id}", [EmployerController::class, 'telechargerContratCDD'])->name("telechargerContratCDD");
     Route::get("/telecharger-contrat-cdi/{id}", [EmployerController::class, 'telechargerContratCDI'])->name("telechargerContratCDI");
+    Route::get("/telecharger-contrat-essai/{id}", [EmployerController::class, 'telechargerContratEssai'])->name("telechargerContratEssai");
+    Route::get("/telecharger-convention-stage/{id}", [EmployerController::class, 'telechargerContratStage'])->name("telechargerContratStage");
     Route::get("/telecharger-cessassion-contrat/{id}", [EmployerController::class, 'telechargerContratCessassion'])->name("telechargerContratCessassion");
     Route::get("/telecharger-certificat-contrat-travail/{id}", [EmployerController::class, 'telechargerContratCertificatTravail'])->name("telechargerContratCertificatTravail");
     Route::get("/telecharger-sanctions/{mat}/{idsanct}", [EmployerController::class, 'telechargerSanctions'])->name("telechargerSanctions");

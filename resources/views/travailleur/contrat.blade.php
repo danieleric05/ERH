@@ -74,6 +74,11 @@
                 <a href="{{ route('telechargerContratCDD',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}" target="_blank" title="CONTRAT CDD" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center">
                     Télécharger Contrat CDD
                 </a>
+            @elseif(in_array($edit_travailleur->idtype_contrat, [1, 5, 6]))
+                <!-- Stage / Stage École / Stage de Qualification -->
+                <a href="{{ route('telechargerContratStage',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}" target="_blank" title="CONVENTION DE STAGE" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center">
+                    Télécharger Convention de Stage
+                </a>
             @else
                 <!-- Type de contrat non renseigné : proposer les deux plutôt que deviner -->
                 <a href="{{ route('telechargerContratCDD',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}" target="_blank" title="CONTRAT CDD" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center">
@@ -81,6 +86,13 @@
                 </a>
                 <a href="{{ route('telechargerContratCDI',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}" target="_blank" title="CONTRAT CDI" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center">
                     Télécharger Contrat CDI
+                </a>
+            @endif
+
+            @if($edit_travailleur->mois_essai)
+                <!-- Contrat d'essai : disponible en plus dès qu'une période d'essai est renseignée -->
+                <a href="{{ route('telechargerContratEssai',['id'=>$edit_travailleur->id, 'download'=>'pdf']) }}" target="_blank" title="CONTRAT D'ESSAI" class="px-6 py-3 bg-slate-500 hover:bg-slate-600 text-white rounded-lg font-medium transition-colors text-center">
+                    Télécharger Contrat d'Essai
                 </a>
             @endif
         </div>

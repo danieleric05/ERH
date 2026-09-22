@@ -1062,6 +1062,41 @@ class EmployerController extends Controller
         }
     }
 
+    public function telechargerContratEssai(Request $request, $id)
+    {
+        $travailleur = Travailleur::where('id', $id)->first();
+        if (($travailleur->pieceidentite == "NULL") || ($travailleur->pieceidentite_livrele == "NULL") || ($travailleur->pieceidentite_lieu == "NULL")) {
+            return Redirect::back()->withErrors("Les informations de la piece d'identité ne sont pas renseigné, Veuillez contacter le travailleur svp.");
+        } else {
+            $departements = Departement::where('id', $travailleur->departementid)->first();
+            $unites = Unites::where('id', $travailleur->uniteid)->first();
+            $pays = Pays::where('id', $travailleur->paysid)->first();
+            $equipes = Equipes::where('id', $travailleur->equipeid)->first();
+
+            if ($request->has('download')) {
+                PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+                $pdf = PDF::loadView('contrat.contrat_essai', compact('id', 'travailleur', 'departements', 'equipes', 'unites', 'pays'));
+                return $pdf->download("contrat_essai-$travailleur->nom-$travailleur->prenom.pdf");
+            }
+        }
+    }
+
+    public function telechargerContratStage(Request $request, $id)
+    {
+        $travailleur = Travailleur::where('id', $id)->first();
+
+        $departements = Departement::where('id', $travailleur->departementid)->first();
+        $unites = Unites::where('id', $travailleur->uniteid)->first();
+        $pays = Pays::where('id', $travailleur->paysid)->first();
+        $equipes = Equipes::where('id', $travailleur->equipeid)->first();
+
+        if ($request->has('download')) {
+            PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+            $pdf = PDF::loadView('contrat.contrat_stage', compact('id', 'travailleur', 'departements', 'equipes', 'unites', 'pays'));
+            return $pdf->download("convention_stage-$travailleur->nom-$travailleur->prenom.pdf");
+        }
+    }
+
     public function telechargerContratCessassion(Request $request, $id)
     {
         $travailleur = Travailleur::where('id', $id)->first();
