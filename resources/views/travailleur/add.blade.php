@@ -233,10 +233,13 @@ function initializeForm(suggestionJournalier, suggestionEmbauche) {
         showFinContrat: false,
         handleContractTypeChange(event) {
             const value = event.target.value;
+            const etaitJournalier = this.showEmbaucheJournalier;
             // Types réels (e_typecontrat) : 1=STAGE, 2=CDD, 3=CDI, 4=JOURNALIER
             this.showEmbaucheContrat = value === '2' || value === '3'; // CDD ou CDI
             this.showEmbaucheJournalier = value === '4'; // Journalier (était '1' par erreur, id réel du STAGE)
             this.showFinContrat = value !== '';
+            // Quitter Journalier : la date d'embauche (champ distinct) repart vide, la fin aussi.
+            if (etaitJournalier && !this.showEmbaucheJournalier) document.getElementById('date_fin_contrat_new').value = '';
             this.majFinJournalier();
 
             const matricule = document.getElementById('matricule');
