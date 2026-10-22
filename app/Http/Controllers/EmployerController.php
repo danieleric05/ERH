@@ -640,7 +640,7 @@ class EmployerController extends Controller
                 $request->validate(['photo' => 'image|mimes:jpeg,jpg,png,gif|max:5120']);
                 try {
                     $photo = $request->file('photo');
-                    $photoName = time() . '_' . $travail->matricule . '.' . $photo->getClientOriginalExtension();
+                    $photoName = time() . '_' . $travail->matricule . '.' . ($photo->guessExtension() ?: 'jpg');
                     $destinationPath = public_path('../rhassets/images/travailleurs');
 
                     // Créer le dossier s'il n'existe pas
@@ -758,7 +758,7 @@ class EmployerController extends Controller
                 }
 
                 $photo = $request->file('photo');
-                $photoName = time() . '_' . $travail->matricule . '.' . $photo->getClientOriginalExtension();
+                $photoName = time() . '_' . $travail->matricule . '.' . ($photo->guessExtension() ?: 'jpg');
                 $destinationPath = public_path('../rhassets/images/travailleurs');
 
                 // Créer le dossier s'il n'existe pas
