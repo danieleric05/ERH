@@ -404,7 +404,7 @@ class EmployerController extends Controller
             $travail->equipeid = $request->equipeid;
             //dd($request->equipeid.$request->uniteid);
             if ($morceau == 'J') {
-                $datefincontrat = date("Y-m-d", strtotime("$request->date_embauche_journalier +320 day"));
+                $datefincontrat = Carbon::parse($request->date_embauche_journalier)->addMonthsNoOverflow(11)->toDateString(); // journalier : 11 mois après l'embauche
                 $travail->date_debut_contrat = $request->date_embauche_journalier;
                 $travail->date_fin_contrat = $datefincontrat;
                 $travail->type_employer = 1;
@@ -587,7 +587,6 @@ class EmployerController extends Controller
             $chaine = $request->matricule;
             $morceau = substr($chaine, 0, 1);
 
-            $datefincontrat = date("Y-m-d", strtotime("$request->dateembauche +330 day"));
             $tabDate = explode("-", $request->dateembauche);
             $travail = new Travailleur();
             $travail->matricule = strtoupper($request->matricule);
@@ -816,7 +815,7 @@ class EmployerController extends Controller
             return Redirect::back()->withErrors("Désoler le matricule existe deja dans la base de donnée, veuillez modifier a nouveau.");
         } else{*/
 
-        $datefincontrat = date("Y-m-d", strtotime("$request->dateembauche +330 day"));
+        $datefincontrat = $request->dateembauche ? Carbon::parse($request->dateembauche)->addMonthsNoOverflow(11)->toDateString() : null; // journalier : 11 mois après l'embauche
         $chaine = $request->matricule;
         $morceau = substr($chaine, 0, 1);
 
