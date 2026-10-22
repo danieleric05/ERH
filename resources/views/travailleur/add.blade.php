@@ -177,6 +177,7 @@
                 <div x-show="showEmbaucheJournalier" style="display: none">
                     <label for="date_embauche_journalier" class="block text-sm font-medium text-text-primary mb-2">Date d'embauche</label>
                     <input type="date" value="{{ date('Y-m-d') }}" name="date_embauche_journalier" id="date_embauche_journalier"
+                        @input="majFinJournalier()"
                         class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
                 </div>
 
@@ -211,8 +212,22 @@
 </div>
 
 <script>
+// Date d'embauche + 11 mois (sans débordement : 31/03 -> 28/02), au format AAAA-MM-JJ.
+function plus11Mois(iso) {
+    const [y, m, d] = iso.split('-').map(Number);
+    const fin = new Date(Date.UTC(y, m - 1 + 11, 1));
+    const dernierJour = new Date(Date.UTC(fin.getUTCFullYear(), fin.getUTCMonth() + 1, 0)).getUTCDate();
+    fin.setUTCDate(Math.min(d, dernierJour));
+    return fin.toISOString().slice(0, 10);
+}
+
 function initializeForm(suggestionJournalier, suggestionEmbauche) {
     return {
+        majFinJournalier() {
+            if (!this.showEmbaucheJournalier) return;
+            const embauche = document.getElementById('date_embauche_journalier').value;
+            if (embauche) document.getElementById('date_fin_contrat_new').value = plus11Mois(embauche);
+        },
         showEmbaucheContrat: false,
         showEmbaucheJournalier: false,
         showFinContrat: false,
@@ -222,6 +237,7 @@ function initializeForm(suggestionJournalier, suggestionEmbauche) {
             this.showEmbaucheContrat = value === '2' || value === '3'; // CDD ou CDI
             this.showEmbaucheJournalier = value === '4'; // Journalier (était '1' par erreur, id réel du STAGE)
             this.showFinContrat = value !== '';
+            this.majFinJournalier();
 
             const matricule = document.getElementById('matricule');
             if (this.showEmbaucheContrat) {
