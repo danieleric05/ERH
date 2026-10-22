@@ -251,7 +251,7 @@
 
                                 {{-- Nom & Prénoms --}}
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="text-sm text-text-primary">{{ $travailleur->nom }} {{ $travailleur->prenom }}</span>
+                                    <span class="text-sm text-text-primary">{{ $travailleur->nom }} {{ $travailleur->prenoms_complets }}</span>
                                 </td>
 
                                 {{-- Unité --}}

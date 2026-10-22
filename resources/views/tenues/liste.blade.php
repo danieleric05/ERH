@@ -90,7 +90,7 @@
                         </td>
                         <td class="px-6 py-4 text-text-primary"
                             title="Matricule: {{ $travailleur->matricule ?? '-' }}">
-                            {{ ($travailleur->nom ?? '') }} {{ ($travailleur->prenom ?? '') }}
+                            {{ ($travailleur->nom ?? '') }} {{ ($travailleur->prenoms_complets ?? '') }}
                         </td>
                         <td class="px-6 py-4 text-text-secondary text-sm">
                             {{ $service->label ?? '-' }}

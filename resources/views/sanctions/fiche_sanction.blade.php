@@ -43,7 +43,7 @@
         <div class="flex flex-wrap justify-center gap-3">
             @forelse($sanctions as $sant)
                 <a target="_blank"
-                   title="{{ optional(App\Travailleur::where('matricule', $sant)->first())->nom }} {{ optional(App\Travailleur::where('matricule', $sant)->first())->prenom }}"
+                   title="{{ optional(App\Travailleur::where('matricule', $sant)->first())->nom }} {{ optional(App\Travailleur::where('matricule', $sant)->first())->prenoms_complets }}"
                    href="{{ route('telechargerSanctions', ['mat' => $sant, 'idsanct' => $sanct->id]) }}?download=pdf"
                    class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-text-primary hover:bg-slate-50 transition">
                     <i class="fa fa-file-pdf-o"></i> TÉLÉCHARGER - {{ $sant }}

@@ -49,6 +49,22 @@ class Travailleur extends Model
     }
 
     /**
+     * Recherche multi-mots : chaque mot doit figurer dans le nom, le prénom (début ou suite) ou le matricule,
+     * pour que « Koffi Ahou » retrouve KOFFI (nom) + AHOU... (prénom).
+     */
+    public function scopeRecherche($query, string $search)
+    {
+        foreach (preg_split('/\s+/', trim($search), -1, PREG_SPLIT_NO_EMPTY) as $mot) {
+            $query->where(fn ($q) => $q->where('nom', 'like', "%{$mot}%")
+                ->orWhere('prenom', 'like', "%{$mot}%")
+                ->orWhere('prenom_suite', 'like', "%{$mot}%")
+                ->orWhere('matricule', 'like', "%{$mot}%"));
+        }
+
+        return $query;
+    }
+
+    /**
      * Actif = etapeid != 4 (certificat de travail = état final), ET
      * (etapeid != 3 OU (pas de cessation confirmée ET (embauché après le 31-12-2024 OU
      * fin de contrat après le 01-01-2025))).

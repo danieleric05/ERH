@@ -36,7 +36,7 @@
 
             <b  style="font-size: 18px; font-weight: bold"><u>TRAVAILLEUR</u></b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; N° C.N.P.S /__ /__ /__ /__ /__ /__ /__ /__ /__ /__ /__ /__ /  <br/>
             <br/>
-            Nom : <b style="color: black"><u><?= $travailleur->nom ?></u></b>  &nbsp;&nbsp;&nbsp;&nbsp; Prénoms : <b><u><?= $travailleur->prenom ?></u></b><br/>
+            Nom : <b style="color: black"><u><?= $travailleur->nom ?></u></b>  &nbsp;&nbsp;&nbsp;&nbsp; Prénoms : <b><u><?= $travailleur->prenoms_complets ?></u></b><br/>
 
             Epouse : _________________________________________________________________________ <br/>
 

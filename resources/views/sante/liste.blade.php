@@ -99,7 +99,7 @@
                                     {{ $travailleur->matricule ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary">
-                                    {{ ($travailleur->nom ?? '') }} {{ ($travailleur->prenom ?? '') }}
+                                    {{ ($travailleur->nom ?? '') }} {{ ($travailleur->prenoms_complets ?? '') }}
                                 </td>
                                 @if(Auth::user()->idrole == 4)
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">

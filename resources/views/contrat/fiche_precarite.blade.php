@@ -36,7 +36,7 @@
                 <br/>
 
 
-                Nom et Prénoms:			<b><?= $travailleur->nom ?> <?= $travailleur->prenom ?> </b>
+                Nom et Prénoms:			<b><?= $travailleur->nom ?> <?= $travailleur->prenoms_complets ?> </b>
                 <br/>
                 <br/>
 
@@ -77,7 +77,7 @@
 
             ?>
 
-            Je soussigné Monsieur	<b><?= $travailleur->nom ?> <?= $travailleur->prenom ?></b>
+            Je soussigné Monsieur	<b><?= $travailleur->nom ?> <?= $travailleur->prenoms_complets ?></b>
             atteste avoir travaillé effectivement {{ $precarite }} jours au sein de la société <b>PLASTICA</b> et reçu
             la somme de <b><?= number_format($calculs, '2', ',', '.') ?> F CFA ( <?= $lecture ?> francs CFA)</b>
                 au titre de la prime de fin de contrat pour le temps passé dans la société.<br/>

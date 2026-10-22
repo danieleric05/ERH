@@ -44,11 +44,7 @@ class RecruController extends Controller
 
         if (!empty($request->input('search'))) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('matricule', 'like', "%{$search}%");
-            });
+            $query->recherche($search);
         }
 
         $sortable = ['matricule' => 'matricule', 'nomprnoms' => 'nom', 'datedembauche' => 'date_debut_contrat', 'datefindecontrat' => 'date_fin_contrat'];
@@ -67,11 +63,7 @@ class RecruController extends Controller
 
         if (!empty($request->input('search'))) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('matricule', 'like', "%{$search}%");
-            });
+            $query->recherche($search);
         }
 
         $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];
@@ -94,11 +86,7 @@ class RecruController extends Controller
 
         if (!empty($request->input('search'))) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('matricule', 'like', "%{$search}%");
-            });
+            $query->recherche($search);
         }
 
         $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];
@@ -130,11 +118,7 @@ class RecruController extends Controller
 
         if (!empty($request->input('search'))) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('matricule', 'like', "%{$search}%");
-            });
+            $query->recherche($search);
         }
 
         $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];
@@ -155,11 +139,7 @@ class RecruController extends Controller
         if (mb_strlen($q) < 2) {
             return response()->json([]);
         }
-        $results = Travailleur::where(function($query) use ($q) {
-                $query->where('nom', 'like', "%{$q}%")
-                      ->orWhere('prenom', 'like', "%{$q}%")
-                      ->orWhere('matricule', 'like', "%{$q}%");
-            })
+        $results = Travailleur::recherche($q)
             ->limit(8)
             ->get(['id', 'matricule', 'nom', 'prenom']);
 
@@ -171,11 +151,7 @@ class RecruController extends Controller
 
         if (!empty($request->input('search'))) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('matricule', 'like', "%{$search}%");
-            });
+            $query->recherche($search);
         }
 
         $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];

@@ -183,11 +183,7 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
 
         if (!empty($request->input('search'))) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('matricule', 'like', "%{$search}%");
-            });
+            $query->recherche($search);
         }
 
         $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];

@@ -42,7 +42,7 @@
                     <select name="travailleurid" id="travailleurid" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white show-tick ms select2" data-placeholder="Select">
                         <option value="">-DEROULER-</option>
                         @foreach($data_travailleur as $trav)
-                            <option value="{{ $trav->id }}">{{ $trav->nom }} {{ $trav->prenom }} {{ $trav->matricule }}</option>
+                            <option value="{{ $trav->id }}">{{ $trav->nom }} {{ $trav->prenoms_complets }} {{ $trav->matricule }}</option>
                         @endforeach
                     </select>
                 </div>

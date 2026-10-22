@@ -113,7 +113,7 @@
                             @if($rech->matricule)
                                 <td class="px-6 py-4 text-sm text-text-primary">
                                     {{ optional($travailleursByMatricule->get($rech->matricule))->nom }}
-                                    {{ optional($travailleursByMatricule->get($rech->matricule))->prenom }}
+                                    {{ optional($travailleursByMatricule->get($rech->matricule))->prenoms_complets }}
                                 </td>
                             @endif
                             <td class="px-6 py-4 text-center text-sm text-text-primary"><?= $rech->valeur ?></td>

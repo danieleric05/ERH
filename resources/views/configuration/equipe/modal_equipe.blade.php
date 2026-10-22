@@ -39,7 +39,7 @@
                                 <select name="chefEquipeid" class="form-control" data-placeholder="Select">
                                     <option value="">-DEROULER-</option>
                                     @foreach($Travailleur as $liste)
-                                        <option value="{{ $liste->id }}">{{ $liste->nom }} - {{ $liste->prenom }} - {{ $liste->matricule }}</option>
+                                        <option value="{{ $liste->id }}">{{ $liste->nom }} - {{ $liste->prenoms_complets }} - {{ $liste->matricule }}</option>
                                     @endforeach
                                 </select>
                             </div>

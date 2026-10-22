@@ -50,7 +50,7 @@
                     <select name="chefEquipeid" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white">
                         <option value="">-SÉLECTIONNER-</option>
                         @foreach($Travailleur as $liste)
-                            <option value="{{ $liste->id }}">{{ $liste->nom }} - {{ $liste->prenom }} - {{ $liste->matricule }}</option>
+                            <option value="{{ $liste->id }}">{{ $liste->nom }} - {{ $liste->prenoms_complets }} - {{ $liste->matricule }}</option>
                         @endforeach
                     </select>
                 </div>

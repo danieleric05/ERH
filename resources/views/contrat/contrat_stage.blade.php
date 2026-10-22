@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>CONVENTION DE STAGE - {{ $travailleur->nom }} {{ $travailleur->prenom }}</title>
+    <title>CONVENTION DE STAGE - {{ $travailleur->nom }} {{ $travailleur->prenoms_complets }}</title>
     <style>
         @page {
             margin: 15mm 15mm 15mm 15mm;

@@ -24,7 +24,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="md:col-start-2 bg-white rounded-lg shadow-lg-soft overflow-hidden">
             <div class="bg-primary-accent px-6 py-4">
-                <h4 class="text-white font-bold">{{ optional($travailleur)->prenom }} {{ optional($travailleur)->nom }}</h4>
+                <h4 class="text-white font-bold">{{ optional($travailleur)->prenoms_complets }} {{ optional($travailleur)->nom }}</h4>
             </div>
             <div class="p-6 text-center">
                 <img src="{{ asset('rhassets/images/images.png') }}" class="w-24 h-24 rounded-full mx-auto mb-4" alt="profile-image">
@@ -91,7 +91,7 @@
                         </td>
                         <td class="px-6 py-4 text-text-primary">{{ optional($t)->matricule }}</td>
                         <td class="px-6 py-4 text-text-primary">{{ optional($t)->nom }}</td>
-                        <td class="px-6 py-4 text-text-primary">{{ optional($t)->prenom }}</td>
+                        <td class="px-6 py-4 text-text-primary">{{ optional($t)->prenoms_complets }}</td>
                         <td class="px-6 py-4 text-center">
                             <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">{{ $info->debut_contrat }}</span>
                         </td>
@@ -137,7 +137,7 @@
                         <tr class="border-b hover:bg-slate-50 transition">
                             <td class="px-6 py-4 text-text-primary">{{ optional($t)->matricule }}</td>
                             <td class="px-6 py-4 text-text-primary">{{ optional($t)->nom }}</td>
-                            <td class="px-6 py-4 text-text-primary">{{ optional($t)->prenom }}</td>
+                            <td class="px-6 py-4 text-text-primary">{{ optional($t)->prenoms_complets }}</td>
                             <td class="px-6 py-4 text-center">
                                 <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">{{ $hist->date_choix }}</span>
                             </td>
@@ -175,7 +175,7 @@
                         @php $t = \App\Travailleur::find($hist->travailleurid); @endphp
                         <tr class="border-b hover:bg-slate-50 transition">
                             <td class="px-6 py-4 text-text-primary">{{ optional($t)->matricule }}</td>
-                            <td class="px-6 py-4 text-text-primary">{{ optional($t)->nom }} {{ optional($t)->prenom }}</td>
+                            <td class="px-6 py-4 text-text-primary">{{ optional($t)->nom }} {{ optional($t)->prenoms_complets }}</td>
                             <td class="px-6 py-4 text-center">
                                 <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">{{ $hist->date_choix }}</span>
                             </td>

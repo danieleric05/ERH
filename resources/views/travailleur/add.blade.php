@@ -167,21 +167,21 @@
                 </div>
 
                 <!-- Date d'embauche CDI/CDD -->
-                <div x-show="showEmbaucheContrat" class="hidden">
+                <div x-show="showEmbaucheContrat" style="display: none">
                     <label for="date_embauche_contrat_new" class="block text-sm font-medium text-text-primary mb-2">Date d'embauche</label>
                     <input type="date" name="date_embauche_contrat_new" id="date_embauche_contrat_new"
                         class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
                 </div>
 
                 <!-- Date d'embauche Journalier -->
-                <div x-show="showEmbaucheJournalier" class="hidden">
+                <div x-show="showEmbaucheJournalier" style="display: none">
                     <label for="date_embauche_journalier" class="block text-sm font-medium text-text-primary mb-2">Date d'embauche</label>
                     <input type="date" value="{{ date('Y-m-d') }}" name="date_embauche_journalier" id="date_embauche_journalier"
                         class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
                 </div>
 
                 <!-- Date fin contrat -->
-                <div x-show="showFinContrat" class="hidden">
+                <div x-show="showFinContrat" style="display: none">
                     <label for="date_fin_contrat_new" class="block text-sm font-medium text-text-primary mb-2">Date de fin de contrat</label>
                     <input type="date" name="date_fin_contrat_new" id="date_fin_contrat_new"
                         class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
