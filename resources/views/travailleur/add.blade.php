@@ -226,7 +226,9 @@ function initializeForm(suggestionJournalier, suggestionEmbauche) {
         majFinJournalier() {
             if (!this.showEmbaucheJournalier) return;
             const embauche = document.getElementById('date_embauche_journalier').value;
-            if (embauche) document.getElementById('date_fin_contrat_new').value = plus11Mois(embauche);
+            if (!embauche) return;
+            const fin = document.getElementById('date_fin_contrat_new');
+            fin.value = fin.min = plus11Mois(embauche); // la fin d'un journalier peut être allongée, pas raccourcie
         },
         showEmbaucheContrat: false,
         showEmbaucheJournalier: false,
@@ -239,7 +241,10 @@ function initializeForm(suggestionJournalier, suggestionEmbauche) {
             this.showEmbaucheJournalier = value === '4'; // Journalier (était '1' par erreur, id réel du STAGE)
             this.showFinContrat = value !== '';
             // Quitter Journalier : la date d'embauche (champ distinct) repart vide, la fin aussi.
-            if (etaitJournalier && !this.showEmbaucheJournalier) document.getElementById('date_fin_contrat_new').value = '';
+            if (etaitJournalier && !this.showEmbaucheJournalier) {
+                const fin = document.getElementById('date_fin_contrat_new');
+                fin.value = fin.min = '';
+            }
             this.majFinJournalier();
 
             const matricule = document.getElementById('matricule');

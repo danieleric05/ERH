@@ -404,7 +404,9 @@ class EmployerController extends Controller
             $travail->equipeid = $request->equipeid;
             //dd($request->equipeid.$request->uniteid);
             if ($morceau == 'J') {
-                $datefincontrat = Carbon::hasFormat((string) $request->date_fin_contrat_new, 'Y-m-d') ? $request->date_fin_contrat_new : Carbon::parse($request->date_embauche_journalier)->addMonthsNoOverflow(11)->toDateString(); // journalier : date saisie, sinon 11 mois après l'embauche
+                $finMin = Carbon::parse($request->date_embauche_journalier)->addMonthsNoOverflow(11)->toDateString();
+                // journalier : la fin saisie peut allonger le contrat (embauche + 11 mois), jamais le raccourcir
+                $datefincontrat = Carbon::hasFormat((string) $request->date_fin_contrat_new, 'Y-m-d') && $request->date_fin_contrat_new > $finMin ? $request->date_fin_contrat_new : $finMin;
                 $travail->date_debut_contrat = $request->date_embauche_journalier;
                 $travail->date_fin_contrat = $datefincontrat;
                 $travail->type_employer = 1;
