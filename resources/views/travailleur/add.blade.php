@@ -40,7 +40,7 @@
         <h2 class="text-xl font-bold text-text-primary mb-6">Étape 1 : Enregistrement du travailleur</h2>
 
         <form action="{{ url('post_travailleur') }}" method="POST"
-              x-data="initializeForm(@js('J000' . (intval($maj_big) + 1)), @js('E0' . (intval($maj_big_e) + 1)))">
+              x-data="initializeForm(@js($sugg_journalier), @js($sugg_embauche))">
             @csrf
 
             <!-- Grid Layout -->
@@ -50,10 +50,11 @@
                 <div>
                     <label for="matricule" class="block text-sm font-medium text-text-primary mb-2">Matricule</label>
                     <input required type="text" name="matricule" id="matricule"
-                        value="{{ old('matricule', 'J000' . (intval($maj_big) + 1)) }}"
+                        value="{{ old('matricule', $sugg_journalier) }}"
                         placeholder="Le matricule"
                         class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-bold text-text-primary"
                         maxlength="50">
+                    <input type="hidden" name="matricule_suggere" id="matricule_suggere" value="{{ old('matricule_suggere', $sugg_journalier) }}">
                 </div>
 
                 <!-- Nom -->
@@ -248,10 +249,11 @@ function initializeForm(suggestionJournalier, suggestionEmbauche) {
             this.majFinJournalier();
 
             const matricule = document.getElementById('matricule');
+            const suggere = document.getElementById('matricule_suggere');
             if (this.showEmbaucheContrat) {
-                matricule.value = suggestionEmbauche;
+                matricule.value = suggere.value = suggestionEmbauche;
             } else if (this.showEmbaucheJournalier) {
-                matricule.value = suggestionJournalier;
+                matricule.value = suggere.value = suggestionJournalier;
             }
         }
     }

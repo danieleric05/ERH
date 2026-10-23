@@ -17,6 +17,28 @@ class Travailleur extends Model
     public const MOTIFS_CESSATION_NON_AMBIGUS = ['ABANDON', 'LICENCIEMENT', 'DEMISSION', 'ACCIDENT DE TRAVAIL', 'MALADIE PROLONGÉE', 'CONGE DE MATERNITE'];
 
     /**
+     * Prochain matricule libre : J => "J000"+N, E => "E0"+N (N comparé en entier).
+     * $verrou (dans une transaction) verrouille les lignes lues contre un doublon concurrent.
+     */
+    public static function prochainMatriculeFormulaire(string $prefixe, bool $verrou = false): string
+    {
+        $base = $prefixe === 'E' ? 'E0' : 'J000';
+        $query = DB::table((new static)->getTable())->where('matricule', 'like', $base . '%');
+        if ($verrou) {
+            $query->lockForUpdate();
+        }
+
+        $max = 0;
+        foreach ($query->pluck('matricule') as $mat) {
+            if (preg_match('/^' . $base . '(\d+)$/', (string) $mat, $m)) {
+                $max = max($max, (int) $m[1]);
+            }
+        }
+
+        return $base . ($max + 1);
+    }
+
+    /**
      * Travailleurs avec une vraie cessation confirmée, par l'une ou l'autre de deux sources :
      * (1) la DERNIÈRE action e_action_cdc (par date_choisit) est une cessation (actionid=3) non
      *     suivie d'une embauche/reconduction plus récente (actionid 1 ou 6) ;

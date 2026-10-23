@@ -251,63 +251,17 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
             ->latest("id")
             ->first();
 
-        $mat_journalier = \App\Travailleur::where(
-            "matricule",
-            "like",
-            "%" . $termJ . "%",
-        )
-            ->orderBy("id", "DESC")
-            ->limit(10)
-            ->get();
-
-        $maj_big = '';
-        if ($data_journalier) {
-            foreach ($mat_journalier as $jour) {
-                if ($data_journalier->matricule < $jour->matricule) {
-                    $maj_big = substr($jour->matricule, 4);
-                } else {
-                    $maj_big = substr($data_journalier->matricule, 4);
-                }
-            }
-        }
-
-        // Même calcul que ci-dessus, pour le préfixe "E" (Embauché CDD/CDI).
-        // Préfixe réel "E0" (2 caractères), contre "J000" (4) pour les journaliers.
-        $termE = "E";
-        $data_embauche = \App\Travailleur::where(
-            "matricule",
-            "like",
-            "%" . $termE . "%",
-        )
-            ->latest("id")
-            ->first();
-
-        $mat_embauche = \App\Travailleur::where(
-            "matricule",
-            "like",
-            "%" . $termE . "%",
-        )
-            ->orderBy("id", "DESC")
-            ->limit(10)
-            ->get();
-
-        $maj_big_e = '';
-        if ($data_embauche) {
-            foreach ($mat_embauche as $emb) {
-                if ($data_embauche->matricule < $emb->matricule) {
-                    $maj_big_e = substr($emb->matricule, 2);
-                } else {
-                    $maj_big_e = substr($data_embauche->matricule, 2);
-                }
-            }
-        }
+        $sugg_journalier = \App\Travailleur::prochainMatriculeFormulaire('J');
+        $sugg_embauche = \App\Travailleur::prochainMatriculeFormulaire('E');
+        $maj_big = substr($sugg_journalier, 4) - 1; // matri_quatre : dernier numéro J utilisé
 
         return view(
             "travailleur.add",
             compact(
                 "data_journalier",
                 "maj_big",
-                "maj_big_e",
+                "sugg_journalier",
+                "sugg_embauche",
                 "data_typecontrat",
                 "data_pays",
                 "data_unites",

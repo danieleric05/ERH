@@ -364,15 +364,38 @@ class EmployerController extends Controller
 
     public function post_travailleur(Request $request)
     {
+        $saisi = strtoupper($request->matricule);
+        $estSuggere = $saisi === strtoupper((string) $request->matricule_suggere);
+        $note = '';
 
-        $verif_mat = Travailleur::where('matricule', strtoupper($request->matricule))->first();
+        for ($essai = 1; ; $essai++) {
+            try {
+                return DB::transaction(function () use ($request, $saisi, $estSuggere, &$note) {
+                    $matricule = $saisi;
+                    if (Travailleur::where('matricule', $matricule)->lockForUpdate()->exists()) {
+                        if (!$estSuggere) {
+                            return Redirect::back()->withInput()->withErrors("Désoler ce matricule a été deja utilisé, veuillez en choisir un autre.");
+                        }
+                        $matricule = Travailleur::prochainMatriculeFormulaire(substr($saisi, 0, 1) === 'E' ? 'E' : 'J', true);
+                        $note = " Matricule attribué : $matricule ($saisi était déjà pris).";
+                    }
 
-        if ($verif_mat) {
-            return Redirect::back()->withInput()->withErrors("Désoler ce matricule a été deja utilisé, veuillez en choisir un autre.");
-        } else {
+                    return $this->creerTravailleurEtapeUn($request, $matricule, $note);
+                });
+            } catch (\RuntimeException $e) {
+                return Redirect::back()->withInput()->withErrors($e->getMessage());
+            } catch (\Illuminate\Database\QueryException $e) {
+                if ($e->getCode() != 23000 || !$estSuggere || $essai >= 3) {
+                    return Redirect::back()->withInput()->withErrors("Impossible d'enregistrer le travailleur (matricule en conflit), veuillez réessayer.");
+                }
+            }
+        }
+    }
 
-            $chaine = $request->matricule;
-            $morceau = substr($chaine, 0, 1);
+    private function creerTravailleurEtapeUn(Request $request, string $matricule, string $note)
+    {
+        {
+            $morceau = substr($matricule, 0, 1);
 
             $nbre_car = strlen($request->prenom);
             $prenom_un = substr(strtoupper($request->prenom), 0, 19);
@@ -380,7 +403,7 @@ class EmployerController extends Controller
             //dd($request->prenom.'----'.$prenom_un.'--'.$prenom_deux);
             $tabDate = explode("-", date('Y-m-d'));
             $travail = new Travailleur();
-            $travail->matricule = strtoupper($request->matricule);
+            $travail->matricule = $matricule;
             $travail->civilite = NULL;
             $travail->nom = strtoupper($request->nom);
             $travail->prenom = $prenom_un;
@@ -518,7 +541,8 @@ class EmployerController extends Controller
                 // gestion des date embauche, cessassion
                 $verif_action = ActionsCDC::where('actionid', 1)->where('travailleurid', $travail->id)->first();
                 if ($verif_action) {
-                    return Redirect::back()->withErrors("Ce journalier a déja ete embauché, veuillez effectuer sa cessation afin de le reconduire .");
+                    // exception : annule la transaction au lieu de valider un travailleur partiel
+                    throw new \RuntimeException("Ce journalier a déja ete embauché, veuillez effectuer sa cessation afin de le reconduire .");
                 } else {
                     $actions = new ActionsCDC();
                     $actions->date_choisit = $travail->date_debut_contrat;
@@ -543,7 +567,7 @@ class EmployerController extends Controller
                 }
 
                 $insert_data_final[] = array(
-                    'matricule'  => $request->matricule,
+                    'matricule'  => $matricule,
                     'element'   => 225,
                     'code'   => 'HA01',
                     'valeur'    => 0,
@@ -555,7 +579,7 @@ class EmployerController extends Controller
                 DB::table('e_ha01_final')->insert($insert_data_final);
 
                 $insert_ha01[] = array(
-                    'matricule'  => $request->matricule,
+                    'matricule'  => $matricule,
                     'element'   => 225,
                     'code'   => 'HA01',
                     'valeur_ha01'   => 0,
@@ -569,9 +593,9 @@ class EmployerController extends Controller
 
                 if (($request->etapeid == 1) && ($actions->save())) {
 
-                    return Redirect::route('etapedeuxtravailleur', $travail->id)->withSuccess("Vous etes a la 2iem étape de l'enregistrement du travailleur : " . strtoupper($request->nom . ' ' . $request->prenom) . " .");
+                    return Redirect::route('etapedeuxtravailleur', $travail->id)->withSuccess("Vous etes a la 2iem étape de l'enregistrement du travailleur : " . strtoupper($request->nom . ' ' . $request->prenom) . " ." . $note);
                 } elseif ($request->etapeid == 0) {
-                    return Redirect::back()->withSuccess("Vous avez terminé avec succès la première étape de l'enregistrement du travailleur.");
+                    return Redirect::back()->withSuccess("Vous avez terminé avec succès la première étape de l'enregistrement du travailleur." . $note);
                 }
             }
         }
