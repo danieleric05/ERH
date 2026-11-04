@@ -6,14 +6,14 @@
     <title>CONTRAT CDD - {{ $travailleur->nom }} {{ $travailleur->prenoms_complets }}</title>
     <style>
         @page {
-            margin: 15mm 15mm 15mm 15mm;
+            margin: 12mm 15mm 12mm 15mm;
         }
 
         body {
             font-family: DejaVu Sans, Arial, sans-serif;
             font-size: 11px;
             color: #000;
-            line-height: 1.4;
+            line-height: 1.3;
         }
 
         .header-table {
@@ -69,7 +69,8 @@
 
         table.signatures {
             width: 100%;
-            margin-top: 30px;
+            margin-top: 15px;
+            page-break-inside: avoid;
         }
 
         table.signatures td {
@@ -108,7 +109,7 @@
 
     // Salaire fixe (type 2) : transport compris. Horaire (type 1) : la prime de transport s'ajoute.
     $primePhrase = $travailleur->type_remuneration == 2
-        ? ' Le transport est inclus dans cette rémunération.'
+        ? ' La prime de transport est comprise dans ce salaire.'
         : ($travailleur->prime_transport
             ? ' Une prime mensuelle nette de transport de <span class="bold">' . number_format($travailleur->prime_transport, 0, ',', ' ') . ' F</span> CFA.'
             : '');
@@ -127,7 +128,7 @@
     @endphp
 
     <!-- En-tete du document -->
-    <img src="{{ base_path('../rhassets/images/contrat_CDD.png') }}" style="width: 100%;">
+    <img src="{{ base_path('../rhassets/images/contrat_CDD_3p.png') }}" style="width: 100%;">
 
     <div class="section">
         <span class="bold underline">Entre les soussignés,</span>
@@ -278,7 +279,7 @@
     </div>
 
     <div class="section">
-        Fait à Abidjan, le <span class="bold">{{ $tabDateDebut[2] }}/{{ $tabDateDebut[1] }}/{{ $tabDateDebut[0] }}</span> en deux (02) exemplaires originaux de quatre (04) pages.
+        Fait à Abidjan, le <span class="bold">{{ $tabDateDebut[2] }}/{{ $tabDateDebut[1] }}/{{ $tabDateDebut[0] }}</span> en deux (02) exemplaires originaux de trois (03) pages.
     </div>
 
     <table class="signatures">
