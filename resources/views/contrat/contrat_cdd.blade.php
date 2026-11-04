@@ -107,8 +107,8 @@
     $commune = $travailleur->communeid ? (\App\Commune::where('id', $travailleur->communeid)->first()?->label ?? '') : '';
     $nationalite = $travailleur->nationaliteid ? (\App\Pays::where('id', $travailleur->nationaliteid)->value('nationalite') ?? 'IVOIRIENNE') : 'IVOIRIENNE';
 
-    // Horaire (type 1) : la prime de transport s'ajoute. Tout le reste (type 2 ou non renseigné) = salaire fixe : transport compris.
-    $horaire = $travailleur->type_remuneration == 1;
+    // Horaire (type 3) : la prime de transport s'ajoute. Tout le reste (type 1, 2 ou non renseigné) = salaire fixe : transport compris.
+    $horaire = $travailleur->type_remuneration == 3;
     $primeMontant = $travailleur->prime_transport
         ? '<span class="bold">' . number_format($travailleur->prime_transport, 0, ',', ' ') . ' F</span> CFA'
         : null;

@@ -422,6 +422,7 @@
                             <option value="">-SÉLECTIONNER-</option>
                             <option value="1">Salaire net (montant unique)</option>
                             <option value="2">Salaire de base + sursalaire</option>
+                            <option value="3">Salaire horaire (transport en plus)</option>
                         </select>
                     </div>
 
