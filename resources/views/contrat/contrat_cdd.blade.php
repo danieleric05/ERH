@@ -108,11 +108,18 @@
     $nationalite = $travailleur->nationaliteid ? (\App\Pays::where('id', $travailleur->nationaliteid)->value('nationalite') ?? 'IVOIRIENNE') : 'IVOIRIENNE';
 
     // Horaire (type 1) : la prime de transport s'ajoute. Tout le reste (type 2 ou non renseigné) = salaire fixe : transport compris.
-    $primePhrase = $travailleur->type_remuneration == 1
-        ? ($travailleur->prime_transport
-            ? ' Une prime mensuelle nette de transport de <span class="bold">' . number_format($travailleur->prime_transport, 0, ',', ' ') . ' F</span> CFA.'
-            : '')
-        : ' La prime de transport est comprise dans ce salaire.';
+    $horaire = $travailleur->type_remuneration == 1;
+    $primeMontant = $travailleur->prime_transport
+        ? '<span class="bold">' . number_format($travailleur->prime_transport, 0, ',', ' ') . ' F</span> CFA'
+        : null;
+    $suffixeNet = $horaire
+        ? '.'
+        : ($primeMontant ? ', y compris une prime mensuelle nette de transport de ' . $primeMontant . '.' : '. La prime de transport est comprise dans ce salaire.');
+    $primePhrase = $horaire
+        ? ($primeMontant ? ' À cette rémunération s\'ajoute une prime mensuelle nette de transport de ' . $primeMontant . '.' : '')
+        : ($travailleur->type_remuneration == 2
+            ? ($primeMontant ? ' Y compris une prime mensuelle nette de transport de ' . $primeMontant . '.' : ' La prime de transport est comprise dans ce salaire.')
+            : '');
 
     // Durée du CDD en mois, écrite en toutes lettres (Code du Travail exige une durée déterminée précise)
     $moisEnLettres = [1=>'Un',2=>'Deux',3=>'Trois',4=>'Quatre',5=>'Cinq',6=>'Six',7=>'Sept',8=>'Huit',9=>'Neuf',10=>'Dix',11=>'Onze',12=>'Douze',13=>'Treize',14=>'Quatorze',15=>'Quinze',16=>'Seize',17=>'Dix-sept',18=>'Dix-huit',19=>'Dix-neuf',20=>'Vingt',21=>'Vingt-et-un',22=>'Vingt-deux',23=>'Vingt-trois',24=>'Vingt-quatre',25=>'Vingt-cinq',26=>'Vingt-six',27=>'Vingt-sept',28=>'Vingt-huit',29=>'Vingt-neuf',30=>'Trente',31=>'Trente-et-un',32=>'Trente-deux',33=>'Trente-trois',34=>'Trente-quatre',35=>'Trente-cinq',36=>'Trente-six'];
@@ -206,7 +213,7 @@
             <br>
             Un sursalaire de <span class="bold">{{ number_format($travailleur->sursalaire ?? 0, 0, ',', ' ') }} F</span> CFA.
         @else
-            La rémunération mensuelle nette de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA.
+            La rémunération mensuelle nette de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA{!! $suffixeNet !!}
         @endif
         {!! $primePhrase !!}
     </div>
