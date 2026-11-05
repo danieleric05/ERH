@@ -105,19 +105,9 @@
     $commune = $travailleur->communeid ? (\App\Commune::where('id', $travailleur->communeid)->first()?->label ?? '') : '';
     $nationalite = $travailleur->nationaliteid ? (\App\Pays::where('id', $travailleur->nationaliteid)->value('nationalite') ?? 'IVOIRIENNE') : 'IVOIRIENNE';
 
-    // Horaire (type 3) : la prime de transport s'ajoute. Tout le reste (type 1, 2 ou non renseigné) = salaire fixe : transport compris.
-    $horaire = $travailleur->type_remuneration == 3;
-    $primeMontant = $travailleur->prime_transport
-        ? '<span class="bold">' . number_format($travailleur->prime_transport, 0, ',', ' ') . ' F</span> CFA'
-        : null;
-    $suffixeNet = $horaire
-        ? '.'
-        : ($primeMontant ? ', y compris une prime mensuelle nette de transport de ' . $primeMontant . '.' : '. La prime de transport est comprise dans ce salaire.');
-    $primePhrase = $horaire
-        ? ($primeMontant ? ' À cette rémunération s\'ajoute une prime mensuelle nette de transport de ' . $primeMontant . '.' : '')
-        : ($travailleur->type_remuneration == 2
-            ? ($primeMontant ? ' Y compris une prime mensuelle nette de transport de ' . $primeMontant . '.' : ' La prime de transport est comprise dans ce salaire.')
-            : '');
+    $primePhrase = $travailleur->prime_transport
+        ? ' Une prime mensuelle nette de transport de <span class="bold">' . number_format($travailleur->prime_transport, 0, ',', ' ') . ' F</span> CFA.'
+        : '';
     @endphp
 
     <!-- En-tete du document -->
@@ -213,7 +203,7 @@
             <br>
             Un sursalaire de <span class="bold">{{ number_format($travailleur->sursalaire ?? 0, 0, ',', ' ') }} F</span> CFA.
         @else
-            La rémunération mensuelle nette de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA{!! $suffixeNet !!}
+            La rémunération mensuelle nette de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA.
         @endif
         {!! $primePhrase !!}
     </div>
