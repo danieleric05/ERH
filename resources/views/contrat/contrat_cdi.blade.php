@@ -138,9 +138,9 @@
         <br><br>
         1) La Société dénommée &laquo; <span class="bold">PLASTICA CI</span> &raquo;, Société par Actions Simplifiée Unipersonnelle (SASU) au capital de deux milliards (2 000.000.000) FRANCS CFA, dont le siège social est fixé à ABIDJAN Zone Industrielle de KOUMASSI, 05 Boîte Postale 2160 Abidjan 05, immatriculée au Registre de Commerce et du Crédit Mobilier d'ABIDJAN sous le numéro CI-ABJ-1999-B-249382, déclarée à la CNPS sous le numéro <span class="bold">82408</span>.
         <br><br>
-        Représentée par Monsieur <span class="bold">BADREDDINE Abbas</span>, Gérant, demeurant en son siège.
+        Représentée par Monsieur <span class="bold">KOUAKOU Kobenan</span>, Directeur Général, demeurant en son siège.
         <br><br>
-        La SASU "<span class="bold">PLASTICA CI</span>" parfois dénommée dans le présent contrat et pour en faciliter sa rédaction "L'Employeur", ce terme s'entendant Monsieur BADREDDINE Abbas, ès qualité,
+        La SASU "<span class="bold">PLASTICA CI</span>" parfois dénommée dans le présent contrat et pour en faciliter sa rédaction "L'Employeur", ce terme s'entendant Monsieur KOUAKOU Kobenan, ès qualité,
         <p class="text-right bold underline">D'UNE PART</p>
         Et
         <br><br>
@@ -289,8 +289,8 @@
             </td>
             <td class="text-right">
                 <span class="bold">L'Employeur</span><br>
-                <span class="bold">Abbas BADREDDINE</span><br>
-                <i>(Le P.D.G)</i><br><br><br><br>
+                <span class="bold">Kobenan KOUAKOU</span><br>
+                <i>(Le D.G.)</i><br><br><br><br>
                 _______________________
             </td>
         </tr>
