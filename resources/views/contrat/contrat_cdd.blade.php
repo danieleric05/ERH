@@ -6,7 +6,7 @@
     <title>CONTRAT CDD - {{ $travailleur->nom }} {{ $travailleur->prenoms_complets }}</title>
     <style>
         @page {
-            margin: 12mm 15mm 12mm 15mm;
+            margin: 12mm 15mm 13.3mm 15mm;
         }
 
         body {
@@ -135,7 +135,7 @@
     @endphp
 
     <!-- En-tete du document -->
-    <img src="{{ base_path('../rhassets/images/contrat_CDD_3p.png') }}" style="width: 100%; margin-top: 60px;">
+    <img src="{{ base_path('../rhassets/images/contrat_CDD_3p.png') }}" style="width: 100%; margin-top: 65px;">
 
     <div class="section">
         <span class="bold underline">Entre les soussignés,</span>
