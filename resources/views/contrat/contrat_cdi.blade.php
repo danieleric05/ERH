@@ -6,7 +6,7 @@
     <title>CONTRAT CDI - {{ $travailleur->nom }} {{ $travailleur->prenoms_complets }}</title>
     <style>
         @page {
-            margin: 15mm 15mm 15mm 15mm;
+            margin: 12mm 15mm 15mm 15mm;
         }
 
         body {
@@ -19,7 +19,6 @@
         .header-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 50px;
             margin-bottom: 15px;
         }
 
@@ -112,27 +111,7 @@
     @endphp
 
     <!-- En-tete du document -->
-    <table class="header-table">
-        <tr>
-            <td rowspan="2" style="width: 20%;">
-                <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 100%;">
-            </td>
-            <td style="width: 55%;">
-                <span class="bold">Direction des Ressources Humaines</span><br>
-                Enregistrement<br>
-                <span class="bold" style="font-size: 12px;">CONTRAT DE TRAVAIL À DURÉE INDÉTERMINÉE</span>
-            </td>
-            <td style="width: 25%;">
-                Ref: ENR-RH-022<br>
-                Version: 01<br>
-                Du: 09/08/2021
-            </td>
-        </tr>
-        <tr>
-            <td>Gérer les ressources humaines</td>
-            <td>Page: 1/4</td>
-        </tr>
-    </table>
+    <img src="{{ base_path('../rhassets/images/contrat_CDI.png') }}" style="width: 100%; margin-top: 62px; margin-bottom: 15px;">
 
     <div class="section">
         <span class="bold underline">Entre les soussignés,</span>
