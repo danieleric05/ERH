@@ -13,7 +13,7 @@
             font-family: DejaVu Sans, Arial, sans-serif;
             font-size: 11px;
             color: #000;
-            line-height: 1.3;
+            line-height: 1.15;
         }
 
         .header-table {
@@ -135,7 +135,7 @@
     @endphp
 
     <!-- En-tete du document -->
-    <img src="{{ base_path('../rhassets/images/contrat_CDD_3p.png') }}" style="width: 100%; margin-top: 20px;">
+    <img src="{{ base_path('../rhassets/images/contrat_CDD_3p.png') }}" style="width: 100%; margin-top: 220px;">
 
     <div class="section">
         <span class="bold underline">Entre les soussignés,</span>
