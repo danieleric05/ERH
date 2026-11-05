@@ -135,7 +135,7 @@
     @endphp
 
     <!-- En-tete du document -->
-    <img src="{{ base_path('../rhassets/images/contrat_CDD_3p.png') }}" style="width: 100%;">
+    <img src="{{ base_path('../rhassets/images/contrat_CDD_3p.png') }}" style="width: 100%; margin-top: 20px;">
 
     <div class="section">
         <span class="bold underline">Entre les soussignés,</span>
