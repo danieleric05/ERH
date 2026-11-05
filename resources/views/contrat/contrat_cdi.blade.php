@@ -19,6 +19,7 @@
         .header-table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 53px;
             margin-bottom: 15px;
         }
 
