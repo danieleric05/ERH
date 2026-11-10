@@ -218,6 +218,22 @@
                         </select>
                     </div>
 
+                    <!-- Date de première embauche (base de l'ancienneté) -->
+                    <div>
+                        <label for="date_entree" class="block text-sm font-medium text-text-primary mb-2">Date de première embauche</label>
+                        <input type="date" name="date_entree" id="date_entree"
+                            value="{{ $edit->date_entree }}"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-bold text-text-primary">
+                    </div>
+
+                    <!-- Date de passage en CDI -->
+                    <div>
+                        <label for="date_passage_cdi" class="block text-sm font-medium text-text-primary mb-2">Date de passage en CDI</label>
+                        <input type="date" name="date_passage_cdi" id="date_passage_cdi"
+                            value="{{ $edit->date_passage_cdi }}"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-bold text-text-primary">
+                    </div>
+
                     <!-- Pays -->
                     <div>
                         <label for="paysid" class="block text-sm font-medium text-text-primary mb-2">Pays</label>

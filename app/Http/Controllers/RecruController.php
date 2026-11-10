@@ -235,7 +235,7 @@ class RecruController extends Controller
 
                 $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
                     'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
-                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire', 'Passage en CDI', 'Ancienneté');
 
                 foreach($recherches as $customer)
                 {
@@ -261,6 +261,8 @@ class RecruController extends Controller
                         'Emploi occupé'  => $customer->fonction_entrepriseid,
                         'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
                         'Type de salaire'  => $customer->type_salaire,
+                        'Passage en CDI'  => $customer->date_passage_cdi ? date('d/m/Y', strtotime($customer->date_passage_cdi)) : '',
+                        'Ancienneté'  => $customer->anciennete,
                     );
                 }
 
@@ -318,7 +320,7 @@ class RecruController extends Controller
 
                 $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
                     'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
-                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire', 'Passage en CDI', 'Ancienneté');
 
                 foreach($recherches as $customer)
                 {
@@ -343,6 +345,8 @@ class RecruController extends Controller
                         'Emploi occupé'  => $customer->fonction_entrepriseid,
                         'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
                         'Type de salaire'  => $customer->type_salaire,
+                        'Passage en CDI'  => $customer->date_passage_cdi ? date('d/m/Y', strtotime($customer->date_passage_cdi)) : '',
+                        'Ancienneté'  => $customer->anciennete,
                     );
                 }
 
@@ -398,7 +402,7 @@ class RecruController extends Controller
 
                 $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
                     'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
-                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire', 'Passage en CDI', 'Ancienneté');
 
                 foreach($recherches as $customer)
                 {
@@ -423,6 +427,8 @@ class RecruController extends Controller
                         'Emploi occupé'  => $customer->fonction_entrepriseid,
                         'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
                         'Type de salaire'  => $customer->type_salaire,
+                        'Passage en CDI'  => $customer->date_passage_cdi ? date('d/m/Y', strtotime($customer->date_passage_cdi)) : '',
+                        'Ancienneté'  => $customer->anciennete,
                     );
                 }
 
@@ -478,7 +484,7 @@ class RecruController extends Controller
 
                 $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
                     'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
-                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire', 'Passage en CDI', 'Ancienneté');
 
                 foreach($recherches as $customer)
                 {
@@ -503,6 +509,8 @@ class RecruController extends Controller
                         'Emploi occupé'  => $customer->fonction_entrepriseid,
                         'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
                         'Type de salaire'  => $customer->type_salaire,
+                        'Passage en CDI'  => $customer->date_passage_cdi ? date('d/m/Y', strtotime($customer->date_passage_cdi)) : '',
+                        'Ancienneté'  => $customer->anciennete,
                     );
                 }
 

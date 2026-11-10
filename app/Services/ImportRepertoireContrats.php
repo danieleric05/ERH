@@ -303,6 +303,9 @@ class ImportRepertoireContrats
         if ($simulation || (!$modif && !isset($historique['actionid']))) {
             return;
         }
+        if ((int) ($modif['idtype_contrat'] ?? 0) === 3 && (int) $t->idtype_contrat === 2 && $this->vide($t->date_passage_cdi)) {
+            $modif['date_passage_cdi'] = $debut;
+        }
         DB::transaction(function () use ($t, $modif, $historique, $debut, $fin, $userid) {
             if ($modif) {
                 $t->forceFill($modif)->save();

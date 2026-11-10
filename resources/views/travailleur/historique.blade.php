@@ -228,6 +228,8 @@
                                 <span x-show="sortBy === 'datefindecontrat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
                             </div>
                         </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Passage en CDI</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Ancienneté</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-slate-200">
@@ -277,6 +279,20 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="text-sm text-text-secondary">
                                         {{ $travailleur->date_fin_contrat ? \Carbon\Carbon::parse($travailleur->date_fin_contrat)->format('d/m/Y') : '-' }}
+                                    </span>
+                                </td>
+
+                                {{-- Passage en CDI --}}
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm text-text-secondary">
+                                        {{ $travailleur->date_passage_cdi ? \Carbon\Carbon::parse($travailleur->date_passage_cdi)->format('d/m/Y') : '-' }}
+                                    </span>
+                                </td>
+
+                                {{-- Ancienneté --}}
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm text-text-secondary">
+                                        {{ $travailleur->anciennete ?? '-' }}
                                     </span>
                                 </td>
                             </tr>

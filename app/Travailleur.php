@@ -2,12 +2,65 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class Travailleur extends Model
 {
     protected $table = 'e_travailleur';
+
+    protected static function booted(): void
+    {
+        static::saving(fn (self $travailleur) => $travailleur->renseignerDatePassageCdi());
+    }
+
+    /**
+     * Passage CDD (2) -> CDI (3) : date_passage_cdi = début du nouveau contrat s'il change
+     * dans la même sauvegarde, sinon aujourd'hui. Une date déjà saisie n'est jamais écrasée.
+     */
+    public function renseignerDatePassageCdi(): void
+    {
+        if ((int) $this->getOriginal('idtype_contrat') !== 2 || (int) $this->idtype_contrat !== 3 || $this->date_passage_cdi) {
+            return;
+        }
+
+        $this->date_passage_cdi = $this->isDirty('date_debut_contrat') && $this->date_debut_contrat
+            ? $this->date_debut_contrat
+            : Carbon::today()->toDateString();
+    }
+
+    /**
+     * Ancienneté (« 3 ans 2 mois ») depuis date_entree, à défaut date_debut_contrat,
+     * jusqu'à date_fin_contrat si elle est passée, sinon aujourd'hui. Null sans date de départ.
+     */
+    public function getAncienneteAttribute(): ?string
+    {
+        // Les dates héritées « 0000-00-00 » et « 0001-01-01 » comptent comme vides.
+        [$entree, $debutContrat, $finContrat] = array_map(
+            function ($date): ?Carbon {
+                $date = $date ? Carbon::parse($date) : null;
+
+                return $date && $date->year >= 1900 ? $date : null;
+            },
+            [$this->date_entree, $this->date_debut_contrat, $this->date_fin_contrat]
+        );
+
+        $debut = $entree ?? $debutContrat;
+        if (! $debut || $debut->isFuture()) {
+            return null;
+        }
+
+        $finValide = $finContrat && $finContrat->isPast() && $finContrat->gte($debut);
+        $duree = $debut->diff($finValide ? $finContrat : Carbon::now(), true);
+
+        $texte = trim(
+            ($duree->y ? $duree->y . ($duree->y > 1 ? ' ans' : ' an') : '') . ' ' .
+            ($duree->m ? $duree->m . ' mois' : '')
+        );
+
+        return $texte === '' ? "moins d'un mois" : $texte;
+    }
 
     /**
      * Motifs de fin de contrat non ambigus : un vrai départ, jamais un texte générique
