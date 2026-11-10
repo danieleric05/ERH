@@ -19,7 +19,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
  * stagiaires, CDD, CDI et journaliers. Une ligne = un contrat.
  *
  * - Personne retrouvée par matricule, sinon par nom + prénoms (+ date de naissance) ;
- *   créée si absente (matricule attribué : S = stagiaires, E = CDD/CDI, J = journaliers).
+ *   créée si absente (matricule attribué : E = CDD/CDI, J = journaliers ; aucun pour un stagiaire).
  * - Personne existante : identité complétée (jamais écrasée) ; contrat mis à jour si même
  *   date de début, reconduit (etapeid 6 + action 6) si plus récent, historisé si plus ancien.
  * - Une valeur sans libellé identique et unique dans ERH (unité, fonction, catégorie…) n'est
@@ -29,7 +29,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 class ImportRepertoireContrats
 {
     public const ID_TYPE = ['STAGE' => 1, 'CDD' => 2, 'CDI' => 3, 'JOURNALIER' => 4, 'STAGE ECOLE' => 5, 'STAGE DE QUALIFICATION' => 6];
-    private const SERIE = [1 => 'S', 2 => 'E', 3 => 'E', 4 => 'J', 5 => 'S', 6 => 'S'];
+    private const SERIE = [2 => 'E', 3 => 'E', 4 => 'J'];
 
     /** En-tête normalisé (sans accent ni ponctuation) => clé interne. */
     public const COLONNES = [
@@ -130,9 +130,11 @@ class ImportRepertoireContrats
         $this->virtuels = [];
         foreach (Travailleur::select('id', 'matricule', 'nom', 'prenom', 'prenom_suite', 'date_naissance')->get() as $t) {
             $this->parNom[self::norm($t->nom)][] = $t;
-            $this->matriculesPris[$t->matricule] = true;
+            if ($t->matricule) {
+                $this->matriculesPris[$t->matricule] = true;
+            }
         }
-        foreach (['E', 'J', 'S'] as $p) {
+        foreach (['E', 'J'] as $p) {
             $this->maxSerie[$p] = (int) preg_replace('/\D/', '', Travailleur::prochainMatricule($p)) - 1;
         }
     }
@@ -183,7 +185,7 @@ class ImportRepertoireContrats
                 $v = $this->virtuels[$cle];
                 $r['matricule'] = $v['matricule'];
                 $r['statut'] = $debut === $v['debut'] ? 'inchangé' : ($debut > $v['debut'] ? 'reconduit' : 'historisé');
-                $r['changements'][] = $debut === $v['debut'] ? 'même contrat déjà présent plus haut dans le fichier' : "contrat du $debut : rattaché à la fiche créée plus haut ({$v['matricule']})";
+                $r['changements'][] = $debut === $v['debut'] ? 'même contrat déjà présent plus haut dans le fichier' : "contrat du $debut : rattaché à la fiche créée plus haut" . ($v['matricule'] ? " ({$v['matricule']})" : '');
                 if ($debut > $v['debut']) {
                     $this->virtuels[$cle]['debut'] = $debut;
                 }
@@ -200,17 +202,23 @@ class ImportRepertoireContrats
 
     private function creer(array $l, array $identite, array $contrat, int $typeId, ?string $matricule, array &$r, bool $simulation, ?int $userid): void
     {
+        $stagiaire = in_array($typeId, [1, 5, 6], true);
+        if ($stagiaire) {
+            $matricule = null;
+        }
         if ($matricule && isset($this->matriculesPris[$matricule])) {
             $this->rejeter($r, "Le matricule $matricule existe déjà pour une autre personne.");
 
             return;
         }
-        if (!$matricule) {
+        if (!$matricule && !$stagiaire) {
             $serie = self::SERIE[$typeId];
             $this->maxSerie[$serie]++;
             $matricule = $serie . str_pad((string) $this->maxSerie[$serie], $serie === 'J' ? 7 : 5, '0', STR_PAD_LEFT);
         }
-        $this->matriculesPris[$matricule] = true;
+        if ($matricule) {
+            $this->matriculesPris[$matricule] = true;
+        }
         $this->virtuels[self::norm($l['nom']) . '|' . self::norm($l['prenoms'])] = ['matricule' => $matricule, 'debut' => $contrat['date_debut_contrat']];
         $r['matricule'] = $matricule;
         $r['statut'] = 'créé';

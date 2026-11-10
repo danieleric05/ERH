@@ -134,5 +134,11 @@ class TravailleurAncienneteTest extends TestCase
         }
 
         $this->assertFalse((new Travailleur)->est_embauche);
+
+        foreach ([1 => false, 2 => true, 3 => true, 4 => false] as $typeContrat => $attendu) {
+            $t = new Travailleur;
+            $t->idtype_contrat = $typeContrat;
+            $this->assertSame($attendu, $t->est_embauche, "contrat $typeContrat sans matricule");
+        }
     }
 }

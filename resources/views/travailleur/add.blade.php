@@ -53,7 +53,8 @@
                         value="{{ old('matricule', $sugg_journalier) }}"
                         placeholder="Le matricule"
                         class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-bold text-text-primary"
-                        maxlength="50">
+                        maxlength="50" :disabled="stagiaire" :class="stagiaire && 'bg-slate-100'">
+                    <p x-show="stagiaire" class="text-xs text-text-secondary mt-1">Pas de matricule pour un stagiaire</p>
                     <input type="hidden" name="matricule_suggere" id="matricule_suggere" value="{{ old('matricule_suggere', $sugg_journalier) }}">
                 </div>
 
@@ -224,6 +225,7 @@ function plus11Mois(iso) {
 
 function initializeForm(suggestionJournalier, suggestionEmbauche) {
     return {
+        stagiaire: false,
         majFinJournalier() {
             if (!this.showEmbaucheJournalier) return;
             const embauche = document.getElementById('date_embauche_journalier').value;
@@ -250,7 +252,11 @@ function initializeForm(suggestionJournalier, suggestionEmbauche) {
 
             const matricule = document.getElementById('matricule');
             const suggere = document.getElementById('matricule_suggere');
-            if (this.showEmbaucheContrat) {
+            // Stagiaires (1, 5, 6) : pas de matricule
+            this.stagiaire = ['1', '5', '6'].includes(value);
+            if (this.stagiaire) {
+                matricule.value = suggere.value = '';
+            } else if (this.showEmbaucheContrat) {
                 matricule.value = suggere.value = suggestionEmbauche;
             } else if (this.showEmbaucheJournalier) {
                 matricule.value = suggere.value = suggestionJournalier;

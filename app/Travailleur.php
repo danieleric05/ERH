@@ -213,11 +213,13 @@ class Travailleur extends Model
     }
 
     /**
-     * Vrai si le matricule contient la lettre E (travailleur embauché).
+     * Vrai si le matricule contient la lettre E, ou si le contrat est un CDD ou un CDI
+     * (cas d'un ancien stagiaire resté sans matricule E).
      */
     public function getEstEmbaucheAttribute(): bool
     {
-        return str_contains(strtoupper((string) $this->matricule), 'E');
+        return str_contains(strtoupper((string) $this->matricule), 'E')
+            || in_array((int) $this->idtype_contrat, [2, 3], true);
     }
 
     /**

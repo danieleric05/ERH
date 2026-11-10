@@ -362,17 +362,24 @@ class EmployerController extends Controller
     }
 
 
+    /** Types de contrat sans matricule : 1 = STAGE, 5 = STAGE ECOLE, 6 = STAGE DE QUALIFICATION. */
+    private function estTypeStage($idtypeContrat): bool
+    {
+        return in_array((int) $idtypeContrat, [1, 5, 6], true);
+    }
+
     public function post_travailleur(Request $request)
     {
-        $saisi = strtoupper($request->matricule);
-        $estSuggere = $saisi === strtoupper((string) $request->matricule_suggere);
+        $stagiaire = $this->estTypeStage($request->idtype_contrat);
+        $saisi = $stagiaire ? '' : strtoupper($request->matricule);
+        $estSuggere = !$stagiaire && $saisi === strtoupper((string) $request->matricule_suggere);
         $note = '';
 
         for ($essai = 1; ; $essai++) {
             try {
-                return DB::transaction(function () use ($request, $saisi, $estSuggere, &$note) {
-                    $matricule = $saisi;
-                    if (Travailleur::where('matricule', $matricule)->lockForUpdate()->exists()) {
+                return DB::transaction(function () use ($request, $saisi, $estSuggere, $stagiaire, &$note) {
+                    $matricule = $stagiaire ? null : $saisi;
+                    if ($matricule !== null && Travailleur::where('matricule', $matricule)->lockForUpdate()->exists()) {
                         if (!$estSuggere) {
                             return Redirect::back()->withInput()->withErrors("Désoler ce matricule a été deja utilisé, veuillez en choisir un autre.");
                         }
@@ -392,10 +399,10 @@ class EmployerController extends Controller
         }
     }
 
-    private function creerTravailleurEtapeUn(Request $request, string $matricule, string $note)
+    private function creerTravailleurEtapeUn(Request $request, ?string $matricule, string $note)
     {
         {
-            $morceau = substr($matricule, 0, 1);
+            $morceau = $matricule === null ? 'E' : substr($matricule, 0, 1); // stagiaire : règles des embauchés
 
             $nbre_car = strlen($request->prenom);
             $prenom_un = substr(strtoupper($request->prenom), 0, 19);
@@ -566,30 +573,32 @@ class EmployerController extends Controller
                     }
                 }
 
-                $insert_data_final[] = array(
-                    'matricule'  => $matricule,
-                    'element'   => 225,
-                    'code'   => 'HA01',
-                    'valeur'    => 0,
-                    'statutid'    => 2,
-                    'dateha'  => date('Y-m-d'),
-                    'userid'   => Auth::user()->id,
-                );
+                if ($matricule !== null) { // e_ha01 / e_ha01_final : matricule NOT NULL
+                    $insert_data_final[] = array(
+                        'matricule'  => $matricule,
+                        'element'   => 225,
+                        'code'   => 'HA01',
+                        'valeur'    => 0,
+                        'statutid'    => 2,
+                        'dateha'  => date('Y-m-d'),
+                        'userid'   => Auth::user()->id,
+                    );
 
-                DB::table('e_ha01_final')->insert($insert_data_final);
+                    DB::table('e_ha01_final')->insert($insert_data_final);
 
-                $insert_ha01[] = array(
-                    'matricule'  => $matricule,
-                    'element'   => 225,
-                    'code'   => 'HA01',
-                    'valeur_ha01'   => 0,
-                    'variable'   => 0,
-                    'statutid'    => 1,
-                    'dateha'  => date('Y-m-d'),
-                    'userid'   => Auth::user()->id,
-                );
+                    $insert_ha01[] = array(
+                        'matricule'  => $matricule,
+                        'element'   => 225,
+                        'code'   => 'HA01',
+                        'valeur_ha01'   => 0,
+                        'variable'   => 0,
+                        'statutid'    => 1,
+                        'dateha'  => date('Y-m-d'),
+                        'userid'   => Auth::user()->id,
+                    );
 
-                DB::table('e_ha01')->insert($insert_ha01);
+                    DB::table('e_ha01')->insert($insert_ha01);
+                }
 
                 if (($request->etapeid == 1) && ($actions->save())) {
 
@@ -690,8 +699,12 @@ class EmployerController extends Controller
         $request->validate(['date_passage_cdi' => 'nullable|date', 'date_entree' => 'nullable|date']);
         $travail = Travailleur::find($id);
 
-        $nouveauMatricule = strtoupper($request->matricule);
-        if ($nouveauMatricule !== $travail->matricule) {
+        $stagiaire = $this->estTypeStage($request->idtype_contrat);
+        $saisi = strtoupper(trim((string) $request->matricule));
+        // Champ vide : on garde le matricule existant ; ancien stagiaire sans matricule : attribution automatique.
+        $nouveauMatricule = $stagiaire ? $travail->matricule
+            : ($saisi ?: ($travail->matricule ?: Travailleur::prochainMatriculeFormulaire((int) $request->idtype_contrat === 4 ? 'J' : 'E')));
+        if (!$stagiaire && $nouveauMatricule !== $travail->matricule) {
             $verif_mat = Travailleur::where('matricule', $nouveauMatricule)->where('id', '!=', $id)->first();
             if ($verif_mat) {
                 return Redirect::back()->withInput()->withErrors("Désolé, ce matricule est déjà utilisé par un autre travailleur.");
@@ -699,8 +712,7 @@ class EmployerController extends Controller
         }
 
         //$datefincontrat = date( "Y-m-d", strtotime( "$request->dateembauche +330 day" ) );
-        $chaine = $request->matricule;
-        $morceau = substr($chaine, 0, 1);
+        $morceau = $nouveauMatricule ? substr($nouveauMatricule, 0, 1) : 'E';
 
         // prenoms pr sage
         $nbre_car = strlen($request->prenom);
