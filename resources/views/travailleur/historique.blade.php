@@ -53,6 +53,7 @@
                         <option value="">-- Sélectionner --</option>
                         <option value="1">Embauché</option>
                         <option value="2">Journalier</option>
+                        <option value="3">Stagiaire</option>
                     </select>
                 </div>
 
@@ -148,7 +149,8 @@
                 </h2>
 
                 {{-- Boutons d'export --}}
-                @if($recherches && count($recherches) > 0)
+                {{-- Pas d'export pour les stagiaires : les exports sont filtrés par matricule E ou J. --}}
+                @if($recherches && count($recherches) > 0 && request('type_id') != 3)
                     <div class="flex space-x-3">
                         <a href="{{ route('excel_download', $code) }}" class="inline-flex items-center px-4 py-2 bg-primary-accent text-white font-medium rounded-lg hover:bg-plastica-blue transition-colors duration-200">
                             <i class="icon-folder mr-2"></i>

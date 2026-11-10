@@ -1192,6 +1192,20 @@ class RecruController extends Controller
             $termE = 'E';
             $termJ = 'J';
 
+            // ====== RECHERCHES POUR TYPE STAGIAIRE (type_id == 3) : par type de contrat, les stagiaires n'ont pas de matricule ======
+            if ($request->type_id == 3) {
+                $code = $request->uniteid.'+'.$request->type_id.'+'.$request->recherche.'+'.$request->beginn.'+'.$request->endd;
+                $data_unites = Unites::get();
+                $colonneDate = $request->recherche == 4 ? 'date_fin_contrat' : 'date_debut_contrat';
+                $recherches = Travailleur::actif()
+                    ->whereIn('idtype_contrat', [1, 5, 6])
+                    ->when($request->recherche == 1, fn ($q) => $q->where('uniteid', $request->uniteid))
+                    ->when(in_array($request->recherche, [3, 4]), fn ($q) => $q->whereBetween($colonneDate, [$request->beginn, $request->endd]))
+                    ->get();
+
+                return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
+            }
+
             // ====== RECHERCHES POUR TYPE EMBAUCHÉ (type_id == 1) ======
 
             // Embauché + Recherche par Unité
