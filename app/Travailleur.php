@@ -213,6 +213,14 @@ class Travailleur extends Model
     }
 
     /**
+     * Vrai si le matricule contient la lettre E (travailleur embauché).
+     */
+    public function getEstEmbaucheAttribute(): bool
+    {
+        return str_contains(strtoupper((string) $this->matricule), 'E');
+    }
+
+    /**
      * Prénoms complets. Sage coupe le prénom à 19 caractères : dans ce cas
      * prenom_suite prolonge le mot coupé (aucune espace). Sinon (données
      * historiques) prenom_suite est un prénom distinct, séparé par une espace.

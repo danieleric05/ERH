@@ -124,4 +124,15 @@ class TravailleurAncienneteTest extends TestCase
         $nouveau->renseignerDatePassageCdi();
         $this->assertNull($nouveau->date_passage_cdi);
     }
+
+    public function test_est_embauche_selon_le_matricule(): void
+    {
+        foreach (['E0123' => true, 'e0123' => true, 'J0456' => false] as $matricule => $attendu) {
+            $t = new Travailleur;
+            $t->matricule = $matricule;
+            $this->assertSame($attendu, $t->est_embauche, $matricule);
+        }
+
+        $this->assertFalse((new Travailleur)->est_embauche);
+    }
 }

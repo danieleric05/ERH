@@ -177,6 +177,7 @@
                     <p class="text-text-secondary">Veuillez affiner vos critères de recherche</p>
                 </div>
             @else
+                @php $avecCdi = collect($recherches)->contains(fn ($t) => $t->est_embauche); @endphp
                 <table class="min-w-full divide-y divide-slate-200">
                     <thead class="bg-slate-50">
                         <tr>
@@ -228,8 +229,10 @@
                                 <span x-show="sortBy === 'datefindecontrat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
                             </div>
                         </th>
+                            @if($avecCdi)
                             <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Passage en CDI</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Ancienneté</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-slate-200">
@@ -282,6 +285,7 @@
                                     </span>
                                 </td>
 
+                                @if($avecCdi)
                                 {{-- Passage en CDI --}}
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="text-sm text-text-secondary">
@@ -295,6 +299,7 @@
                                         {{ $travailleur->anciennete ?? '-' }}
                                     </span>
                                 </td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>

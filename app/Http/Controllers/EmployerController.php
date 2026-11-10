@@ -741,8 +741,12 @@ class EmployerController extends Controller
         $travail->type_employer = $request->typeEmployer; //
         $travail->departementid = $request->departementid;
         $travail->idtype_contrat = $request->idtype_contrat;
-        $travail->date_passage_cdi = $request->date_passage_cdi ?: null;
-        $travail->date_entree = $request->date_entree ?: null;
+        if ($request->has('date_passage_cdi')) {
+            $travail->date_passage_cdi = $request->date_passage_cdi ?: null;
+        }
+        if ($request->has('date_entree')) {
+            $travail->date_entree = $request->date_entree ?: null;
+        }
         $travail->equipeid = $request->equipeid;
 
         $travail->type_remuneration = $request->type_remuneration;
