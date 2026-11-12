@@ -183,7 +183,7 @@
             <br>
             Un sursalaire de <span class="bold">{{ number_format($travailleur->sursalaire ?? 0, 0, ',', ' ') }} F</span> CFA.
         @else
-            La rémunération {{ $travailleur->type_remuneration == 3 ? 'horaire' : 'mensuelle' }} nette de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA{{ $travailleur->type_remuneration == 3 ? ' de l\'heure' : '' }}.
+            La rémunération {{ $travailleur->type_remuneration == 3 ? 'horaire de base' : 'mensuelle nette' }} de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA{{ $travailleur->type_remuneration == 3 ? ' de l\'heure' : '' }}.
         @endif
         {!! $primePhrase !!}
     </div>

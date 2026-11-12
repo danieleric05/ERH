@@ -455,7 +455,7 @@
                         <label for="salaire_base" class="block text-sm font-medium text-text-primary mb-2">
                             <span x-show="typeRem == 2">Salaire de base</span>
                             <span x-show="typeRem != 2 && typeRem != 3">Salaire net</span>
-                            <span x-show="typeRem == 3" x-cloak>Salaire horaire</span>
+                            <span x-show="typeRem == 3" x-cloak>Salaire horaire de base</span>
                         </label>
                         <input type="number" step="0.01" name="salaire_base" id="salaire_base"
                             value="{{ old('salaire_base', $edit->salaire_base) }}"
