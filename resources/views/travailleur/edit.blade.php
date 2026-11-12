@@ -15,11 +15,13 @@
                     Modifier Travailleur : <span class="text-primary-accent">{{ $edit->nom }} {{ $edit->prenoms_complets }}</span>
                 </h1>
                 <p class="text-sm text-text-secondary mt-1">
-                    Matricule : <span class="font-semibold text-slate-700">{{ $edit->matricule }}</span>
+                    @if($edit->matricule)Matricule : <span class="font-semibold text-slate-700">{{ $edit->matricule }}</span>@endif
                     @if($edit->idtype_contrat == 2)
                         <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">CDD</span>
                     @elseif($edit->idtype_contrat == 3)
                         <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">CDI</span>
+                    @elseif(in_array((int) $edit->idtype_contrat, [1, 5, 6], true))
+                        <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">Stage</span>
                     @else
                         <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Journalier</span>
                     @endif
@@ -47,7 +49,7 @@
                 Travailleurs
             </a>
             <span>/</span>
-            <span class="text-text-primary font-medium">Modifier {{ $edit->matricule }}</span>
+            <span class="text-text-primary font-medium">Modifier {{ $edit->matricule ?: $edit->nom }}</span>
         </nav>
     </div>
 
@@ -59,7 +61,8 @@
     <div class="bg-white rounded-lg shadow-lg-soft p-8">
         <h2 class="text-xl font-bold text-text-primary mb-6">Étape 2 : Enregistrement</h2>
 
-        <form action="{{ url('post_edit_travailleur/' . $edit->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ url('post_edit_travailleur/' . $edit->id) }}" method="POST" enctype="multipart/form-data"
+              x-data="{ stagiaire: ['1', '5', '6'].includes('{{ old('idtype_contrat', $edit->idtype_contrat) }}') }">
             @csrf
 
             <!-- SECTION 0: Photo de Profil -->
@@ -103,10 +106,12 @@
                     <!-- Matricule -->
                     <div>
                         <label for="matricule" class="block text-sm font-medium text-text-primary mb-2">Matricule</label>
-                        <input required type="text" name="matricule" id="matricule"
+                        <input type="text" name="matricule" id="matricule"
                             value="{{ old('matricule', $edit->matricule) }}"
+                            :required="!stagiaire && {{ $edit->matricule ? 'true' : 'false' }}" placeholder="Vide : attribué automatiquement" :disabled="stagiaire" :class="stagiaire && 'bg-slate-100'"
                             class="w-full px-4 py-2 border border-slate-300 rounded-lg text-text-primary font-bold"
                             maxlength="50">
+                        <p x-show="stagiaire" class="text-xs text-text-secondary mt-1">Pas de matricule pour un stagiaire</p>
                     </div>
 
                     <!-- Nom -->
@@ -211,12 +216,31 @@
                     <div>
                         <label for="idtype_contrat" class="block text-sm font-medium text-text-primary mb-2">Type Contrat</label>
                         <select name="idtype_contrat" id="idtype_contrat"
+                            @change="stagiaire = ['1', '5', '6'].includes($event.target.value)"
                             class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent bg-white font-bold text-text-primary">
                             @foreach($data_typecontrat as $contrat)
                                 <option @if($edit->idtype_contrat == $contrat->id) selected @endif value="{{ $contrat->id }}">{{ $contrat->label }}</option>
                             @endforeach
                         </select>
                     </div>
+
+                    @if($edit->est_embauche)
+                    <!-- Date de première embauche (base de l'ancienneté) -->
+                    <div>
+                        <label for="date_entree" class="block text-sm font-medium text-text-primary mb-2">Date de première embauche</label>
+                        <input type="date" name="date_entree" id="date_entree"
+                            value="{{ $edit->date_entree }}"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-bold text-text-primary">
+                    </div>
+
+                    <!-- Date de passage en CDI -->
+                    <div>
+                        <label for="date_passage_cdi" class="block text-sm font-medium text-text-primary mb-2">Date de passage en CDI</label>
+                        <input type="date" name="date_passage_cdi" id="date_passage_cdi"
+                            value="{{ $edit->date_passage_cdi }}"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-bold text-text-primary">
+                    </div>
+                    @endif
 
                     <!-- Pays -->
                     <div>
@@ -422,6 +446,7 @@
                             <option value="">-SÉLECTIONNER-</option>
                             <option value="1">Salaire net (montant unique)</option>
                             <option value="2">Salaire de base + sursalaire</option>
+                            <option value="3">Salaire horaire (transport en plus)</option>
                         </select>
                     </div>
 
@@ -429,7 +454,8 @@
                     <div>
                         <label for="salaire_base" class="block text-sm font-medium text-text-primary mb-2">
                             <span x-show="typeRem == 2">Salaire de base</span>
-                            <span x-show="typeRem != 2">Salaire net</span>
+                            <span x-show="typeRem != 2 && typeRem != 3">Salaire net</span>
+                            <span x-show="typeRem == 3" x-cloak>Salaire horaire de base</span>
                         </label>
                         <input type="number" step="0.01" name="salaire_base" id="salaire_base"
                             value="{{ old('salaire_base', $edit->salaire_base) }}"

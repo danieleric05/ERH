@@ -89,7 +89,7 @@ class ModeleImportContrats
             'Une ligne = un contrat. Une même personne peut avoir plusieurs lignes (CDD successifs).', '',
             'OBLIGATOIRE : NOM, PRENOMS, DateDébut. Avec DateFin (sauf CDI).', '',
             'MATRICULE :',
-            '   • Laisser vide (ou « STAGE ») pour une nouvelle personne : ERH attribue le matricule (S pour un stage, E pour un CDD/CDI, J pour un journalier).',
+            '   • Laisser vide (ou « STAGE ») pour une nouvelle personne : ERH attribue le matricule (E pour un CDD/CDI, J pour un journalier ; aucun matricule pour un stagiaire).',
             '   • Renseigner le matricule pour une personne déjà dans ERH. Un matricule qui appartient à un autre nom est refusé.', '',
             'CONTRAT : STAGE, STAGE ECOLE, STAGE DE QUALIFICATION, CDD, CDI ou JOURNALIER. Si vide : STAGE quand la fonction ou le matricule indique « stagiaire », sinon CDD.', '',
             'PERSONNE DÉJÀ DANS ERH :',

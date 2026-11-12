@@ -49,16 +49,16 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
 
     // Mon profil route
     Route::get('/mon-profil', function () {
-        $id = Auth::id();
-        return redirect("/monprofil/{$id}");
+        return view('profil.index');
     })->name('mon-profil');
+    Route::post('/mon-profil/mot-de-passe', [UserController::class, 'changePassword'])->name('profil.mot-de-passe');
 
-    // Settings (Admin seulement - Rôle 2)
+    // Settings (rôles 1 Assistant et 2 Directeur)
     Route::get('/settings', function () {
-        if (Auth::user()->idrole != 2) {
+        if (!in_array(Auth::user()->idrole, [1, 2])) {
             abort(403, 'Accès non autorisé');
         }
-        return view('configuration.index'); // À créer ou rediriger
+        return view('configuration.index');
     })->name('settings');
 
     // Gestion des utilisateurs (Admin seulement - Rôle 2)
@@ -153,7 +153,7 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
     })->name('bienvenue');
 
     Route::get("/monprofil/{id}", function () {
-        return view("home.profil");
+        return redirect()->route('mon-profil');
     });
     Route::get("/erh/recrutement", function () {
         return view("menu.recrutement.home");
@@ -183,11 +183,7 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
 
         if (!empty($request->input('search'))) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('matricule', 'like', "%{$search}%");
-            });
+            $query->recherche($search);
         }
 
         $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];
@@ -255,63 +251,17 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
             ->latest("id")
             ->first();
 
-        $mat_journalier = \App\Travailleur::where(
-            "matricule",
-            "like",
-            "%" . $termJ . "%",
-        )
-            ->orderBy("id", "DESC")
-            ->limit(10)
-            ->get();
-
-        $maj_big = '';
-        if ($data_journalier) {
-            foreach ($mat_journalier as $jour) {
-                if ($data_journalier->matricule < $jour->matricule) {
-                    $maj_big = substr($jour->matricule, 4);
-                } else {
-                    $maj_big = substr($data_journalier->matricule, 4);
-                }
-            }
-        }
-
-        // Même calcul que ci-dessus, pour le préfixe "E" (Embauché CDD/CDI).
-        // Préfixe réel "E0" (2 caractères), contre "J000" (4) pour les journaliers.
-        $termE = "E";
-        $data_embauche = \App\Travailleur::where(
-            "matricule",
-            "like",
-            "%" . $termE . "%",
-        )
-            ->latest("id")
-            ->first();
-
-        $mat_embauche = \App\Travailleur::where(
-            "matricule",
-            "like",
-            "%" . $termE . "%",
-        )
-            ->orderBy("id", "DESC")
-            ->limit(10)
-            ->get();
-
-        $maj_big_e = '';
-        if ($data_embauche) {
-            foreach ($mat_embauche as $emb) {
-                if ($data_embauche->matricule < $emb->matricule) {
-                    $maj_big_e = substr($emb->matricule, 2);
-                } else {
-                    $maj_big_e = substr($data_embauche->matricule, 2);
-                }
-            }
-        }
+        $sugg_journalier = \App\Travailleur::prochainMatriculeFormulaire('J');
+        $sugg_embauche = \App\Travailleur::prochainMatriculeFormulaire('E');
+        $maj_big = substr($sugg_journalier, 4) - 1; // matri_quatre : dernier numéro J utilisé
 
         return view(
             "travailleur.add",
             compact(
                 "data_journalier",
                 "maj_big",
-                "maj_big_e",
+                "sugg_journalier",
+                "sugg_embauche",
                 "data_typecontrat",
                 "data_pays",
                 "data_unites",

@@ -362,17 +362,47 @@ class EmployerController extends Controller
     }
 
 
+    /** Types de contrat sans matricule : 1 = STAGE, 5 = STAGE ECOLE, 6 = STAGE DE QUALIFICATION. */
+    private function estTypeStage($idtypeContrat): bool
+    {
+        return in_array((int) $idtypeContrat, [1, 5, 6], true);
+    }
+
     public function post_travailleur(Request $request)
     {
+        $stagiaire = $this->estTypeStage($request->idtype_contrat);
+        $saisi = $stagiaire ? '' : strtoupper($request->matricule);
+        $estSuggere = !$stagiaire && $saisi === strtoupper((string) $request->matricule_suggere);
+        $note = '';
 
-        $verif_mat = Travailleur::where('matricule', strtoupper($request->matricule))->first();
+        for ($essai = 1; ; $essai++) {
+            try {
+                return DB::transaction(function () use ($request, $saisi, $estSuggere, $stagiaire, &$note) {
+                    $matricule = $stagiaire ? null : $saisi;
+                    if ($matricule !== null && Travailleur::where('matricule', $matricule)->lockForUpdate()->exists()) {
+                        if (!$estSuggere) {
+                            return Redirect::back()->withInput()->withErrors("Désoler ce matricule a été deja utilisé, veuillez en choisir un autre.");
+                        }
+                        $matricule = Travailleur::prochainMatriculeFormulaire(substr($saisi, 0, 1) === 'E' ? 'E' : 'J', true);
+                        $note = " Matricule attribué : $matricule ($saisi était déjà pris).";
+                    }
 
-        if ($verif_mat) {
-            return Redirect::back()->withInput()->withErrors("Désoler ce matricule a été deja utilisé, veuillez en choisir un autre.");
-        } else {
+                    return $this->creerTravailleurEtapeUn($request, $matricule, $note);
+                });
+            } catch (\RuntimeException $e) {
+                return Redirect::back()->withInput()->withErrors($e->getMessage());
+            } catch (\Illuminate\Database\QueryException $e) {
+                if ($e->getCode() != 23000 || !$estSuggere || $essai >= 3) {
+                    return Redirect::back()->withInput()->withErrors("Impossible d'enregistrer le travailleur (matricule en conflit), veuillez réessayer.");
+                }
+            }
+        }
+    }
 
-            $chaine = $request->matricule;
-            $morceau = substr($chaine, 0, 1);
+    private function creerTravailleurEtapeUn(Request $request, ?string $matricule, string $note)
+    {
+        {
+            $morceau = $matricule === null ? 'E' : substr($matricule, 0, 1); // stagiaire : règles des embauchés
 
             $nbre_car = strlen($request->prenom);
             $prenom_un = substr(strtoupper($request->prenom), 0, 19);
@@ -380,7 +410,7 @@ class EmployerController extends Controller
             //dd($request->prenom.'----'.$prenom_un.'--'.$prenom_deux);
             $tabDate = explode("-", date('Y-m-d'));
             $travail = new Travailleur();
-            $travail->matricule = strtoupper($request->matricule);
+            $travail->matricule = $matricule;
             $travail->civilite = NULL;
             $travail->nom = strtoupper($request->nom);
             $travail->prenom = $prenom_un;
@@ -404,7 +434,9 @@ class EmployerController extends Controller
             $travail->equipeid = $request->equipeid;
             //dd($request->equipeid.$request->uniteid);
             if ($morceau == 'J') {
-                $datefincontrat = date("Y-m-d", strtotime("$request->date_embauche_journalier +320 day"));
+                $finMin = Carbon::parse($request->date_embauche_journalier)->addMonthsNoOverflow(11)->toDateString();
+                // journalier : la fin saisie peut allonger le contrat (embauche + 11 mois), jamais le raccourcir
+                $datefincontrat = Carbon::hasFormat((string) $request->date_fin_contrat_new, 'Y-m-d') && $request->date_fin_contrat_new > $finMin ? $request->date_fin_contrat_new : $finMin;
                 $travail->date_debut_contrat = $request->date_embauche_journalier;
                 $travail->date_fin_contrat = $datefincontrat;
                 $travail->type_employer = 1;
@@ -516,7 +548,8 @@ class EmployerController extends Controller
                 // gestion des date embauche, cessassion
                 $verif_action = ActionsCDC::where('actionid', 1)->where('travailleurid', $travail->id)->first();
                 if ($verif_action) {
-                    return Redirect::back()->withErrors("Ce journalier a déja ete embauché, veuillez effectuer sa cessation afin de le reconduire .");
+                    // exception : annule la transaction au lieu de valider un travailleur partiel
+                    throw new \RuntimeException("Ce journalier a déja ete embauché, veuillez effectuer sa cessation afin de le reconduire .");
                 } else {
                     $actions = new ActionsCDC();
                     $actions->date_choisit = $travail->date_debut_contrat;
@@ -540,36 +573,38 @@ class EmployerController extends Controller
                     }
                 }
 
-                $insert_data_final[] = array(
-                    'matricule'  => $request->matricule,
-                    'element'   => 225,
-                    'code'   => 'HA01',
-                    'valeur'    => 0,
-                    'statutid'    => 2,
-                    'dateha'  => date('Y-m-d'),
-                    'userid'   => Auth::user()->id,
-                );
+                if ($matricule !== null) { // e_ha01 / e_ha01_final : matricule NOT NULL
+                    $insert_data_final[] = array(
+                        'matricule'  => $matricule,
+                        'element'   => 225,
+                        'code'   => 'HA01',
+                        'valeur'    => 0,
+                        'statutid'    => 2,
+                        'dateha'  => date('Y-m-d'),
+                        'userid'   => Auth::user()->id,
+                    );
 
-                DB::table('e_ha01_final')->insert($insert_data_final);
+                    DB::table('e_ha01_final')->insert($insert_data_final);
 
-                $insert_ha01[] = array(
-                    'matricule'  => $request->matricule,
-                    'element'   => 225,
-                    'code'   => 'HA01',
-                    'valeur_ha01'   => 0,
-                    'variable'   => 0,
-                    'statutid'    => 1,
-                    'dateha'  => date('Y-m-d'),
-                    'userid'   => Auth::user()->id,
-                );
+                    $insert_ha01[] = array(
+                        'matricule'  => $matricule,
+                        'element'   => 225,
+                        'code'   => 'HA01',
+                        'valeur_ha01'   => 0,
+                        'variable'   => 0,
+                        'statutid'    => 1,
+                        'dateha'  => date('Y-m-d'),
+                        'userid'   => Auth::user()->id,
+                    );
 
-                DB::table('e_ha01')->insert($insert_ha01);
+                    DB::table('e_ha01')->insert($insert_ha01);
+                }
 
                 if (($request->etapeid == 1) && ($actions->save())) {
 
-                    return Redirect::route('etapedeuxtravailleur', $travail->id)->withSuccess("Vous etes a la 2iem étape de l'enregistrement du travailleur : " . strtoupper($request->nom . ' ' . $request->prenom) . " .");
+                    return Redirect::route('etapedeuxtravailleur', $travail->id)->withSuccess("Vous etes a la 2iem étape de l'enregistrement du travailleur : " . strtoupper($request->nom . ' ' . $request->prenom) . " ." . $note);
                 } elseif ($request->etapeid == 0) {
-                    return Redirect::back()->withSuccess("Vous avez terminé avec succès la première étape de l'enregistrement du travailleur.");
+                    return Redirect::back()->withSuccess("Vous avez terminé avec succès la première étape de l'enregistrement du travailleur." . $note);
                 }
             }
         }
@@ -587,7 +622,6 @@ class EmployerController extends Controller
             $chaine = $request->matricule;
             $morceau = substr($chaine, 0, 1);
 
-            $datefincontrat = date("Y-m-d", strtotime("$request->dateembauche +330 day"));
             $tabDate = explode("-", $request->dateembauche);
             $travail = new Travailleur();
             $travail->matricule = strtoupper($request->matricule);
@@ -639,7 +673,7 @@ class EmployerController extends Controller
                 $request->validate(['photo' => 'image|mimes:jpeg,jpg,png,gif|max:5120']);
                 try {
                     $photo = $request->file('photo');
-                    $photoName = time() . '_' . $travail->matricule . '.' . $photo->getClientOriginalExtension();
+                    $photoName = time() . '_' . $travail->matricule . '.' . ($photo->guessExtension() ?: 'jpg');
                     $destinationPath = public_path('../rhassets/images/travailleurs');
 
                     // Créer le dossier s'il n'existe pas
@@ -662,10 +696,15 @@ class EmployerController extends Controller
 
     public function post_edit_travailleur($id, Request $request)
     {
+        $request->validate(['date_passage_cdi' => 'nullable|date', 'date_entree' => 'nullable|date']);
         $travail = Travailleur::find($id);
 
-        $nouveauMatricule = strtoupper($request->matricule);
-        if ($nouveauMatricule !== $travail->matricule) {
+        $stagiaire = $this->estTypeStage($request->idtype_contrat);
+        $saisi = strtoupper(trim((string) $request->matricule));
+        // Champ vide : on garde le matricule existant ; ancien stagiaire sans matricule : attribution automatique.
+        $nouveauMatricule = $stagiaire ? $travail->matricule
+            : ($saisi ?: ($travail->matricule ?: Travailleur::prochainMatriculeFormulaire((int) $request->idtype_contrat === 4 ? 'J' : 'E')));
+        if (!$stagiaire && $nouveauMatricule !== $travail->matricule) {
             $verif_mat = Travailleur::where('matricule', $nouveauMatricule)->where('id', '!=', $id)->first();
             if ($verif_mat) {
                 return Redirect::back()->withInput()->withErrors("Désolé, ce matricule est déjà utilisé par un autre travailleur.");
@@ -673,8 +712,7 @@ class EmployerController extends Controller
         }
 
         //$datefincontrat = date( "Y-m-d", strtotime( "$request->dateembauche +330 day" ) );
-        $chaine = $request->matricule;
-        $morceau = substr($chaine, 0, 1);
+        $morceau = $nouveauMatricule ? substr($nouveauMatricule, 0, 1) : 'E';
 
         // prenoms pr sage
         $nbre_car = strlen($request->prenom);
@@ -715,6 +753,12 @@ class EmployerController extends Controller
         $travail->type_employer = $request->typeEmployer; //
         $travail->departementid = $request->departementid;
         $travail->idtype_contrat = $request->idtype_contrat;
+        if ($request->has('date_passage_cdi')) {
+            $travail->date_passage_cdi = $request->date_passage_cdi ?: null;
+        }
+        if ($request->has('date_entree')) {
+            $travail->date_entree = $request->date_entree ?: null;
+        }
         $travail->equipeid = $request->equipeid;
 
         $travail->type_remuneration = $request->type_remuneration;
@@ -757,7 +801,7 @@ class EmployerController extends Controller
                 }
 
                 $photo = $request->file('photo');
-                $photoName = time() . '_' . $travail->matricule . '.' . $photo->getClientOriginalExtension();
+                $photoName = time() . '_' . $travail->matricule . '.' . ($photo->guessExtension() ?: 'jpg');
                 $destinationPath = public_path('../rhassets/images/travailleurs');
 
                 // Créer le dossier s'il n'existe pas
@@ -816,7 +860,7 @@ class EmployerController extends Controller
             return Redirect::back()->withErrors("Désoler le matricule existe deja dans la base de donnée, veuillez modifier a nouveau.");
         } else{*/
 
-        $datefincontrat = date("Y-m-d", strtotime("$request->dateembauche +330 day"));
+        $datefincontrat = $request->dateembauche ? Carbon::parse($request->dateembauche)->addMonthsNoOverflow(11)->toDateString() : null; // journalier : 11 mois après l'embauche
         $chaine = $request->matricule;
         $morceau = substr($chaine, 0, 1);
 

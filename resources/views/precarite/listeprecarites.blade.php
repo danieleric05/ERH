@@ -52,7 +52,7 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary">
                                     @if($travailleur)
-                                        {{ $travailleur->nom ?? '' }} {{ $travailleur->prenom ?? '' }}
+                                        {{ $travailleur->nom ?? '' }} {{ $travailleur->prenoms_complets ?? '' }}
                                     @else
                                         <span class="text-slate-400">-</span>
                                     @endif

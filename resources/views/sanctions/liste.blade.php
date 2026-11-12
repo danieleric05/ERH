@@ -114,7 +114,7 @@
                                         $travailleur = \App\Travailleur::where('matricule', $matricule)->first();
                                     @endphp
                                     @if($travailleur)
-                                        <span title="{{ $travailleur->nom }} {{ $travailleur->prenom }}" class="px-2 py-1 text-xs font-semibold text-slate-800 bg-slate-100 rounded-full">
+                                        <span title="{{ $travailleur->nom }} {{ $travailleur->prenoms_complets }}" class="px-2 py-1 text-xs font-semibold text-slate-800 bg-slate-100 rounded-full">
                                             {{ $matricule }}
                                         </span>
                                     @endif

@@ -67,6 +67,8 @@
                                 Date fin de contrat {!! $sortIcon('fin') !!}
                             </a>
                         </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Passage en CDI</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Ancienneté</th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">État</th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
                     </tr>
@@ -89,7 +91,7 @@
                             </a>
                         </td>
                         <td class="px-6 py-4 text-text-primary">
-                            {{ $listedata->nom ?? '' }} {{ $listedata->prenom ?? '' }}
+                            {{ $listedata->nom ?? '' }} {{ $listedata->prenoms_complets ?? '' }}
                         </td>
                         <td class="px-6 py-4 text-text-secondary text-sm font-semibold">
                             {{ $equipesById->get($listedata->equipeid)?->label ?? '-' }}
@@ -99,6 +101,12 @@
                         </td>
                         <td class="px-6 py-4 text-red-600 font-bold text-sm">
                             {{ $listedata->date_fin_contrat ? \Carbon\Carbon::parse($listedata->date_fin_contrat)->format('d/m/Y') : '-' }}
+                        </td>
+                        <td class="px-6 py-4 text-text-secondary text-sm">
+                            {{ $listedata->date_passage_cdi ? \Carbon\Carbon::parse($listedata->date_passage_cdi)->format('d/m/Y') : '-' }}
+                        </td>
+                        <td class="px-6 py-4 text-text-secondary text-sm">
+                            {{ $listedata->anciennete ?? '-' }}
                         </td>
                         <td class="px-6 py-4 text-center">
                             @if(($listedata->etapeid ?? 0) == 2 || ($listedata->etapeid ?? 0) == 5)

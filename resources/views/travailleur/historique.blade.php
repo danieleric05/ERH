@@ -53,6 +53,7 @@
                         <option value="">-- Sélectionner --</option>
                         <option value="1">Embauché</option>
                         <option value="2">Journalier</option>
+                        <option value="3">Stagiaire</option>
                     </select>
                 </div>
 
@@ -148,7 +149,8 @@
                 </h2>
 
                 {{-- Boutons d'export --}}
-                @if($recherches && count($recherches) > 0)
+                {{-- Pas d'export pour les stagiaires : les exports sont filtrés par matricule E ou J. --}}
+                @if($recherches && count($recherches) > 0 && request('type_id') != 3)
                     <div class="flex space-x-3">
                         <a href="{{ route('excel_download', $code) }}" class="inline-flex items-center px-4 py-2 bg-primary-accent text-white font-medium rounded-lg hover:bg-plastica-blue transition-colors duration-200">
                             <i class="icon-folder mr-2"></i>
@@ -177,6 +179,7 @@
                     <p class="text-text-secondary">Veuillez affiner vos critères de recherche</p>
                 </div>
             @else
+                @php $avecCdi = collect($recherches)->contains(fn ($t) => $t->est_embauche); @endphp
                 <table class="min-w-full divide-y divide-slate-200">
                     <thead class="bg-slate-50">
                         <tr>
@@ -228,6 +231,10 @@
                                 <span x-show="sortBy === 'datefindecontrat'" :class="sortDir === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'" class="fa text-xs"></span>
                             </div>
                         </th>
+                            @if($avecCdi)
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Passage en CDI</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Ancienneté</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-slate-200">
@@ -251,7 +258,7 @@
 
                                 {{-- Nom & Prénoms --}}
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="text-sm text-text-primary">{{ $travailleur->nom }} {{ $travailleur->prenom }}</span>
+                                    <span class="text-sm text-text-primary">{{ $travailleur->nom }} {{ $travailleur->prenoms_complets }}</span>
                                 </td>
 
                                 {{-- Unité --}}
@@ -279,6 +286,22 @@
                                         {{ $travailleur->date_fin_contrat ? \Carbon\Carbon::parse($travailleur->date_fin_contrat)->format('d/m/Y') : '-' }}
                                     </span>
                                 </td>
+
+                                @if($avecCdi)
+                                {{-- Passage en CDI --}}
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm text-text-secondary">
+                                        {{ $travailleur->date_passage_cdi ? \Carbon\Carbon::parse($travailleur->date_passage_cdi)->format('d/m/Y') : '-' }}
+                                    </span>
+                                </td>
+
+                                {{-- Ancienneté --}}
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm text-text-secondary">
+                                        {{ $travailleur->anciennete ?? '-' }}
+                                    </span>
+                                </td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>

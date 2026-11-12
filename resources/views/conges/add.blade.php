@@ -46,7 +46,7 @@
                         <select required name="travailleurid" id="travailleurid" data-placeholder="-SÉLECTIONNER-">
                             <option value=""></option>
                             @foreach($data_travailleur as $trav)
-                                <option value="{{ $trav->id }}">{{ $trav->nom }} {{ $trav->prenom }} ({{ $trav->matricule }})</option>
+                                <option value="{{ $trav->id }}">{{ $trav->nom }} {{ $trav->prenoms_complets }} ({{ $trav->matricule }})</option>
                             @endforeach
                         </select>
                     </div>

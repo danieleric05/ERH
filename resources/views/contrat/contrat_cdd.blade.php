@@ -3,17 +3,17 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>CONTRAT CDD - {{ $travailleur->nom }} {{ $travailleur->prenom }}</title>
+    <title>CONTRAT CDD - {{ $travailleur->nom }} {{ $travailleur->prenoms_complets }}</title>
     <style>
         @page {
-            margin: 15mm 15mm 15mm 15mm;
+            margin: 12mm 15mm 13.3mm 15mm;
         }
 
         body {
             font-family: DejaVu Sans, Arial, sans-serif;
             font-size: 11px;
             color: #000;
-            line-height: 1.4;
+            line-height: 1.25;
         }
 
         .header-table {
@@ -69,7 +69,8 @@
 
         table.signatures {
             width: 100%;
-            margin-top: 30px;
+            margin-top: 15px;
+            page-break-inside: avoid;
         }
 
         table.signatures td {
@@ -106,9 +107,19 @@
     $commune = $travailleur->communeid ? (\App\Commune::where('id', $travailleur->communeid)->first()?->label ?? '') : '';
     $nationalite = $travailleur->nationaliteid ? (\App\Pays::where('id', $travailleur->nationaliteid)->value('nationalite') ?? 'IVOIRIENNE') : 'IVOIRIENNE';
 
-    $primePhrase = $travailleur->prime_transport
-        ? ' Une prime mensuelle nette de transport de <span class="bold">' . number_format($travailleur->prime_transport, 0, ',', ' ') . ' F</span> CFA.'
-        : '';
+    // Horaire (type 3) : la prime de transport s'ajoute. Tout le reste (type 1, 2 ou non renseigné) = salaire fixe : transport compris.
+    $horaire = $travailleur->type_remuneration == 3;
+    $primeMontant = $travailleur->prime_transport
+        ? '<span class="bold">' . number_format($travailleur->prime_transport, 0, ',', ' ') . ' F</span> CFA'
+        : null;
+    $suffixeNet = $horaire
+        ? '.'
+        : ($primeMontant ? ', y compris une prime mensuelle nette de transport de ' . $primeMontant . '.' : '. La prime de transport est comprise dans ce salaire.');
+    $primePhrase = $horaire
+        ? ($primeMontant ? ' À cette rémunération s\'ajoute une prime mensuelle nette de transport de ' . $primeMontant . '.' : '')
+        : ($travailleur->type_remuneration == 2
+            ? ($primeMontant ? ' Y compris une prime mensuelle nette de transport de ' . $primeMontant . '.' : ' La prime de transport est comprise dans ce salaire.')
+            : '');
 
     // Durée du CDD en mois, écrite en toutes lettres (Code du Travail exige une durée déterminée précise)
     $moisEnLettres = [1=>'Un',2=>'Deux',3=>'Trois',4=>'Quatre',5=>'Cinq',6=>'Six',7=>'Sept',8=>'Huit',9=>'Neuf',10=>'Dix',11=>'Onze',12=>'Douze',13=>'Treize',14=>'Quatorze',15=>'Quinze',16=>'Seize',17=>'Dix-sept',18=>'Dix-huit',19=>'Dix-neuf',20=>'Vingt',21=>'Vingt-et-un',22=>'Vingt-deux',23=>'Vingt-trois',24=>'Vingt-quatre',25=>'Vingt-cinq',26=>'Vingt-six',27=>'Vingt-sept',28=>'Vingt-huit',29=>'Vingt-neuf',30=>'Trente',31=>'Trente-et-un',32=>'Trente-deux',33=>'Trente-trois',34=>'Trente-quatre',35=>'Trente-cinq',36=>'Trente-six'];
@@ -124,36 +135,16 @@
     @endphp
 
     <!-- En-tete du document -->
-    <table class="header-table">
-        <tr>
-            <td rowspan="2" style="width: 20%;">
-                <img src="{{ base_path('../rhassets/images/contrat.PNG') }}" style="width: 100%;">
-            </td>
-            <td style="width: 55%;">
-                <span class="bold">Direction des Ressources Humaines</span><br>
-                Enregistrement<br>
-                <span class="bold" style="font-size: 12px;">CONTRAT DE TRAVAIL À DURÉE DÉTERMINÉE À TERME PRÉCIS</span>
-            </td>
-            <td style="width: 25%;">
-                Ref: ENR-RH-022<br>
-                Version: 01<br>
-                Du: 09/08/2021
-            </td>
-        </tr>
-        <tr>
-            <td>Gérer les ressources humaines</td>
-            <td>Page: 1/4</td>
-        </tr>
-    </table>
+    <img src="{{ base_path('../rhassets/images/contrat_CDD_3p.png') }}" style="width: 100%; margin-top: 64px;">
 
     <div class="section">
         <span class="bold underline">Entre les soussignés,</span>
         <br><br>
         1) La Société dénommée &laquo; <span class="bold">PLASTICA CI</span> &raquo;, Société par Actions Simplifiée Unipersonnelle (SASU) au capital de deux milliards (2 000.000.000) FRANCS CFA, dont le siège social est fixé à ABIDJAN Zone Industrielle de KOUMASSI, 05 Boîte Postale 2160 Abidjan 05, immatriculée au Registre de Commerce et du Crédit Mobilier d'ABIDJAN sous le numéro CI-ABJ-1999-B-249382, déclarée à la CNPS sous le numéro <span class="bold">82408</span>.
         <br><br>
-        Représentée par Monsieur <span class="bold">BADREDDINE Abbas</span>, Gérant, demeurant en son siège.
+        Représentée par Monsieur <span class="bold">KOUAKOU Kobenan</span>, Directeur Général, demeurant en son siège.
         <br><br>
-        La SASU "<span class="bold">PLASTICA CI</span>" parfois dénommée dans le présent contrat et pour en faciliter sa rédaction "L'Employeur", ce terme s'entendant Monsieur BADREDDINE Abbas, ès qualité,
+        La SASU "<span class="bold">PLASTICA CI</span>" parfois dénommée dans le présent contrat et pour en faciliter sa rédaction "L'Employeur", ce terme s'entendant Monsieur KOUAKOU Kobenan, ès qualité,
         <p class="text-right bold underline">D'UNE PART</p>
         Et
         <br><br>
@@ -216,13 +207,13 @@
     </div>
 
     <div class="section">
-        <p class="article-title">Article 4 - RÉMUNÉRATION MENSUELLE</p>
+        <p class="article-title">Article 4 - RÉMUNÉRATION {{ $travailleur->type_remuneration == 3 ? 'HORAIRE' : 'MENSUELLE' }}</p>
         @if($travailleur->type_remuneration == 2)
             La rémunération mensuelle de base de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA.
             <br>
             Un sursalaire de <span class="bold">{{ number_format($travailleur->sursalaire ?? 0, 0, ',', ' ') }} F</span> CFA.
         @else
-            La rémunération mensuelle nette de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA.
+            La rémunération {{ $travailleur->type_remuneration == 3 ? 'horaire de base' : 'mensuelle nette' }} de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA{{ $travailleur->type_remuneration == 3 ? ' de l\'heure' : '' }}{!! $suffixeNet !!}
         @endif
         {!! $primePhrase !!}
     </div>
@@ -295,7 +286,7 @@
     </div>
 
     <div class="section">
-        Fait à Abidjan, le <span class="bold">{{ $tabDateDebut[2] }}/{{ $tabDateDebut[1] }}/{{ $tabDateDebut[0] }}</span> en deux (02) exemplaires originaux de quatre (04) pages.
+        Fait à Abidjan, le <span class="bold">{{ $tabDateDebut[2] }}/{{ $tabDateDebut[1] }}/{{ $tabDateDebut[0] }}</span> en deux (02) exemplaires originaux de trois (03) pages.
     </div>
 
     <table class="signatures">
@@ -308,8 +299,8 @@
             </td>
             <td class="text-right">
                 <span class="bold">L'Employeur</span><br>
-                <span class="bold">Abbas BADREDDINE</span><br>
-                <i>(Le P.D.G)</i><br><br><br><br>
+                <span class="bold">Kobenan KOUAKOU</span><br>
+                <i>(Le D.G.)</i><br><br><br><br>
                 _______________________
             </td>
         </tr>

@@ -44,11 +44,7 @@ class RecruController extends Controller
 
         if (!empty($request->input('search'))) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('matricule', 'like', "%{$search}%");
-            });
+            $query->recherche($search);
         }
 
         $sortable = ['matricule' => 'matricule', 'nomprnoms' => 'nom', 'datedembauche' => 'date_debut_contrat', 'datefindecontrat' => 'date_fin_contrat'];
@@ -67,11 +63,7 @@ class RecruController extends Controller
 
         if (!empty($request->input('search'))) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('matricule', 'like', "%{$search}%");
-            });
+            $query->recherche($search);
         }
 
         $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];
@@ -94,11 +86,7 @@ class RecruController extends Controller
 
         if (!empty($request->input('search'))) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('matricule', 'like', "%{$search}%");
-            });
+            $query->recherche($search);
         }
 
         $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];
@@ -130,11 +118,7 @@ class RecruController extends Controller
 
         if (!empty($request->input('search'))) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('matricule', 'like', "%{$search}%");
-            });
+            $query->recherche($search);
         }
 
         $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];
@@ -155,11 +139,7 @@ class RecruController extends Controller
         if (mb_strlen($q) < 2) {
             return response()->json([]);
         }
-        $results = Travailleur::where(function($query) use ($q) {
-                $query->where('nom', 'like', "%{$q}%")
-                      ->orWhere('prenom', 'like', "%{$q}%")
-                      ->orWhere('matricule', 'like', "%{$q}%");
-            })
+        $results = Travailleur::recherche($q)
             ->limit(8)
             ->get(['id', 'matricule', 'nom', 'prenom']);
 
@@ -171,11 +151,7 @@ class RecruController extends Controller
 
         if (!empty($request->input('search'))) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('matricule', 'like', "%{$search}%");
-            });
+            $query->recherche($search);
         }
 
         $sortable = ['matricule' => 'matricule', 'nom' => 'nom', 'embauche' => 'date_debut_contrat', 'fin' => 'date_fin_contrat'];
@@ -262,7 +238,7 @@ class RecruController extends Controller
 
                 $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
                     'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
-                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire', 'Commune');
+                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire', 'Passage en CDI', 'Ancienneté', 'Commune');
 
                 foreach($recherches as $customer)
                 {
@@ -288,6 +264,8 @@ class RecruController extends Controller
                         'Emploi occupé'  => $customer->fonction_entrepriseid,
                         'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
                         'Type de salaire'  => $customer->type_salaire,
+                        'Passage en CDI'  => $customer->date_passage_cdi ? date('d/m/Y', strtotime($customer->date_passage_cdi)) : '',
+                        'Ancienneté'  => $customer->anciennete,
                         'Commune'  => $communes,
                     );
                 }
@@ -349,7 +327,7 @@ class RecruController extends Controller
 
                 $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
                     'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
-                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire', 'Commune');
+                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire', 'Passage en CDI', 'Ancienneté', 'Commune');
 
                 foreach($recherches as $customer)
                 {
@@ -374,6 +352,8 @@ class RecruController extends Controller
                         'Emploi occupé'  => $customer->fonction_entrepriseid,
                         'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
                         'Type de salaire'  => $customer->type_salaire,
+                        'Passage en CDI'  => $customer->date_passage_cdi ? date('d/m/Y', strtotime($customer->date_passage_cdi)) : '',
+                        'Ancienneté'  => $customer->anciennete,
                         'Commune'  => $communes,
                     );
                 }
@@ -430,7 +410,7 @@ class RecruController extends Controller
 
                 $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
                     'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
-                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire', 'Passage en CDI', 'Ancienneté');
 
                 foreach($recherches as $customer)
                 {
@@ -455,6 +435,8 @@ class RecruController extends Controller
                         'Emploi occupé'  => $customer->fonction_entrepriseid,
                         'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
                         'Type de salaire'  => $customer->type_salaire,
+                        'Passage en CDI'  => $customer->date_passage_cdi ? date('d/m/Y', strtotime($customer->date_passage_cdi)) : '',
+                        'Ancienneté'  => $customer->anciennete,
                     );
                 }
 
@@ -510,7 +492,7 @@ class RecruController extends Controller
 
                 $customer_array[] = array('Matricule', 'Civilité', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone',
                     'Numéro de portable', 'Numéro de Sécurité Sociale', 'Date de début de contrat',
-                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire');
+                    'Date de fin de contrat', 'Code département', 'Code service', 'Code catégorie', 'Emploi occupé', 'Bulletin modèle du salarié', 'Type de salaire', 'Passage en CDI', 'Ancienneté');
 
                 foreach($recherches as $customer)
                 {
@@ -535,6 +517,8 @@ class RecruController extends Controller
                         'Emploi occupé'  => $customer->fonction_entrepriseid,
                         'Bulletin modèle du salarié'  => $customer->bulletin_modele_salarie,
                         'Type de salaire'  => $customer->type_salaire,
+                        'Passage en CDI'  => $customer->date_passage_cdi ? date('d/m/Y', strtotime($customer->date_passage_cdi)) : '',
+                        'Ancienneté'  => $customer->anciennete,
                     );
                 }
 
@@ -1234,6 +1218,21 @@ class RecruController extends Controller
 
             $termE = 'E';
             $termJ = 'J';
+
+            // ====== RECHERCHES POUR TYPE STAGIAIRE (type_id == 3) : par type de contrat, les stagiaires n'ont pas de matricule ======
+            if ($request->type_id == 3) {
+                $code = $request->uniteid.'+'.$request->type_id.'+'.$request->recherche.'+'.$request->beginn.'+'.$request->endd;
+                $data_unites = Unites::get();
+                $colonneDate = $request->recherche == 4 ? 'date_fin_contrat' : 'date_debut_contrat';
+                // Stagiaires cessés inclus : presque tous les stages sont terminés.
+                $recherches = Travailleur::query()
+                    ->whereIn('idtype_contrat', [1, 5, 6])
+                    ->when($request->recherche == 1, fn ($q) => $q->where('uniteid', $request->uniteid))
+                    ->when(in_array($request->recherche, [3, 4]), fn ($q) => $q->whereBetween($colonneDate, [$request->beginn, $request->endd]))
+                    ->get();
+
+                return view('travailleur.historique', compact('recherches', 'data_unites', 'code'));
+            }
 
             // ====== RECHERCHES POUR TYPE EMBAUCHÉ (type_id == 1) ======
 

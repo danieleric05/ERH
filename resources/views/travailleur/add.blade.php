@@ -40,7 +40,7 @@
         <h2 class="text-xl font-bold text-text-primary mb-6">Étape 1 : Enregistrement du travailleur</h2>
 
         <form action="{{ url('post_travailleur') }}" method="POST"
-              x-data="initializeForm(@js('J000' . (intval($maj_big) + 1)), @js('E0' . (intval($maj_big_e) + 1)))">
+              x-data="initializeForm(@js($sugg_journalier), @js($sugg_embauche))">
             @csrf
 
             <!-- Grid Layout -->
@@ -50,10 +50,12 @@
                 <div>
                     <label for="matricule" class="block text-sm font-medium text-text-primary mb-2">Matricule</label>
                     <input required type="text" name="matricule" id="matricule"
-                        value="{{ old('matricule', 'J000' . (intval($maj_big) + 1)) }}"
+                        value="{{ old('matricule', $sugg_journalier) }}"
                         placeholder="Le matricule"
                         class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent font-bold text-text-primary"
-                        maxlength="50">
+                        maxlength="50" :disabled="stagiaire" :class="stagiaire && 'bg-slate-100'">
+                    <p x-show="stagiaire" class="text-xs text-text-secondary mt-1">Pas de matricule pour un stagiaire</p>
+                    <input type="hidden" name="matricule_suggere" id="matricule_suggere" value="{{ old('matricule_suggere', $sugg_journalier) }}">
                 </div>
 
                 <!-- Nom -->
@@ -167,21 +169,22 @@
                 </div>
 
                 <!-- Date d'embauche CDI/CDD -->
-                <div x-show="showEmbaucheContrat" class="hidden">
+                <div x-show="showEmbaucheContrat" style="display: none">
                     <label for="date_embauche_contrat_new" class="block text-sm font-medium text-text-primary mb-2">Date d'embauche</label>
                     <input type="date" name="date_embauche_contrat_new" id="date_embauche_contrat_new"
                         class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
                 </div>
 
                 <!-- Date d'embauche Journalier -->
-                <div x-show="showEmbaucheJournalier" class="hidden">
+                <div x-show="showEmbaucheJournalier" style="display: none">
                     <label for="date_embauche_journalier" class="block text-sm font-medium text-text-primary mb-2">Date d'embauche</label>
                     <input type="date" value="{{ date('Y-m-d') }}" name="date_embauche_journalier" id="date_embauche_journalier"
+                        @input="majFinJournalier()"
                         class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
                 </div>
 
                 <!-- Date fin contrat -->
-                <div x-show="showFinContrat" class="hidden">
+                <div x-show="showFinContrat" style="display: none">
                     <label for="date_fin_contrat_new" class="block text-sm font-medium text-text-primary mb-2">Date de fin de contrat</label>
                     <input type="date" name="date_fin_contrat_new" id="date_fin_contrat_new"
                         class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent">
@@ -211,23 +214,52 @@
 </div>
 
 <script>
+// Date d'embauche + 11 mois (sans débordement : 31/03 -> 28/02), au format AAAA-MM-JJ.
+function plus11Mois(iso) {
+    const [y, m, d] = iso.split('-').map(Number);
+    const fin = new Date(Date.UTC(y, m - 1 + 11, 1));
+    const dernierJour = new Date(Date.UTC(fin.getUTCFullYear(), fin.getUTCMonth() + 1, 0)).getUTCDate();
+    fin.setUTCDate(Math.min(d, dernierJour));
+    return fin.toISOString().slice(0, 10);
+}
+
 function initializeForm(suggestionJournalier, suggestionEmbauche) {
     return {
+        stagiaire: false,
+        majFinJournalier() {
+            if (!this.showEmbaucheJournalier) return;
+            const embauche = document.getElementById('date_embauche_journalier').value;
+            if (!embauche) return;
+            const fin = document.getElementById('date_fin_contrat_new');
+            fin.value = fin.min = plus11Mois(embauche); // la fin d'un journalier peut être allongée, pas raccourcie
+        },
         showEmbaucheContrat: false,
         showEmbaucheJournalier: false,
         showFinContrat: false,
         handleContractTypeChange(event) {
             const value = event.target.value;
+            const etaitJournalier = this.showEmbaucheJournalier;
             // Types réels (e_typecontrat) : 1=STAGE, 2=CDD, 3=CDI, 4=JOURNALIER
             this.showEmbaucheContrat = value === '2' || value === '3'; // CDD ou CDI
             this.showEmbaucheJournalier = value === '4'; // Journalier (était '1' par erreur, id réel du STAGE)
             this.showFinContrat = value !== '';
+            // Quitter Journalier : la date d'embauche (champ distinct) repart vide, la fin aussi.
+            if (etaitJournalier && !this.showEmbaucheJournalier) {
+                const fin = document.getElementById('date_fin_contrat_new');
+                fin.value = fin.min = '';
+            }
+            this.majFinJournalier();
 
             const matricule = document.getElementById('matricule');
-            if (this.showEmbaucheContrat) {
-                matricule.value = suggestionEmbauche;
+            const suggere = document.getElementById('matricule_suggere');
+            // Stagiaires (1, 5, 6) : pas de matricule
+            this.stagiaire = ['1', '5', '6'].includes(value);
+            if (this.stagiaire) {
+                matricule.value = suggere.value = '';
+            } else if (this.showEmbaucheContrat) {
+                matricule.value = suggere.value = suggestionEmbauche;
             } else if (this.showEmbaucheJournalier) {
-                matricule.value = suggestionJournalier;
+                matricule.value = suggere.value = suggestionJournalier;
             }
         }
     }

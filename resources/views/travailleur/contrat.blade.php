@@ -9,7 +9,7 @@
                 <h1 class="text-3xl font-bold text-text-primary">Télécharger le Contrat</h1>
                 <p class="text-sm text-text-secondary mt-1">
                     Travailleur : <span class="font-semibold text-slate-700">{{ $edit_travailleur->nom }} {{ $edit_travailleur->prenoms_complets }}</span>
-                    ({{ $edit_travailleur->matricule }})
+                    @if($edit_travailleur->matricule)({{ $edit_travailleur->matricule }})@endif
                 </p>
             </div>
             <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('liste_tous_travailleurs') }}"

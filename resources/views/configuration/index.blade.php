@@ -26,7 +26,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
             {{-- Catégories --}}
-            <a href="{{ url('liste-categorie') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
+            <a href="{{ route('categories') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
                         <i class="fa fa-tags text-blue-600 text-lg"></i>
@@ -38,7 +38,7 @@
             </a>
 
             {{-- Départements --}}
-            <a href="{{ url('liste-departement') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
+            <a href="{{ route('departements') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
                         <i class="fa fa-building text-green-600 text-lg"></i>
@@ -50,7 +50,7 @@
             </a>
 
             {{-- Équipes --}}
-            <a href="{{ url('liste-equipe') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
+            <a href="{{ route('equipes') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
                         <i class="fa fa-users text-purple-600 text-lg"></i>
@@ -62,7 +62,7 @@
             </a>
 
             {{-- Fonctions --}}
-            <a href="{{ url('liste-fonction') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
+            <a href="{{ route('fonctions') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
                         <i class="fa fa-briefcase text-yellow-600 text-lg"></i>
@@ -74,7 +74,7 @@
             </a>
 
             {{-- Niveaux d'études --}}
-            <a href="{{ url('liste-niveau-etude') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
+            <a href="{{ route('niveauEtude') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
                         <i class="fa fa-graduation-cap text-indigo-600 text-lg"></i>
@@ -86,7 +86,7 @@
             </a>
 
             {{-- Pays --}}
-            <a href="{{ url('liste-pays') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
+            <a href="{{ route('pays') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
                         <i class="fa fa-globe text-red-600 text-lg"></i>
@@ -98,7 +98,7 @@
             </a>
 
             {{-- Unités --}}
-            <a href="{{ url('liste-unite') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
+            <a href="{{ route('unites') }}" class="bg-white rounded-lg shadow-lg-soft p-6 hover:shadow-lg transition-shadow">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
                         <i class="fa fa-cube text-orange-600 text-lg"></i>

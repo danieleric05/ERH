@@ -83,7 +83,7 @@
                     <tr class="border-b hover:bg-slate-50 transition">
                         <td class="px-6 py-4">
                             <span class="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-800 font-bold text-sm"
-                                  :title="($trava?->nom ?? '') . ' ' . ($trava?->prenom ?? '')">
+                                  :title="($trava?->nom ?? '') . ' ' . ($trava?->prenoms_complets ?? '')">
                                 {{ $trava?->matricule ?? '-' }}
                             </span>
                         </td>

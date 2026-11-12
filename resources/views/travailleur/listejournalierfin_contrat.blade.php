@@ -61,7 +61,7 @@
                             </a>
                         </td>
                         <td class="px-6 py-4 text-text-primary">
-                            {{ $listedata->nom }} {{ $listedata->prenom }}
+                            {{ $listedata->nom }} {{ $listedata->prenoms_complets }}
                         </td>
                         <td class="px-6 py-4 text-text-secondary text-sm">
                             {{ $listedata->date_debut_contrat ? \Carbon\Carbon::parse($listedata->date_debut_contrat)->format('d/m/Y') : '-' }}

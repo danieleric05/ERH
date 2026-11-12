@@ -47,7 +47,7 @@
                     <select required name="demandeurid" id="demandeurid" data-placeholder="-SÉLECTIONNER-">
                         <option value=""></option>
                         @foreach($data_travailleur as $trav)
-                            <option value="{{ $trav->id }}">{{ $trav->nom }} {{ $trav->prenom }} ({{ $trav->matricule }})</option>
+                            <option value="{{ $trav->id }}">{{ $trav->nom }} {{ $trav->prenoms_complets }} ({{ $trav->matricule }})</option>
                         @endforeach
                     </select>
                 </div>
@@ -57,7 +57,7 @@
                     <label for="concerneid" class="block text-sm font-medium text-text-primary mb-2">Employé(s)</label>
                     <select required name="concerneid[]" id="concerneid" multiple data-placeholder="-SÉLECTIONNER-">
                         @foreach($data_travailleurJour as $trav)
-                            <option value="{{ $trav->matricule }}">{{ $trav->nom }} {{ $trav->prenom }} ({{ $trav->matricule }})</option>
+                            <option value="{{ $trav->matricule }}">{{ $trav->nom }} {{ $trav->prenoms_complets }} ({{ $trav->matricule }})</option>
                         @endforeach
                     </select>
                 </div>

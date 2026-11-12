@@ -92,7 +92,7 @@
                             </a>
                         </td>
                         <td class="px-6 py-4 text-text-primary">
-                            {{ $listedata->nom ?? '' }} {{ $listedata->prenom ?? '' }}
+                            {{ $listedata->nom ?? '' }} {{ $listedata->prenoms_complets ?? '' }}
                         </td>
                         <td class="px-6 py-4 text-text-secondary text-sm font-semibold">
                             {{ $equipe?->label ?? '-' }}

@@ -70,7 +70,7 @@
                     @endphp
                     <tr class="border-b hover:bg-slate-50 transition">
                         <td class="px-6 py-4 text-text-primary text-sm">
-                            {{ ($travailleur->nom ?? '') }} {{ ($travailleur->prenom ?? '') }}
+                            {{ ($travailleur->nom ?? '') }} {{ ($travailleur->prenoms_complets ?? '') }}
                         </td>
                         <td class="px-6 py-4 text-text-secondary text-sm">
                             {{ $listedata->cause ?? '-' }}

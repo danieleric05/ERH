@@ -99,7 +99,7 @@
         <div class="employee-info">
             <div style="margin-bottom: 10px;"><strong>À</strong></div>
             <div style="margin: 8px 0;">
-                <strong>Nom & Prénoms du travailleur :</strong> {{ strtoupper($travailleur->nom) }} {{ strtoupper($travailleur->prenom) }}
+                <strong>Nom & Prénoms du travailleur :</strong> {{ strtoupper($travailleur->nom) }} {{ strtoupper($travailleur->prenoms_complets) }}
             </div>
             <div style="margin: 8px 0;">
                 <strong>Unité :</strong> {{ $unites->label ?? '-' }}

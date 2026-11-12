@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -9,12 +10,86 @@ class Travailleur extends Model
 {
     protected $table = 'e_travailleur';
 
+    protected static function booted(): void
+    {
+        static::saving(fn (self $travailleur) => $travailleur->renseignerDatePassageCdi());
+    }
+
+    /**
+     * Passage CDD (2) -> CDI (3) : date_passage_cdi = début du nouveau contrat s'il change
+     * dans la même sauvegarde, sinon aujourd'hui. Une date déjà saisie n'est jamais écrasée.
+     */
+    public function renseignerDatePassageCdi(): void
+    {
+        if ((int) $this->getOriginal('idtype_contrat') !== 2 || (int) $this->idtype_contrat !== 3 || $this->date_passage_cdi) {
+            return;
+        }
+
+        $this->date_passage_cdi = $this->isDirty('date_debut_contrat') && $this->date_debut_contrat
+            ? $this->date_debut_contrat
+            : Carbon::today()->toDateString();
+    }
+
+    /**
+     * Ancienneté (« 3 ans 2 mois ») depuis date_entree, à défaut date_debut_contrat,
+     * jusqu'à date_fin_contrat si elle est passée, sinon aujourd'hui. Null sans date de départ.
+     */
+    public function getAncienneteAttribute(): ?string
+    {
+        // Les dates héritées « 0000-00-00 » et « 0001-01-01 » comptent comme vides.
+        [$entree, $debutContrat, $finContrat] = array_map(
+            function ($date): ?Carbon {
+                $date = $date ? Carbon::parse($date) : null;
+
+                return $date && $date->year >= 1900 ? $date : null;
+            },
+            [$this->date_entree, $this->date_debut_contrat, $this->date_fin_contrat]
+        );
+
+        $debut = $entree ?? $debutContrat;
+        if (! $debut || $debut->isFuture()) {
+            return null;
+        }
+
+        $finValide = $finContrat && $finContrat->isPast() && $finContrat->gte($debut);
+        $duree = $debut->diff($finValide ? $finContrat : Carbon::now(), true);
+
+        $texte = trim(
+            ($duree->y ? $duree->y . ($duree->y > 1 ? ' ans' : ' an') : '') . ' ' .
+            ($duree->m ? $duree->m . ' mois' : '')
+        );
+
+        return $texte === '' ? "moins d'un mois" : $texte;
+    }
+
     /**
      * Motifs de fin de contrat non ambigus : un vrai départ, jamais un texte générique
      * ("FIN CONTRAT"/"fin de contrat" hérité, posé par défaut sur tout contrat journalier
      * à durée déterminée, qui ne prouve rien à lui seul).
      */
     public const MOTIFS_CESSATION_NON_AMBIGUS = ['ABANDON', 'LICENCIEMENT', 'DEMISSION', 'ACCIDENT DE TRAVAIL', 'MALADIE PROLONGÉE', 'CONGE DE MATERNITE'];
+
+    /**
+     * Prochain matricule libre : J => "J000"+N, E => "E0"+N (N comparé en entier).
+     * $verrou (dans une transaction) verrouille les lignes lues contre un doublon concurrent.
+     */
+    public static function prochainMatriculeFormulaire(string $prefixe, bool $verrou = false): string
+    {
+        $base = $prefixe === 'E' ? 'E0' : 'J000';
+        $query = DB::table((new static)->getTable())->where('matricule', 'like', $base . '%');
+        if ($verrou) {
+            $query->lockForUpdate();
+        }
+
+        $max = 0;
+        foreach ($query->pluck('matricule') as $mat) {
+            if (preg_match('/^' . $base . '(\d+)$/', (string) $mat, $m)) {
+                $max = max($max, (int) $m[1]);
+            }
+        }
+
+        return $base . ($max + 1);
+    }
 
     /**
      * Travailleurs avec une vraie cessation confirmée, par l'une ou l'autre de deux sources :
@@ -46,6 +121,22 @@ class Travailleur extends Model
             ->pluck('id');
 
         return $parActionCdc->merge($parMotif)->unique()->values();
+    }
+
+    /**
+     * Recherche multi-mots : chaque mot doit figurer dans le nom, le prénom (début ou suite) ou le matricule,
+     * pour que « Koffi Ahou » retrouve KOFFI (nom) + AHOU... (prénom).
+     */
+    public function scopeRecherche($query, string $search)
+    {
+        foreach (preg_split('/\s+/', trim($search), -1, PREG_SPLIT_NO_EMPTY) as $mot) {
+            $query->where(fn ($q) => $q->where('nom', 'like', "%{$mot}%")
+                ->orWhere('prenom', 'like', "%{$mot}%")
+                ->orWhere('prenom_suite', 'like', "%{$mot}%")
+                ->orWhere('matricule', 'like', "%{$mot}%"));
+        }
+
+        return $query;
     }
 
     /**
@@ -119,6 +210,16 @@ class Travailleur extends Model
         } else {
             return 'Contrat Journalier';
         }
+    }
+
+    /**
+     * Vrai si le matricule contient la lettre E, ou si le contrat est un CDD ou un CDI
+     * (cas d'un ancien stagiaire resté sans matricule E).
+     */
+    public function getEstEmbaucheAttribute(): bool
+    {
+        return str_contains(strtoupper((string) $this->matricule), 'E')
+            || in_array((int) $this->idtype_contrat, [2, 3], true);
     }
 
     /**

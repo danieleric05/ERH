@@ -47,7 +47,9 @@
             <div x-show="profileMenuOpen" @click.outside="profileMenuOpen = false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg-soft bg-white ring-1 ring-black ring-opacity-5 divide-y divide-slate-200 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
                 <div class="py-1" role="none">
                     <a href="{{ route('mon-profil') }}" class="block px-4 py-2 text-sm text-text-primary hover:bg-slate-100" role="menuitem">Profil</a>
+                    @if(in_array(Auth::user()->idrole, [1, 2]))
                     <a href="{{ route('settings') }}" class="block px-4 py-2 text-sm text-text-primary hover:bg-slate-100" role="menuitem">Paramètres</a>
+                    @endif
                 </div>
                 <div class="py-1" role="none">
                     <form method="POST" action="{{ route('logout') }}">

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
  * Politique d'accès (définie par Daniel le 2026-09-17) :
  * - idrole 2 (Admin: Directeur) : accès complet, aucune restriction.
  * - idrole 1 (Assistant) : accès complet sauf Gestion Utilisateurs (réservée au rôle 2).
+ * - /settings : rôles 1 et 2 (contrôle dans la route) ; les rôles 3-6 sont bloqués ici.
+ * - POST mon-profil/mot-de-passe : autorisé à tout utilisateur (changer son propre mot de passe).
  * - tout le reste (3=Chef d'équipe, 4=Chef d'unité, 5=Commerciaux, 6=Qualité, ou sans rôle) :
  *   lecture seule sur toute l'app.
  *
@@ -29,7 +31,6 @@ class RestrictReadOnlyRoles
         'post_edit_utilisateur',
         'statututilisateur',
     ];
-    private const ADMIN_ONLY_PATHS = ['settings'];
 
     /** Routes GET qui écrivent réellement en base (à traiter comme une écriture). */
     private const WRITE_GET_ROUTE_NAMES = [
@@ -58,6 +59,7 @@ class RestrictReadOnlyRoles
     private const READ_ONLY_POST_PATHS = [
         'post_search',
         'post_search_varaiables',
+        'mon-profil/mot-de-passe',
     ];
 
     public function handle(Request $request, Closure $next)
@@ -74,8 +76,7 @@ class RestrictReadOnlyRoles
             return $next($request);
         }
 
-        $isAdminRoute = ($request->route()?->getName() && in_array($request->route()->getName(), self::ADMIN_ONLY_ROUTE_NAMES))
-            || $request->is(self::ADMIN_ONLY_PATHS);
+        $isAdminRoute = $request->route()?->getName() && in_array($request->route()->getName(), self::ADMIN_ONLY_ROUTE_NAMES);
 
         if ($idrole == 1) {
             if ($isAdminRoute) {
@@ -85,7 +86,7 @@ class RestrictReadOnlyRoles
         }
 
         // Tout le reste : lecture seule.
-        if ($isAdminRoute) {
+        if ($isAdminRoute || $request->is('settings')) {
             abort(403, "Accès réservé aux administrateurs.");
         }
 
