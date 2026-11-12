@@ -207,13 +207,13 @@
     </div>
 
     <div class="section">
-        <p class="article-title">Article 4 - RÉMUNÉRATION MENSUELLE</p>
+        <p class="article-title">Article 4 - RÉMUNÉRATION {{ $travailleur->type_remuneration == 3 ? 'HORAIRE' : 'MENSUELLE' }}</p>
         @if($travailleur->type_remuneration == 2)
             La rémunération mensuelle de base de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA.
             <br>
             Un sursalaire de <span class="bold">{{ number_format($travailleur->sursalaire ?? 0, 0, ',', ' ') }} F</span> CFA.
         @else
-            La rémunération mensuelle nette de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA{!! $suffixeNet !!}
+            La rémunération {{ $travailleur->type_remuneration == 3 ? 'horaire' : 'mensuelle' }} nette de <span class="bold">{{ $civilite }} {{ $nomComplet }}</span> est fixée à <span class="bold">{{ number_format($travailleur->salaire_base ?? 0, 0, ',', ' ') }} F</span> CFA{{ $travailleur->type_remuneration == 3 ? ' de l\'heure' : '' }}{!! $suffixeNet !!}
         @endif
         {!! $primePhrase !!}
     </div>
