@@ -6,7 +6,7 @@
                 <span>Welcome,</span>
                 <a href="javascript:void(0);" class="dropdown-toggle user-name" data-toggle="dropdown"><strong>{{ Auth::user()?->name }}</strong></a>
                 <ul class="dropdown-menu dropdown-menu-right account animated flipInY">
-                    <li><a href="{{ url('monprofil', Auth::user()?->id) }}"><i class="icon-user"></i>Mon Profil</a></li>
+                    <li><a href="{{ route('mon-profil') }}"><i class="icon-user"></i>Mon Profil</a></li>
                     <li class="divider"></li>
                     <li>
                         <form method="POST" action="{{ route('logout') }}" style="display: inline;">

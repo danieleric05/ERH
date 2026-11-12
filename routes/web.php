@@ -49,16 +49,16 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
 
     // Mon profil route
     Route::get('/mon-profil', function () {
-        $id = Auth::id();
-        return redirect("/monprofil/{$id}");
+        return view('profil.index');
     })->name('mon-profil');
+    Route::post('/mon-profil/mot-de-passe', [UserController::class, 'changePassword'])->name('profil.mot-de-passe');
 
-    // Settings (Admin seulement - Rôle 2)
+    // Settings (rôles 1 Assistant et 2 Directeur)
     Route::get('/settings', function () {
-        if (Auth::user()->idrole != 2) {
+        if (!in_array(Auth::user()->idrole, [1, 2])) {
             abort(403, 'Accès non autorisé');
         }
-        return view('configuration.index'); // À créer ou rediriger
+        return view('configuration.index');
     })->name('settings');
 
     // Gestion des utilisateurs (Admin seulement - Rôle 2)
@@ -153,7 +153,7 @@ Route::middleware(['auth', 'role.readonly'])->group(function () {
     })->name('bienvenue');
 
     Route::get("/monprofil/{id}", function () {
-        return view("home.profil");
+        return redirect()->route('mon-profil');
     });
     Route::get("/erh/recrutement", function () {
         return view("menu.recrutement.home");

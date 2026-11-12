@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangePasswordRequest;
 use App\Role;
 use App\Unite;
 use App\User;
@@ -25,6 +26,20 @@ class UserController extends Controller
         if (Auth::user()->idrole != 2) {
             abort(403, 'Accès non autorisé');
         }
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Le mot de passe actuel est incorrect.']);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()->route('mon-profil')->with('success', 'Mot de passe modifié avec succès.');
     }
 
     public function index()

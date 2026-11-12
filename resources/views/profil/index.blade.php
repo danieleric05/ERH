@@ -7,7 +7,7 @@
             <h1 class="text-3xl font-bold text-text-primary">Mon Profil</h1>
             <nav class="text-sm font-medium text-slate-500" aria-label="Breadcrumb">
                 <ol class="flex items-center space-x-2">
-                    <li><a href="{{ url('bienvenue') }}" class="text-primary-accent hover:text-plastica-blue"><i class="fa fa-home"></i></a></li>
+                    <li><a href="{{ route('bienvenue') }}" class="text-primary-accent hover:text-plastica-blue"><i class="fa fa-home"></i></a></li>
                     <li class="flex items-center">
                         <svg class="h-5 w-5 text-slate-400 mx-2" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -36,18 +36,20 @@
                                 <div class="mt-3 flex gap-2 flex-wrap">
                                     @php
                                         $roleNames = [
-                                            1 => 'Administrateur',
-                                            2 => 'Assistante RH',
-                                            4 => 'Médical',
-                                            5 => 'Visiteur',
-                                            6 => 'RH Junior'
+                                            1 => 'Assistant',
+                                            2 => 'Directeur',
+                                            3 => "Chef d'équipe",
+                                            4 => "Chef d'unité",
+                                            5 => 'Commerciaux',
+                                            6 => 'Qualité'
                                         ];
                                         $roleBadgeColor = [
                                             1 => 'bg-red-100 text-red-800',
                                             2 => 'bg-purple-100 text-purple-800',
-                                            4 => 'bg-green-100 text-green-800',
-                                            5 => 'bg-blue-100 text-blue-800',
-                                            6 => 'bg-yellow-100 text-yellow-800'
+                                            3 => 'bg-green-100 text-green-800',
+                                            4 => 'bg-blue-100 text-blue-800',
+                                            5 => 'bg-yellow-100 text-yellow-800',
+                                            6 => 'bg-indigo-100 text-indigo-800'
                                         ];
                                     @endphp
                                     <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $roleBadgeColor[Auth::user()->idrole] ?? 'bg-gray-100 text-gray-800' }}">
@@ -103,6 +105,34 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="bg-white rounded-lg shadow-lg-soft overflow-hidden mt-6">
+                    <div class="px-6 py-4 border-b border-slate-200">
+                        <h3 class="text-lg font-bold text-text-primary flex items-center gap-2">
+                            <i class="fa fa-lock text-primary-accent"></i> Mot de passe
+                        </h3>
+                    </div>
+                    <form method="POST" action="{{ route('profil.mot-de-passe') }}" class="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        @csrf
+                        <div>
+                            <label for="current_password" class="block text-sm font-medium text-text-secondary mb-1">Mot de passe actuel</label>
+                            <input type="password" id="current_password" name="current_password" required autocomplete="current-password" class="w-full rounded-lg border border-slate-300 px-3 py-2 @error('current_password') border-red-500 @enderror">
+                            @error('current_password') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-text-secondary mb-1">Nouveau mot de passe</label>
+                            <input type="password" id="password" name="password" required minlength="8" autocomplete="new-password" class="w-full rounded-lg border border-slate-300 px-3 py-2 @error('password') border-red-500 @enderror">
+                            @error('password') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label for="password_confirmation" class="block text-sm font-medium text-text-secondary mb-1">Confirmation</label>
+                            <input type="password" id="password_confirmation" name="password_confirmation" required autocomplete="new-password" class="w-full rounded-lg border border-slate-300 px-3 py-2">
+                        </div>
+                        <div class="md:col-span-3">
+                            <button type="submit" class="px-4 py-2 bg-primary-accent text-white rounded-lg hover:bg-plastica-blue transition font-medium">Changer le mot de passe</button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             {{-- Actions Sidebar --}}
@@ -114,10 +144,13 @@
                         </h3>
                     </div>
                     <div class="p-6 space-y-3">
-                        <a href="{{ url('logout') }}" class="block w-full px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium text-center">
-                            <i class="fa fa-sign-out mr-2"></i> Déconnexion
-                        </a>
-                        <a href="{{ url('bienvenue') }}" class="block w-full px-4 py-3 bg-primary-accent text-white rounded-lg hover:bg-plastica-blue transition font-medium text-center">
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="block w-full px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium text-center">
+                                <i class="fa fa-sign-out mr-2"></i> Déconnexion
+                            </button>
+                        </form>
+                        <a href="{{ route('bienvenue') }}" class="block w-full px-4 py-3 bg-primary-accent text-white rounded-lg hover:bg-plastica-blue transition font-medium text-center">
                             <i class="fa fa-arrow-left mr-2"></i> Retour au dashboard
                         </a>
                     </div>
