@@ -820,6 +820,11 @@ class RecruController extends Controller
 						$fonctions = $fonction->label;
 					}
 
+					$commune = Commune::where('id', $customer->communeid)->first();
+					$communes = $commune ? $commune->label : 'INCONNU';
+					$departements = $departement ? $departement->label : 'INCONNU';
+					$equipes = $equipe ? $equipe->label : 'INCONNU';
+
                     $customer_array[] = array(
                         'Matricule'  => $customer->matricule,
                         'Civilité'  => $customer->civilite,
